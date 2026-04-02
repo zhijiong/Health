@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#4a7c59">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="我的食谱">
+<title>我的食谱</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body { background:#faf7f2; font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; color:#2c2416; max-width:480px; margin:0 auto; min-height:100vh; padding-bottom:80px; }
+button { cursor:pointer; font-family:inherit; }
+
+/* Header */
+.header { background:#fff; padding:52px 20px 14px; border-bottom:1px solid #f0ebe0; position:sticky; top:0; z-index:10; }
+.header-tag { font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#4a7c59; margin-bottom:4px; }
+.header-title { font-size:26px; font-weight:900; color:#2c2416; font-family:Georgia,serif; }
+
+/* Bottom Nav */
+.nav { position:fixed; bottom:0; left:50%; transform:translateX(-50%); width:100%; max-width:480px; background:#fff; border-top:1px solid #f0ebe0; display:flex; z-index:20; padding-bottom:env(safe-area-inset-bottom); }
+.nav-btn { flex:1; padding:12px 0 10px; background:none; border:none; display:flex; flex-direction:column; align-items:center; gap:3px; }
+.nav-icon { font-size:22px; }
+.nav-label { font-size:11px; font-weight:700; color:#b4a48a; }
+.nav-label.active { color:#4a7c59; }
+.nav-dot { width:24px; height:3px; background:#4a7c59; border-radius:2px; }
+
+/* Toast */
+.toast { position:fixed; top:100px; left:50%; transform:translateX(-50%); background:#2c2416; color:#e8d5b7; padding:12px 28px; border-radius:24px; font-size:15px; font-weight:600; z-index:100; white-space:nowrap; box-shadow:0 4px 20px rgba(0,0,0,0.2); display:none; }
+
+/* Tabs */
+.tab { display:none; padding:20px 16px 0; }
+.tab.active { display:block; }
+
+/* Cards */
+.card { background:#fff; border-radius:18px; margin-bottom:14px; overflow:hidden; box-shadow:0 2px 14px rgba(0,0,0,0.07); }
+.card-head { padding:14px 20px; display:flex; align-items:center; justify-content:space-between; }
+.card-head-left { display:flex; align-items:center; gap:10px; }
+.meal-emoji { font-size:24px; }
+.meal-tag { font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; }
+.meal-name { font-size:17px; font-weight:700; color:#2c2416; margin-top:2px; }
+.card-body { padding:14px 20px; }
+.meal-desc { font-size:15px; color:#5a4a32; line-height:1.7; margin-bottom:14px; }
+
+/* Day header */
+.day-header { border-radius:18px; padding:18px 22px; margin-bottom:20px; display:flex; align-items:center; gap:16px; }
+.day-num { width:54px; height:54px; border-radius:14px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:22px; font-weight:900; font-family:Georgia,serif; flex-shrink:0; }
+.day-name { font-size:20px; font-weight:700; font-family:Georgia,serif; color:#2c2416; }
+.day-sub { font-size:13px; color:#7a6a52; margin-top:3px; }
+
+/* Checkin button */
+.checkin-btn { width:100%; padding:14px; border:2px dashed; border-radius:12px; font-size:15px; font-weight:700; display:flex; align-items:center; justify-content:center; gap:8px; background:transparent; }
+.checkin-img { width:100%; border-radius:12px; object-fit:cover; max-height:220px; display:block; }
+.checkin-time { font-size:12px; color:#9a8a72; margin-top:8px; text-align:right; }
+.recheckin-btn { margin-top:10px; width:100%; padding:10px; background:#f0ebe0; border:none; border-radius:10px; font-size:14px; color:#7a6a52; font-weight:600; }
+
+/* Prep box */
+.prep-box { background:#2c2416; border-radius:16px; padding:16px 20px; margin-top:4px; }
+.prep-label { font-size:12px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#d4c4a0; margin-bottom:6px; }
+.prep-text { font-size:15px; color:#e8d5b7; line-height:1.7; }
+
+/* Week tab */
+.week-card { background:#fff; border-radius:18px; margin-bottom:12px; overflow:hidden; box-shadow:0 2px 12px rgba(0,0,0,0.07); }
+.week-head { padding:16px 20px; display:flex; align-items:center; justify-content:space-between; }
+.week-num { width:46px; height:46px; border-radius:12px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:20px; font-weight:900; font-family:Georgia,serif; }
+.week-dots { display:flex; gap:5px; }
+.week-dot { width:10px; height:10px; border-radius:50%; background:#e0d8cc; }
+.week-body { padding:12px 16px 16px; }
+
+/* Shopping */
+.shop-progress { background:#fff; border-radius:18px; padding:18px 20px; margin-bottom:16px; box-shadow:0 2px 12px rgba(0,0,0,0.07); }
+.shop-progress-bar { height:8px; background:#f0ebe0; border-radius:4px; overflow:hidden; margin-top:10px; }
+.shop-progress-fill { height:100%; background:#4a7c59; border-radius:4px; transition:width 0.3s; }
+.shop-cat { background:#fff; border-radius:18px; margin-bottom:12px; overflow:hidden; box-shadow:0 2px 12px rgba(0,0,0,0.07); }
+.shop-cat-head { padding:14px 20px 10px; border-bottom:1px solid #f0ebe0; display:flex; justify-content:space-between; align-items:center; }
+.shop-cat-name { font-size:16px; font-weight:700; color:#2c2416; }
+.shop-cat-count { font-size:13px; font-weight:600; color:#9a8a72; }
+.shop-item { padding:13px 20px; display:flex; align-items:center; gap:14px; border-bottom:1px solid #faf7f2; background:#fff; }
+.shop-item.done { background:#f9fdf9; }
+.shop-check { width:26px; height:26px; border-radius:7px; border:2px solid #d4c4a0; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all 0.15s; }
+.shop-check.checked { background:#4a7c59; border-color:#4a7c59; }
+.shop-check-icon { color:#fff; font-size:15px; font-weight:700; display:none; }
+.shop-check.checked .shop-check-icon { display:block; }
+.shop-item-text { font-size:15px; color:#3d3020; line-height:1.5; }
+.shop-item.done .shop-item-text { color:#9a8a72; text-decoration:line-through; }
+.reset-btn { width:100%; padding:16px; background:#fff; border:2px solid #f0ebe0; border-radius:16px; font-size:15px; color:#7a6a52; font-weight:700; margin-bottom:8px; }
+
+/* Gallery */
+.gallery-header { background:#fff; border-radius:18px; padding:20px; margin-bottom:20px; box-shadow:0 2px 12px rgba(0,0,0,0.07); text-align:center; }
+.gallery-count { font-size:28px; font-weight:900; font-family:Georgia,serif; color:#2c2416; }
+.gallery-sub { font-size:14px; color:#7a6a52; margin-top:6px; }
+.gallery-bar { margin-top:14px; height:8px; background:#f0ebe0; border-radius:4px; overflow:hidden; }
+.gallery-bar-fill { height:100%; background:linear-gradient(90deg,#4a7c59,#c27d38); border-radius:4px; }
+.gallery-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.gallery-item { border-radius:16px; overflow:hidden; box-shadow:0 2px 14px rgba(0,0,0,0.1); }
+.gallery-item img { width:100%; height:150px; object-fit:cover; display:block; }
+.gallery-item-info { padding:10px 12px; }
+.gallery-item-name { font-size:13px; font-weight:700; }
+.gallery-item-time { font-size:11px; color:#9a8a72; margin-top:3px; }
+.empty { text-align:center; padding:60px 20px; color:#9a8a72; }
+.empty-icon { font-size:48px; margin-bottom:16px; }
+.empty-text { font-size:16px; line-height:1.8; }
+
+/* Weekend */
+.weekend { text-align:center; padding:60px 32px; }
+.weekend-icon { font-size:64px; margin-bottom:20px; }
+.weekend-title { font-size:22px; font-weight:700; font-family:Georgia,serif; color:#2c2416; margin-bottom:12px; }
+.weekend-text { font-size:16px; color:#7a6a52; line-height:1.8; }
+
+/* Breakfast banner */
+.bk-banner { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px; }
+.bk-card { background:#fff; border-radius:16px; padding:16px 18px; box-shadow:0 2px 12px rgba(0,0,0,0.07); }
+.bk-label { font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; margin-bottom:6px; }
+.bk-name { font-size:16px; font-weight:700; color:#2c2416; margin-bottom:4px; }
+.bk-text { font-size:13px; color:#5a4a32; line-height:1.5; }
+</style>
+
+</head>
+<body>
+
+<div class="header">
+  <div class="header-tag">地中海减脂计划 · <span id="week-label">第1周</span></div>
+  <div class="header-title">我的食谱 🌿</div>
+</div>
+
+<div id="tab-today" class="tab active"></div>
+<div id="tab-week" class="tab"></div>
+<div id="tab-shop" class="tab"></div>
+<div id="tab-gallery" class="tab"></div>
+
+<nav class="nav">
+  <button class="nav-btn" onclick="switchTab('today')">
+    <span class="nav-icon">☀️</span>
+    <span class="nav-label active" id="nl-today">今日</span>
+    <div class="nav-dot" id="nd-today"></div>
+  </button>
+  <button class="nav-btn" onclick="switchTab('week')">
+    <span class="nav-icon">📅</span>
+    <span class="nav-label" id="nl-week">本周</span>
+  </button>
+  <button class="nav-btn" onclick="switchTab('shop')">
+    <span class="nav-icon">🛒</span>
+    <span class="nav-label" id="nl-shop">采购</span>
+  </button>
+  <button class="nav-btn" onclick="switchTab('gallery')">
+    <span class="nav-icon">📸</span>
+    <span class="nav-label" id="nl-gallery">打卡</span>
+  </button>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const COLORS = [
+  {bg:"#4a7c59",light:"#f0f7f2",text:"#4a7c59"},
+  {bg:"#c27d38",light:"#fdf5ed",text:"#c27d38"},
+  {bg:"#5b7fa6",light:"#f0f4f9",text:"#5b7fa6"},
+  {bg:"#8c5e8c",light:"#f7f0f7",text:"#8c5e8c"},
+  {bg:"#b85c5c",light:"#fdf2f2",text:"#b85c5c"},
+];
+
+const DAYS = [
+  {
+    day:"周一",
+    breakfast:{emoji:"🥛",name:"希腊酸奶碗",desc:"希腊酸奶 150g + Granola 30g + 草莓"},
+    lunch:{emoji:"🎒",name:"烤红薯 + 三文鱼",desc:"烤红薯块 + 早上现煎三文鱼 + 按摩kale + cherry tomatoes + 油醋汁"},
+    dinner:{emoji:"🍤",name:"蒜蓉黄油虾",desc:"蒜蓉黄油虾 + 炒菠菜 + 烤cherry tomatoes + 烤紫薯半个"},
+    prep:"今晚备：煮farro、烤红椒、煮溏心蛋2个"
+  },
+  {
+    day:"周二",
+    breakfast:{emoji:"🌾",name:"隔夜燕麦",desc:"燕麦片 50g + 牛奶 + 杏仁黄油 + 蜂蜜 + 蓝莓（前晚备好）"},
+    lunch:{emoji:"🎒",name:"Farro + 溏心蛋",desc:"Farro + 溏心蛋2个 + 烤红椒 + kale + 油醋汁 + 葵花籽"},
+    dinner:{emoji:"🐟",name:"柠檬黄油煎Cod",desc:"柠檬黄油煎Cod + 炒西葫芦 + 烤红薯 + capers"},
+    prep:"今晚备：煮钢切燕麦、虾解冻、蒸紫薯"
+  },
+  {
+    day:"周三",
+    breakfast:{emoji:"🥛",name:"希腊酸奶碗",desc:"希腊酸奶 150g + Granola 30g + 树莓"},
+    lunch:{emoji:"🎒",name:"咸口燕麦 + 虾仁",desc:"钢切燕麦（咸口）+ 早上现炒虾仁 + 黄瓜丁 + cherry tomatoes + 橄榄油柠檬汁"},
+    dinner:{emoji:"🍣",name:"烤三文鱼",desc:"烤三文鱼（200°C 12分钟）+ 烤芦笋 + 紫薯泥 + 莳萝+柠檬汁"},
+    prep:"今晚备：腌鸡腿肉（过夜）、煮farro、备红薯块"
+  },
+  {
+    day:"周四",
+    breakfast:{emoji:"🌾",name:"隔夜燕麦",desc:"燕麦片 50g + 牛奶 + 杏仁黄油 + 蜂蜜 + 苹果（前晚备好）"},
+    lunch:{emoji:"🎒",name:"Farro + 鸡腿肉",desc:"Farro + 早上现煎鸡腿肉切片 + kale + 黄瓜 + 油醋汁 + 葵花籽"},
+    dinner:{emoji:"🍅",name:"番茄橄榄炖Cod",desc:"番茄橄榄炖Cod + 炒菠菜 + 烤红薯块"},
+    prep:"今晚备：烤紫薯块、三文鱼解冻"
+  },
+  {
+    day:"周五",
+    breakfast:{emoji:"🥛",name:"希腊酸奶碗",desc:"希腊酸奶 150g + Granola 30g + 蓝莓+树莓"},
+    lunch:{emoji:"🎒",name:"烤紫薯 + 三文鱼",desc:"烤紫薯块 + 早上现煎三文鱼 + kale + cherry tomatoes + 油醋汁"},
+    dinner:{emoji:"🎉",name:"辣椒蒜香虾",desc:"辣椒蒜香虾 + farro + 芝麻菜沙拉 + 大蒜+辣椒碎+柠檬汁"},
+    prep:null
+  }
+];
+
+const SHOPPING = {
+  "🐟 Seafood Counter":["三文鱼 salmon fillet × 3块（约170g/块）","Cod fillet × 2块（约150g/块）","虾 shrimp peeled × 400g"],
+  "🍗 Meat":["鸡腿肉 boneless skinless chicken thighs × 2块","鸡蛋 × 6个"],
+  "🥛 Dairy":["希腊酸奶 Fage 0% 大桶","黄油 unsalted butter","全脂牛奶或oat milk","鹰嘴豆泥 hummus × 1盒（熟食区）"],
+  "🌾 Bulk Section":["Farro","钢切燕麦 steel-cut oats","燕麦片 rolled oats（隔夜燕麦用）","葵花籽 sunflower seeds","混合坚果 mixed nuts"],
+  "🥦 蔬菜":["Kale × 1大把","Baby spinach 菠菜 × 1袋","Arugula 芝麻菜 × 1袋","Cherry tomatoes × 2盒","西葫芦 zucchini × 2根","芦笋 asparagus × 1把","红椒 red bell pepper × 2个","黄瓜 cucumber × 2根","大蒜 garlic × 1头","柠檬 lemon × 5个","新鲜欧芹 parsley + 莳萝 dill","新鲜百里香 thyme"],
+  "🍠 薯类":["红薯 sweet potato × 4个","紫薯 purple sweet potato × 4个"],
+  "🍑 水果（加餐）":["草莓 strawberries × 1盒","蓝莓 blueberries × 2盒","树莓 raspberries × 2盒","苹果 apple × 2个","血橙 blood orange × 2个"],
+  "🫙 Pantry补货":["特级初榨橄榄油 EVOO","Capers（小瓶）","Kalamata 橄榄","第戎芥末 Dijon mustard","苹果醋 apple cider vinegar","干辣椒碎 red chili flakes","杏仁黄油 almond butter","蜂蜜 honey","85% 黑巧克力","伯爵茶/阿萨姆茶包"]
+};
+
+// State
+let currentTab = 'today';
+let checked = {};
+let checkins = {};
+const START = new Date('2026-04-06');
+
+function getWeekNum() {
+  const diff = new Date() - START;
+  if (diff < 0) return 1;
+  return Math.floor(diff / (7*24*60*60*1000)) + 1;
+}
+
+function getTodayIdx() {
+  const d = new Date().getDay();
+  if (d === 0 || d === 6) return -1;
+  return d - 1;
+}
+
+const weekNum = getWeekNum();
+const todayIdx = getTodayIdx();
+
+function load() {
+  try { checked = JSON.parse(localStorage.getItem('shop_w'+weekNum) || '{}'); } catch{}
+  try { checkins = JSON.parse(localStorage.getItem('checkins_w'+weekNum) || '{}'); } catch{}
+}
+
+function saveShop() { try { localStorage.setItem('shop_w'+weekNum, JSON.stringify(checked)); } catch{} }
+function saveCheckins() { try { localStorage.setItem('checkins_w'+weekNum, JSON.stringify(checkins)); } catch{} }
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 2200);
+}
+
+function switchTab(tab) {
+  document.getElementById('tab-'+currentTab).classList.remove('active');
+  ['today','week','shop','gallery'].forEach(t => {
+    const nl = document.getElementById('nl-'+t);
+    const nd = document.getElementById('nd-'+t);
+    nl.classList.remove('active');
+    if (nd) nd.remove();
+  });
+  currentTab = tab;
+  document.getElementById('tab-'+tab).classList.add('active');
+  const nl = document.getElementById('nl-'+tab);
+  nl.classList.add('active');
+  const btn = nl.closest('.nav-btn');
+  const dot = document.createElement('div');
+  dot.className = 'nav-dot';
+  dot.id = 'nd-'+tab;
+  btn.appendChild(dot);
+  render();
+}
+
+function mealCard(dayIdx, mealKey, meal, color) {
+  const ck = dayIdx+'_'+mealKey;
+  const ci = checkins[ck];
+  const labels = {breakfast:'早餐',lunch:'午餐',dinner:'晚餐'};
+  let checkinHtml = '';
+  if (ci) {
+    checkinHtml = `
+      <img class="checkin-img" src="${ci.photo}" alt="打卡">
+      <div class="checkin-time">${ci.time}</div>
+      <button class="recheckin-btn" onclick="triggerUpload(${dayIdx},'${mealKey}')">重新拍照</button>`;
+  } else {
+    checkinHtml = `<button class="checkin-btn" style="border-color:${color.bg};color:${color.text};" onclick="triggerUpload(${dayIdx},'${mealKey}')">📷 拍照打卡</button>`;
+  }
+  return `
+    <div class="card">
+      <div class="card-head" style="background:${color.light}">
+        <div class="card-head-left">
+          <span class="meal-emoji">${meal.emoji}</span>
+          <div>
+            <div class="meal-tag" style="color:${color.text}">${labels[mealKey]}</div>
+            <div class="meal-name">${meal.name}</div>
+          </div>
+        </div>
+        ${ci ? '<span style="font-size:22px">✅</span>' : ''}
+      </div>
+      <div class="card-body">
+        <div class="meal-desc">${meal.desc}</div>
+        ${checkinHtml}
+        <input type="file" accept="image/*" capture="environment" style="display:none" id="file-${dayIdx}-${mealKey}" onchange="handleFile(event,${dayIdx},'${mealKey}')">
+      </div>
+    </div>`;
+}
+
+function triggerUpload(dayIdx, mealKey) {
+  document.getElementById('file-'+dayIdx+'-'+mealKey).click();
+}
+
+function handleFile(e, dayIdx, mealKey) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const ck = dayIdx+'_'+mealKey;
+    checkins[ck] = {photo: ev.target.result, time: new Date().toLocaleString('zh-CN')};
+    saveCheckins();
+    showToast('打卡成功 🎉');
+    render();
+  };
+  reader.readAsDataURL(file);
+  e.target.value = '';
+}
+
+function renderToday() {
+  const el = document.getElementById('tab-today');
+  if (todayIdx < 0) {
+    el.innerHTML = `<div class="weekend"><div class="weekend-icon">🌿</div><div class="weekend-title">今天是周末</div><div class="weekend-text">好好休息！<br>记得提前备好下周的食材 😊</div></div>`;
+    return;
+  }
+  const day = DAYS[todayIdx];
+  const c = COLORS[todayIdx];
+  const done = ['breakfast','lunch','dinner'].filter(m => checkins[todayIdx+'_'+m]).length;
+  let html = `
+    <div class="day-header" style="background:${c.light}">
+      <div class="day-num" style="background:${c.bg}">${todayIdx+1}</div>
+      <div>
+        <div class="day-name">${day.day} · 今日计划</div>
+        <div class="day-sub">${done}/3 餐已打卡</div>
+      </div>
+    </div>
+    ${mealCard(todayIdx,'breakfast',day.breakfast,c)}
+    ${mealCard(todayIdx,'lunch',day.lunch,c)}
+    ${mealCard(todayIdx,'dinner',day.dinner,c)}`;
+  if (day.prep) {
+    html += `<div class="prep-box"><div class="prep-label">📝 今晚顺手准备</div><div class="prep-text">${day.prep}</div></div>`;
+  }
+  el.innerHTML = html;
+}
+
+function renderWeek() {
+  const el = document.getElementById('tab-week');
+  let html = '';
+  DAYS.forEach((day, i) => {
+    const c = COLORS[i];
+    const done = ['breakfast','lunch','dinner'].filter(m => checkins[i+'_'+m]).length;
+    const dots = ['breakfast','lunch','dinner'].map(m =>
+      `<div class="week-dot" style="background:${checkins[i+'_'+m] ? c.bg : '#e0d8cc'}"></div>`).join('');
+    html += `
+      <div class="week-card">
+        <div class="week-head" style="background:${c.light}" onclick="toggleWeekDay(${i})">
+          <div style="display:flex;align-items:center;gap:14px">
+            <div class="week-num" style="background:${c.bg}">${i+1}</div>
+            <div>
+              <div style="font-size:17px;font-weight:700;color:#2c2416">${day.day}</div>
+              <div style="font-size:13px;color:${c.text};font-weight:600;margin-top:2px">打卡 ${done}/3</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <div class="week-dots">${dots}</div>
+            <span style="color:#9a8a72;font-size:16px" id="arrow-${i}">▼</span>
+          </div>
+        </div>
+        <div class="week-body" id="week-body-${i}" style="display:none">
+          ${mealCard(i,'breakfast',day.breakfast,c)}
+          ${mealCard(i,'lunch',day.lunch,c)}
+          ${mealCard(i,'dinner',day.dinner,c)}
+          ${day.prep ? `<div style="background:#f7f4ee;border-radius:12px;padding:14px 16px;font-size:14px;color:#7a6a52;line-height:1.7">📝 ${day.prep}</div>` : ''}
+        </div>
+      </div>`;
+  });
+  el.innerHTML = html;
+}
+
+function toggleWeekDay(i) {
+  const body = document.getElementById('week-body-'+i);
+  const arrow = document.getElementById('arrow-'+i);
+  if (body.style.display === 'none') {
+    body.style.display = 'block';
+    arrow.textContent = '▲';
+  } else {
+    body.style.display = 'none';
+    arrow.textContent = '▼';
+  }
+}
+
+function renderShop() {
+  const el = document.getElementById('tab-shop');
+  const allItems = Object.values(SHOPPING).flat();
+  const total = allItems.length;
+  const done = allItems.filter(item => checked[item]).length;
+  const pct = total ? Math.round((done/total)*100) : 0;
+  let html = `
+    <div class="shop-progress">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <div style="font-size:17px;font-weight:700;color:#2c2416">Whole Foods 采购清单</div>
+        <div style="font-size:16px;color:#4a7c59;font-weight:700">${done}/${total}</div>
+      </div>
+      <div class="shop-progress-bar"><div class="shop-progress-fill" style="width:${pct}%"></div></div>
+      ${done===total && total>0 ? '<div style="margin-top:10px;text-align:center;font-size:15px;color:#4a7c59;font-weight:700">全部买齐了！🎉</div>' : ''}
+    </div>`;
+  Object.entries(SHOPPING).forEach(([cat, items]) => {
+    const catDone = items.filter(item => checked[item]).length;
+    html += `<div class="shop-cat"><div class="shop-cat-head"><div class="shop-cat-name">${cat}</div><div class="shop-cat-count" style="color:${catDone===items.length?'#4a7c59':'#9a8a72'}">${catDone}/${items.length}</div></div>`;
+    items.forEach(item => {
+      const ck = checked[item];
+      html += `<div class="shop-item ${ck?'done':''}" onclick="toggleItem('${item.replace(/'/g,"\\'")}')">
+        <div class="shop-check ${ck?'checked':''}"><span class="shop-check-icon">✓</span></div>
+        <span class="shop-item-text">${item}</span>
+      </div>`;
+    });
+    html += '</div>';
+  });
+  html += `<button class="reset-btn" onclick="resetShop()">🔄 重置清单（下周采购前点这里）</button>`;
+  el.innerHTML = html;
+}
+
+function toggleItem(item) {
+  checked[item] = !checked[item];
+  saveShop();
+  renderShop();
+}
+
+function resetShop() {
+  checked = {};
+  saveShop();
+  showToast('购物清单已重置 ✓');
+  renderShop();
+}
+
+function renderGallery() {
+  const el = document.getElementById('tab-gallery');
+  const mealLabels = {breakfast:'早餐',lunch:'午餐',dinner:'晚餐'};
+  const all = [];
+  DAYS.forEach((day, i) => {
+    ['breakfast','lunch','dinner'].forEach(m => {
+      const ck = i+'_'+m;
+      if (checkins[ck]) all.push({day:day.day, meal:mealLabels[m], dayIdx:i, ...checkins[ck]});
+    });
+  });
+  const total = DAYS.length * 3;
+  const pct = total ? Math.round((all.length/total)*100) : 0;
+  let html = `
+    <div class="gallery-header">
+      <div style="font-size:48px;margin-bottom:10px">${all.length===0?'📸':'🌟'}</div>
+      <div class="gallery-count">${all.length} <span style="font-size:16px;font-weight:400;color:#7a6a52">/ ${total} 餐</span></div>
+      <div class="gallery-sub">本周打卡记录</div>
+      ${all.length>0?`<div class="gallery-bar"><div class="gallery-bar-fill" style="width:${pct}%"></div></div>`:''}
+    </div>`;
+  if (all.length === 0) {
+    html += `<div class="empty"><div class="empty-icon">🍽️</div><div class="empty-text">还没有打卡记录<br>去「今日」拍照打卡吧！</div></div>`;
+  } else {
+    html += '<div class="gallery-grid">';
+    all.forEach(c => {
+      const col = COLORS[c.dayIdx];
+      html += `<div class="gallery-item">
+        <img src="${c.photo}" alt="">
+        <div class="gallery-item-info" style="background:${col.light}">
+          <div class="gallery-item-name" style="color:${col.text}">${c.day} · ${c.meal}</div>
+          <div class="gallery-item-time">${c.time}</div>
+        </div>
+      </div>`;
+    });
+    html += '</div>';
+  }
+  el.innerHTML = html;
+}
+
+function render() {
+  document.getElementById('week-label').textContent = '第'+weekNum+'周';
+  renderToday();
+  renderWeek();
+  renderShop();
+  renderGallery();
+}
+
+load();
+render();
+</script>
+
+</body>
+</html>
