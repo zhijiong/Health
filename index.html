@@ -8,9 +8,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Meal Plan">
 <title>Meal Plan</title>
-<link rel="icon" type="image/png" href="/icon.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/icon.png">
-<link rel="manifest" href="/manifest.json">
+<link rel="icon" type="image/png" href="icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icon.png">
+<link rel="manifest" href="manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#f5f2eb;--card:#fffffe;--border:#e4ded2;--blt:#eee9de;--text:#302d26;--sub:#615a4b;--muted:#9e9584;--faint:#c5bdb0;--acc:#687a58;--acc-lt:#ecf1e8;--acc-dk:#556948;--warm:#b8935a;--warm-lt:#faf3e8;--serif:'Newsreader',Georgia,serif;--sans:'DM Sans',-apple-system,sans-serif;--r:18px}
@@ -81,6 +81,11 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;o
 .mc-ck{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;flex-shrink:0;margin-top:4px}
 .mc-body{padding:12px 20px 20px}
 .mc-desc{font-size:13.5px;color:var(--sub);line-height:1.85;margin-bottom:16px}
+.mc-list{list-style:none;margin-bottom:16px;display:flex;flex-direction:column;gap:2px}
+.mc-list li{font-size:13.5px;color:var(--sub);line-height:1.55;padding:6px 0 6px 0;display:flex;align-items:baseline;gap:9px;border-bottom:1px solid #f7f3ec}
+.mc-list li:last-child{border-bottom:none}
+.mc-list li .mc-li-icon{font-size:13px;flex-shrink:0;width:18px;text-align:center}
+.mc-list li .mc-li-text{flex:1}
 .mc-btn{width:100%;padding:14px;border:1.5px dashed var(--border);border-radius:14px;font-size:13px;font-weight:600;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:8px;transition:all .15s}
 .mc-btn:active{transform:scale(.97);background:var(--bg)}
 .mc-img-w{border-radius:14px;overflow:hidden;border:1px solid var(--blt)}
@@ -117,14 +122,18 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;o
 .sh-gh{padding:14px 20px 12px;border-bottom:1px solid var(--blt);display:flex;justify-content:space-between;align-items:center}
 .sh-gn{font-size:14px;font-weight:700;color:var(--text)}
 .sh-gc{font-size:11px;font-weight:600}
-.sh-r{padding:13px 20px;display:flex;align-items:center;gap:14px;border-bottom:1px solid #f5f1e8;cursor:pointer;transition:background .12s}
+.sh-r{padding:12px 18px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #f5f1e8;cursor:pointer;transition:background .12s}
 .sh-r:last-child{border-bottom:none}
 .sh-r:active{background:#f0ece2}
 .sh-r.dn{background:#f8faf6}
 .sh-c{width:22px;height:22px;border-radius:7px;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;font-size:12px;font-weight:700;color:transparent}
 .sh-c.on{background:var(--acc);border-color:var(--acc);color:#fff}
-.sh-tx{font-size:13px;color:var(--sub);line-height:1.55}
-.sh-r.dn .sh-tx{color:var(--faint);text-decoration:line-through}
+.sh-ic{font-size:15px;flex-shrink:0;width:20px;text-align:center}
+.sh-tx{flex:1;font-size:13px;color:var(--sub);line-height:1.5}
+.sh-tx .sh-item{font-weight:600;color:var(--text)}
+.sh-tx .sh-note{font-size:11.5px;color:var(--muted);margin-top:1px;display:block}
+.sh-r.dn .sh-tx .sh-item{color:var(--faint);text-decoration:line-through;font-weight:500}
+.sh-r.dn .sh-tx .sh-note{color:var(--faint);text-decoration:line-through}
 .sh-rst{width:100%;padding:15px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);font-size:13px;font-weight:600;color:var(--sub);margin:6px 0 10px}
 .sh-rst:active{background:var(--bg);transform:scale(.98)}
 
@@ -165,7 +174,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;o
 </head>
 <body>
 <div class="picker" id="picker">
-  <div class="pk-logo"><img src="/icon.png" alt=""></div>
+  <div class="pk-logo"><img src="icon.png" alt=""></div>
   <div class="pk-t">Meal Plan</div>
   <div class="pk-s">Who's cooking today?</div>
   <div class="pk-cards">
@@ -184,7 +193,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;o
 
 <div id="app" style="display:none">
   <div class="hdr"><div class="hdr-row">
-    <div class="hdr-logo"><img src="/icon.png" alt=""></div>
+    <div class="hdr-logo"><img src="icon.png" alt=""></div>
     <div><div class="hdr-tag">Mediterranean · <span id="wk-lb"></span></div><div class="hdr-title">Meal Plan</div></div>
     <button class="hdr-user" onclick="logout()" id="hdr-user"></button>
   </div></div>
@@ -214,6 +223,15 @@ const DAYS=[
 const SHOP={"🐟 Seafood":["Salmon fillet × 3 (Mon lunch, Wed dinner, Fri lunch)","Shrimp peeled × 250g (Mon dinner ~150g, Wed lunch ~80g)"],"🍗 Meat & Eggs":["Boneless chicken thigh × 1 (Thu lunch)","Eggs × 4 (2 soft-boiled + 1 for Tue soup + 1 spare)"],"🥛 Dairy & Spreads":["Green Valley low-fat lactose-free yogurt (large tub, daily breakfast)","Unsalted butter (Mon dinner shrimp)","Soy milk (Wed steel-cut oats)","Pistachio butter (daily breakfast)","Black sesame paste (Wed steel-cut oats)","Burrata × 1 (Fri pasta)"],"🌾 Grains & Seeds":["Farro (cook 2 batches: Mon/Tue, Wed/Thu)","Steel-cut oats (Wed lunch)","Pasta × 1 box (Fri dinner)","Granola ingredients or unsweetened (daily breakfast)","Sunflower seeds (Tue & Thu lunch)","Fermented rice / jiǔ niàng (Wed oats)"],"🥦 Vegetables":["Kale × 1 large bunch (Mon/Tue/Thu/Fri lunch)","Baby spinach × 1 bag (Mon dinner, Thu soup)","Cherry tomatoes × 2 boxes (Mon/Wed/Fri lunch)","Asparagus × 1 bunch (Wed dinner)","Red bell pepper × 2 (Mon dinner, Tue lunch)","Cucumber × 2 (Wed & Thu lunch)","Zucchini × 1 (Fri pasta)","Tomato × 2 (Tue soup)","Mushrooms × 1 box (Thu soup)","Silken tofu × 2 (Tue & Thu soup)","Scallions × 1 bunch (Tue & Thu soup)","Garlic × 1 head","Lemon × 2 (Wed lunch/dinner, Fri pasta)","Fresh basil × 1 small bunch (Fri pasta)"],"🍠 Potatoes":["Sweet potato × 2 (Mon lunch, Tue dinner)","Purple sweet potato × 1 large (Thu dinner + Fri lunch)"],"🍑 Fruit & Drinks":["Seasonal fruit (daily snack)","Earl Grey / Assam tea bags (homemade milk tea)","85% dark chocolate (daily breakfast)"],"🫙 Pantry":["Extra virgin olive oil","Sesame oil (Thu soup)","Balsamic vinegar (vinaigrette)"]};
 
 const MK=['b','l','dn'],ML={b:'Breakfast',l:'Lunch',dn:'Dinner'},MI={b:'☀️',l:'🍱',dn:'🌙'};
+
+// Ingredient emoji mapping
+const EM={yogurt:'🥛',granola:'🥣',chocolate:'🍫',pistachio:'🥜',salmon:'🐟',kale:'🥬',tomato:'🍅','sweet potato':'🍠',shrimp:'🦐',farro:'🌾',egg:'🥚',chicken:'🍗',asparagus:'🌿',tofu:'🧊',mushroom:'🍄',spinach:'🥬',pasta:'🍝',zucchini:'🥒',basil:'🌿',garlic:'🧄',lemon:'🍋',olive:'🫒',cucumber:'🥒',pepper:'🫑',butter:'🧈',oat:'🥣',sesame:'⚫',scallion:'🧅',vinaigrette:'🫙','soy milk':'🥛',fermented:'🫙',burrata:'🧀',sunflower:'🌻',cherry:'🍅','red pepper':'🫑','purple':'🍠',steamed:'♨️'};
+function eFor(s){const sl=s.toLowerCase();for(const[k,v]of Object.entries(EM)){if(sl.includes(k))return v}return '·'}
+function cap(s){return s.charAt(0).toUpperCase()+s.slice(1).trim()}
+
+// Shopping item emoji mapping
+const SEM={salmon:'🐟',shrimp:'🦐',chicken:'🍗',egg:'🥚',yogurt:'🥛',butter:'🧈','soy milk':'🥛',pistachio:'🥜',sesame:'⚫',burrata:'🧀',farro:'🌾',oat:'🥣',pasta:'🍝',granola:'🥣',sunflower:'🌻',fermented:'🫙',kale:'🥬',spinach:'🥬',tomato:'🍅',asparagus:'🌿',pepper:'🫑',cucumber:'🥒',zucchini:'🥒',mushroom:'🍄',tofu:'🧊',scallion:'🧅',garlic:'🧄',lemon:'🍋',basil:'🌿','sweet potato':'🍠','purple':'🍠',fruit:'🍎',tea:'🍵',chocolate:'🍫',olive:'🫒','sesame oil':'🫙',vinegar:'🫙'};
+function sFor(s){const sl=s.toLowerCase();for(const[k,v]of Object.entries(SEM)){if(sl.includes(k))return v}return '•'}
 const START=new Date('2026-04-06');
 const wk=(()=>{const d=new Date()-START;return d<0?1:Math.floor(d/6048e5)+1})();
 const tdi=(()=>{const d=new Date().getDay();return d>=1&&d<=5?d-1:-1})();
@@ -250,7 +268,9 @@ function mcH(di,mk,meal,c,cls,edit){
     else if(has)photo=`<div style="font-size:12px;color:var(--acc);font-weight:600">✓ Done</div>`;
     else photo=`<div style="font-size:12px;color:var(--faint);font-family:var(--serif);font-style:italic">Pending</div>`;
   }
-  return`<div class="mc up ${cls}"><div class="mc-top"><div class="mc-icon" style="background:${c.lt}">${meal.e}</div><div class="mc-info"><div class="mc-tag" style="color:${c.tx}"><div class="mc-tag-dot" style="background:${c.bg}"></div>${MI[mk]} ${ML[mk]}</div><div class="mc-name">${meal.n}</div></div>${has?`<div class="mc-ck" style="background:${c.gd}">✓</div>`:''}</div><div class="mc-body"><div class="mc-desc">${meal.d}</div>${photo}</div></div>`}
+  const items=meal.d.split(' + ').map(s=>s.trim());
+  const descH='<ul class="mc-list">'+items.map(s=>'<li><span class="mc-li-icon">'+eFor(s)+'</span><span class="mc-li-text">'+cap(s)+'</span></li>').join('')+'</ul>';
+  return`<div class="mc up ${cls}"><div class="mc-top"><div class="mc-icon" style="background:${c.lt}">${meal.e}</div><div class="mc-info"><div class="mc-tag" style="color:${c.tx}"><div class="mc-tag-dot" style="background:${c.bg}"></div>${MI[mk]} ${ML[mk]}</div><div class="mc-name">${meal.n}</div></div>${has?`<div class="mc-ck" style="background:${c.gd}">✓</div>`:''}</div><div class="mc-body">${descH}${photo}</div></div>`}
 
 function r0(){const el=document.getElementById('t0');
   if(tdi<0){el.innerHTML=`<div class="wknd up"><div class="wknd-ic">🌿</div><div class="wknd-t">It's the Weekend</div><div class="wknd-s">Rest up! Don't forget to prep<br>ingredients for next week 😊</div></div>`;return}
@@ -271,14 +291,19 @@ function r1(){const el=document.getElementById('t1');let h='<div class="wk-bar u
     if(d.p)h+=`<div class="prep sm up d4"><div class="prep-ic">📝</div><div><div class="prep-lb">Prep</div><div class="prep-tx">${d.p}</div></div></div>`;h+='</div>'});
   if(!any)h+=`<div style="text-align:center;padding:40px 20px" class="up d1"><div style="font-size:36px;margin-bottom:8px;opacity:.5">👆</div><div style="font-size:14px;color:var(--muted);font-family:var(--serif);font-style:italic">Tap a day to see meals</div></div>`;
   el.innerHTML=h}
-function togD(i){od[i]=!od[i];r1()}
+function togD(i){const was=od[i];od={};if(!was)od[i]=true;r1()}
 
 function r2(){const el=document.getElementById('t2');
   const all=Object.values(SHOP).flat(),tot=all.length,done=all.filter(i=>mySC[i]).length,pct=tot?Math.round(done/tot*100):0;
   let h=`<div class="sh-hero up"><div><div class="sh-t">Whole Foods</div><div class="sh-s">Shopping List · ${done} / ${tot}</div></div><div class="ring">${ring(done/tot,60,4,pct===100?'#687a58':'#c09858')}<div class="ring-n" style="font-size:13px;color:var(--text)">${pct}%</div></div></div><div class="sh-bar up d1"><div class="sh-bf" style="width:${pct}%"></div></div>`;
   let ci2=0;Object.entries(SHOP).forEach(([cat,items])=>{const cd=items.filter(i=>mySC[i]).length;
     h+=`<div class="sh-g up d${Math.min(ci2+2,5)}"><div class="sh-gh"><div class="sh-gn">${cat}</div><div class="sh-gc" style="color:${cd===items.length?'var(--acc)':'var(--muted)'}">${cd}/${items.length}</div></div>`;
-    items.forEach(item=>{const ck=!!mySC[item],esc=item.replace(/'/g,"\\'");h+=`<div class="sh-r${ck?' dn':''}" onclick="togS('${esc}')"><div class="sh-c${ck?' on':''}">${ck?'✓':''}</div><span class="sh-tx">${item}</span></div>`});h+='</div>';ci2++});
+    items.forEach(item=>{const ck=!!mySC[item],esc=item.replace(/'/g,"\\'");
+      const pm=item.match(/^([^(]+?)(\s*\((.+)\))?$/);
+      const iname=pm?cap(pm[1].trim()):cap(item);
+      const inote=pm&&pm[3]?pm[3]:'';
+      const ico=sFor(item);
+      h+=`<div class="sh-r${ck?' dn':''}" onclick="togS('${esc}')"><div class="sh-c${ck?' on':''}">${ck?'✓':''}</div><span class="sh-ic">${ico}</span><div class="sh-tx"><span class="sh-item">${iname}</span>${inote?'<span class="sh-note">'+inote+'</span>':''}</div></div>`});h+='</div>';ci2++});
   h+=`<button class="sh-rst" onclick="rstS()">Reset List</button>`;el.innerHTML=h}
 function togS(i){mySC[i]=!mySC[i];svSC();r2();rNav()}
 function rstS(){mySC={};svSC();toast('List reset ✓');r2();rNav()}
