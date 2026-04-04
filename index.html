@@ -255,7 +255,8 @@ function mcH(di,mk,meal,c,cls,edit){
 function r0(){const el=document.getElementById('t0');
   if(tdi<0){el.innerHTML=`<div class="wknd up"><div class="wknd-ic">🌿</div><div class="wknd-t">It's the Weekend</div><div class="wknd-s">Rest up! Don't forget to prep<br>ingredients for next week 😊</div></div>`;return}
   const d=DAYS[tdi],c=C[tdi],done=MK.filter(m=>myCI[tdi+'_'+m]).length;
-  let h=`<div class="t-hero up"><div><div class="t-greet">${greet}, ${U[user].nm} ✦</div><div class="t-day">${d.day}</div><div class="t-sub">${done===3?'✓ All meals checked in':'${3-done} meal${3-done>1?'s':''} left to check in'.replace('${3-done}',3-done)}</div></div><div class="ring">${ring(done/3,72,4.5,c.bg)}<div class="ring-n" style="color:${c.tx};font-size:16px">${done}/3</div></div></div>`;
+  const left=3-done,sub=done===3?'✓ All meals checked in':left+' meal'+(left>1?'s':'')+' left to check in';
+  let h=`<div class="t-hero up"><div><div class="t-greet">${greet}, ${U[user].nm} ✦</div><div class="t-day">${d.day}</div><div class="t-sub">${sub}</div></div><div class="ring">${ring(done/3,72,4.5,c.bg)}<div class="ring-n" style="color:${c.tx};font-size:16px">${done}/3</div></div></div>`;
   MK.forEach((mk,i)=>h+=mcH(tdi,mk,d[mk],c,'d'+(i+1),true));
   if(d.p)h+=`<div class="prep up d4"><div class="prep-ic">📝</div><div><div class="prep-lb">Evening Prep</div><div class="prep-tx">${d.p}</div></div></div>`;
   el.innerHTML=h}
