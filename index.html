@@ -246,20 +246,20 @@ function svSC(){try{localStorage.setItem(K(user,'sc'),JSON.stringify(mySC))}catc
 // ── Cloud Sync (direct to Upstash) ──
 const _R='https://vital-aardvark-93781.upstash.io';
 const _T='gQAAAAAAAW5VAAIncDJiZjhkYjI0MzcxZTk0OWZhYjg3YmUyNzc0YzRkODA1OXAyOTM3ODE';
-const _H={'Authorization':'Bearer '+_T,'Content-Type':'application/json'};
 let _syncT=null;
 function cloudSave(){
   clearTimeout(_syncT);
   _syncT=setTimeout(()=>{
     var val=JSON.stringify({ci:myCI,spct:getSP(mySC)});
-    fetch(_R,{method:'POST',headers:_H,
+    fetch(_R+'?_token='+_T,{method:'POST',
+      headers:{'Content-Type':'application/json'},
       body:JSON.stringify(['SET','mp_'+user+'_w'+wk,val,'EX','1209600'])
     }).then(()=>{}).catch(()=>{});
   },800);
 }
 async function cloudLoadFriend(){
   try{
-    var r=await fetch(_R+'/get/mp_'+fr()+'_w'+wk,{headers:{'Authorization':'Bearer '+_T}});
+    var r=await fetch(_R+'/get/mp_'+fr()+'_w'+wk+'?_token='+_T);
     var d=await r.json();
     if(d.result){
       var parsed=JSON.parse(d.result);

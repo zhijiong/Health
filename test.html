@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sync Test</title>
+<style>body{font-family:monospace;padding:20px;max-width:600px;margin:0 auto;background:#1a1a1a;color:#eee;font-size:14px;line-height:1.8}
+.ok{color:#6f6}.err{color:#f66}.warn{color:#fc6}button{font-size:16px;padding:12px 24px;margin:10px 4px;border:none;border-radius:8px;background:#4a7c59;color:#fff;font-weight:700}
+pre{background:#111;padding:12px;border-radius:8px;overflow-x:auto;font-size:12px;margin:8px 0}</style>
+</head>
+<body>
+<h2>Sync Test</h2>
+<div id="log"></div>
+<button onclick="runTest()">Run Test</button>
+<button onclick="readUser('joey')">Read Joey</button>
+<button onclick="readUser('becky')">Read Becky</button>
+<script>
+var R='https://vital-aardvark-93781.upstash.io';
+var T='gQAAAAAAAW5VAAIncDJiZjhkYjI0MzcxZTk0OWZhYjg3YmUyNzc0YzRkODA1OXAyOTM3ODE';
+var log=document.getElementById('log');
+function w(m,c){log.innerHTML+='<div class="'+(c||'')+'">'+m+'</div>'}
+async function runTest(){
+  log.innerHTML='';
+  w('Writing...');
+  try{
+    var r=await fetch(R+'?_token='+T,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(['SET','test_ping','works','EX','60'])});
+    var d=await r.json();
+    w('Write: <pre>'+JSON.stringify(d)+'</pre>',d.result==='OK'?'ok':'err');
+  }catch(e){w('Write FAILED: '+e.message,'err')}
+  w('Reading...');
+  try{
+    var r2=await fetch(R+'/get/test_ping?_token='+T);
+    var d2=await r2.json();
+    w('Read: <pre>'+JSON.stringify(d2)+'</pre>',d2.result==='works'?'ok':'err');
+  }catch(e){w('Read FAILED: '+e.message,'err')}
+  w('Done!','warn');
+}
+async function readUser(u){
+  log.innerHTML='';
+  w('Reading '+u+' week 1...');
+  try{
+    var r=await fetch(R+'/get/mp_'+u+'_w1?_token='+T);
+    var d=await r.json();
+    if(d.result){
+      var p=JSON.parse(d.result);
+      var keys=p.ci?Object.keys(p.ci):[];
+      var photos=keys.filter(function(k){return p.ci[k]&&p.ci[k].photo}).length;
+      w('Found! '+keys.length+' entries, '+photos+' with photos','ok');
+      w('Shop: '+(p.spct||0)+'%');
+    }else{w('No data yet for '+u,'warn');w('Raw: <pre>'+JSON.stringify(d)+'</pre>')}
+  }catch(e){w('FAILED: '+e.message,'err')}
+}
+</script>
+</body>
+</html>
