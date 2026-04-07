@@ -327,9 +327,13 @@ function r3(){const el=document.getElementById('t3');
     DAYS.forEach((d,i)=>{const c=C[i];const fd=MK.filter(m=>fCI[i+'_'+m]).length;if(!fd)return;
       h+=`<div style="font-family:var(--serif);font-size:15px;font-weight:600;color:${c.tx};margin:14px 0 8px;display:flex;align-items:center;gap:8px"><div style="width:8px;height:8px;border-radius:50%;background:${c.bg}"></div>${d.day}</div>`;
       MK.forEach(mk=>{const has=fCI[i+'_'+mk],meal=d[mk];if(!has)return;
-        h+=`<div class="fr-ro"><div class="fr-ro-h"><div class="fr-ro-ic" style="background:${c.lt}">${meal.e}</div><div><div class="fr-ro-tag" style="color:${c.tx}">${MI[mk]} ${ML[mk]}</div><div class="fr-ro-nm">${meal.n}</div></div><div class="fr-ro-ck">✓</div></div></div>`})});
+        h+=`<div class="fr-ro"><div class="fr-ro-h"><div class="fr-ro-ic" style="background:${c.lt}">${meal.e}</div><div><div class="fr-ro-tag" style="color:${c.tx}">${MI[mk]} ${ML[mk]}</div><div class="fr-ro-nm">${meal.n}</div></div><div class="fr-ro-ck">✓</div></div>${has.photo?'<div style="margin-top:10px"><img src="'+has.photo+'" style="width:100%;max-height:180px;object-fit:cover;border-radius:12px;border:1px solid var(--blt)"></div>':''}</div>`})});
   }else{
     h+=`<div class="fr-empty up d2"><div class="fr-empty-ic">👯</div><div class="fr-empty-tx">No updates from ${fu.nm} yet<br><br>Ask ${fu.nm} to open the app and tap<br>"Share progress" — then open the link they send you<br><br><span style="font-size:11px;color:var(--faint)">On the same device? ${fu.nm} can just<br>switch profiles by tapping the name badge</span></div></div>`}
+  // Friend's photos
+  const fAll=[];DAYS.forEach((d,i)=>MK.forEach(m=>{const k=i+'_'+m;if(fCI[k]&&fCI[k].photo)fAll.push({day:d.dn2,meal:ML[m],di:i,...fCI[k]})}));
+  if(fAll.length){h+=`<div class="gl-label up d4">📸 ${fu.nm}'s Check-ins</div><div class="gl-grid">`;fAll.forEach((c,i)=>{const col=C[c.di];h+=`<div class="gl-c" style="animation-delay:${i*40+200}ms"><img src="${c.photo}"><div class="gl-ci" style="background:${col.lt}"><div class="gl-cn" style="color:${col.tx}">${c.day} · ${c.meal}</div><div class="gl-ct2">${c.time}</div></div></div>`});h+='</div>'}
+  // My photos
   const all=[];DAYS.forEach((d,i)=>MK.forEach(m=>{const k=i+'_'+m;if(myCI[k]&&myCI[k].photo)all.push({day:d.dn2,meal:ML[m],di:i,...myCI[k]})}));
   if(all.length){h+=`<div class="gl-label up d4">📸 My Check-ins</div><div class="gl-grid">`;all.forEach((c,i)=>{const col=C[c.di];h+=`<div class="gl-c" style="animation-delay:${i*40+250}ms"><img src="${c.photo}"><div class="gl-ci" style="background:${col.lt}"><div class="gl-cn" style="color:${col.tx}">${c.day} · ${c.meal}</div><div class="gl-ct2">${c.time}</div></div></div>`});h+='</div>'}
   el.innerHTML=h}
@@ -341,8 +345,22 @@ function sw(t){document.getElementById('t'+tab).classList.remove('on');tab=t;doc
 function render(){document.getElementById('wk-lb').textContent='Week '+wk;document.getElementById('hdr-user').innerHTML=`<span class="hdr-user-av">${U[user].av}</span><span class="hdr-user-nm">${U[user].nm}</span>`;r0();r1();r2();r3();rNav()}
 function startApp(){document.getElementById('picker').classList.add('hide');document.getElementById('app').style.display='block';ld();checkSync();render()}
 checkSync();const sv=localStorage.getItem('mp_user');if(sv&&U[sv]){user=sv;startApp()}
-const inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.capture='environment';inp.style.display='none';inp.id='fup';
-inp.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{myCI[pDi+'_'+pMk]={photo:ev.target.result,time:new Date().toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})};svCI();toast('Checked in 🎉');render()};r.readAsDataURL(f);e.target.value=''};
+const inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.style.display='none';inp.id='fup';
+inp.onchange=e=>{const f=e.target.files[0];if(!f)return;
+  const img=new Image();const url=URL.createObjectURL(f);
+  img.onload=()=>{
+    const MAX=600;let w=img.width,h=img.height;
+    if(w>MAX||h>MAX){const s=MAX/Math.max(w,h);w=Math.round(w*s);h=Math.round(h*s)}
+    const cv=document.createElement('canvas');cv.width=w;cv.height=h;
+    const ctx=cv.getContext('2d');ctx.drawImage(img,0,0,w,h);
+    const compressed=cv.toDataURL('image/jpeg',0.6);
+    URL.revokeObjectURL(url);
+    myCI[pDi+'_'+pMk]={photo:compressed,time:new Date().toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})};
+    try{svCI();toast('Checked in 🎉')}catch(err){toast('Photo too large, try again');delete myCI[pDi+'_'+pMk]}
+    render();
+  };
+  img.src=url;e.target.value='';
+};
 document.body.appendChild(inp);
 </script>
 </body>
