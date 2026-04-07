@@ -240,8 +240,33 @@ const greet=(()=>{const h=new Date().getHours();return h<6?'Burning the midnight
 let user=null,tab=0,myCI={},mySC={},od={},fCI={},fSC={};
 function K(u,k){return u+'_'+k+'_w'+wk}
 function ld(){try{myCI=JSON.parse(localStorage.getItem(K(user,'ci'))||'{}')}catch{}try{mySC=JSON.parse(localStorage.getItem(K(user,'sc'))||'{}')}catch{}const f=fr();try{fCI=JSON.parse(localStorage.getItem(K(f,'ci'))||'{}')}catch{}try{fSC=JSON.parse(localStorage.getItem(K(f,'sc'))||'{}')}catch{}}
-function svCI(){try{localStorage.setItem(K(user,'ci'),JSON.stringify(myCI))}catch{}}
-function svSC(){try{localStorage.setItem(K(user,'sc'),JSON.stringify(mySC))}catch{}}
+function svCI(){try{localStorage.setItem(K(user,'ci'),JSON.stringify(myCI))}catch{};cloudSave()}
+function svSC(){try{localStorage.setItem(K(user,'sc'),JSON.stringify(mySC))}catch{};cloudSave()}
+
+// ── Cloud Sync ──
+let _syncT=null;
+function cloudSave(){
+  clearTimeout(_syncT);
+  _syncT=setTimeout(()=>{
+    fetch('/api/sync',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({user,week:wk,data:{ci:myCI,spct:getSP(mySC)}})
+    }).then(()=>{}).catch(()=>{});
+  },800);
+}
+async function cloudLoadFriend(){
+  try{
+    const r=await fetch('/api/sync?user='+fr()+'&week='+wk);
+    const d=await r.json();
+    if(d&&d.ci){
+      // Merge: keep local photos, add cloud data
+      const local=fCI||{};
+      Object.keys(d.ci).forEach(k=>{if(!local[k]||!local[k].photo)local[k]=d.ci[k]});
+      fCI=local;
+      localStorage.setItem(K(fr(),'ci'),JSON.stringify(fCI));
+      if(d.spct!==undefined)localStorage.setItem(fr()+'_sp_w'+wk,d.spct);
+    }
+  }catch(e){}
+}
 function fr(){return user==='joey'?'becky':'joey'}
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';clearTimeout(t._t);t._t=setTimeout(()=>t.style.display='none',2200)}
 function ring(p,sz=68,sw=4,col='#687a58'){const r=(sz-sw)/2,c=2*Math.PI*r,o=c*(1-p);return`<svg width="${sz}" height="${sz}" style="transform:rotate(-90deg)"><circle cx="${sz/2}" cy="${sz/2}" r="${r}" fill="none" stroke="var(--blt)" stroke-width="${sw}"/><circle cx="${sz/2}" cy="${sz/2}" r="${r}" fill="none" stroke="${col}" stroke-width="${sw}" stroke-dasharray="${c}" stroke-dashoffset="${o}" stroke-linecap="round" style="transition:stroke-dashoffset .8s cubic-bezier(.16,1,.3,1)"/></svg>`}
@@ -251,7 +276,11 @@ function getSP(sc){const a=Object.values(SHOP).flat(),t=a.length,d=a.filter(i=>s
 function pickUser(u){user=u;localStorage.setItem('mp_user',u);startApp()}
 function logout(){user=null;localStorage.removeItem('mp_user');document.getElementById('app').style.display='none';document.getElementById('picker').classList.remove('hide')}
 
-function checkSync(){const h=location.hash;if(!h.startsWith('#s='))return;try{const d=decodeURIComponent(h.slice(3)).split('|');if(d.length>=4){const who=d[0],mask=parseInt(d[1]),spct=parseInt(d[2]),week=parseInt(d[3]);if(week===wk&&U[who]){const fc={};DAYS.forEach((_,i)=>MK.forEach((k,j)=>{if((mask>>(i*3+j))&1)fc[i+'_'+k]={time:'synced'}}));localStorage.setItem(K(who,'ci'),JSON.stringify(fc));localStorage.setItem(who+'_sp_w'+wk,spct);toast('Got '+U[who].nm+"'s update ✨");if(user!==who)tab=3}}}catch{}history.replaceState(null,'',location.pathname)}
+function checkSync(){const h=location.hash;if(!h.startsWith('#s='))return;try{const d=decodeURIComponent(h.slice(3)).split('|');if(d.length>=4){const who=d[0],mask=parseInt(d[1]),spct=parseInt(d[2]),week=parseInt(d[3]);if(week===wk&&U[who]){
+  let ex={};try{ex=JSON.parse(localStorage.getItem(K(who,'ci'))||'{}')}catch{}
+  DAYS.forEach((_,i)=>MK.forEach((k,j)=>{const key=i+'_'+k;if((mask>>(i*3+j))&1){if(!ex[key])ex[key]={time:'synced'}}else{delete ex[key]}}));
+  localStorage.setItem(K(who,'ci'),JSON.stringify(ex));localStorage.setItem(who+'_sp_w'+wk,spct);
+  toast('Got '+U[who].nm+"'s update ✨");if(user!==who)tab=3}}}catch{}history.replaceState(null,'',location.pathname)}
 function shareProgress(){const m=getBM(myCI),sp=getSP(mySC),d=encodeURIComponent([user,m,sp,wk].join('|')),url=location.origin+location.pathname+'#s='+d;if(navigator.share)navigator.share({title:U[user].nm+"'s meal plan progress",url}).catch(()=>{});else{navigator.clipboard?.writeText(url).then(()=>toast('Link copied ✓')).catch(()=>{})}}
 
 let pDi=0,pMk='';
@@ -330,9 +359,9 @@ function r3(){const el=document.getElementById('t3');
         h+=`<div class="fr-ro"><div class="fr-ro-h"><div class="fr-ro-ic" style="background:${c.lt}">${meal.e}</div><div><div class="fr-ro-tag" style="color:${c.tx}">${MI[mk]} ${ML[mk]}</div><div class="fr-ro-nm">${meal.n}</div></div><div class="fr-ro-ck">✓</div></div>${has.photo?'<div style="margin-top:10px"><img src="'+has.photo+'" style="width:100%;max-height:180px;object-fit:cover;border-radius:12px;border:1px solid var(--blt)"></div>':''}</div>`})});
   }else{
     h+=`<div class="fr-empty up d2"><div class="fr-empty-ic">👯</div><div class="fr-empty-tx">No updates from ${fu.nm} yet<br><br>Ask ${fu.nm} to open the app and tap<br>"Share progress" — then open the link they send you<br><br><span style="font-size:11px;color:var(--faint)">On the same device? ${fu.nm} can just<br>switch profiles by tapping the name badge</span></div></div>`}
-  // Friend's photos
+  // Friend photos
   const fAll=[];DAYS.forEach((d,i)=>MK.forEach(m=>{const k=i+'_'+m;if(fCI[k]&&fCI[k].photo)fAll.push({day:d.dn2,meal:ML[m],di:i,...fCI[k]})}));
-  if(fAll.length){h+=`<div class="gl-label up d4">📸 ${fu.nm}'s Check-ins</div><div class="gl-grid">`;fAll.forEach((c,i)=>{const col=C[c.di];h+=`<div class="gl-c" style="animation-delay:${i*40+200}ms"><img src="${c.photo}"><div class="gl-ci" style="background:${col.lt}"><div class="gl-cn" style="color:${col.tx}">${c.day} · ${c.meal}</div><div class="gl-ct2">${c.time}</div></div></div>`});h+='</div>'}
+  if(fAll.length){h+=`<div class="gl-label up d3">📸 ${fu.nm}'s Check-ins</div><div class="gl-grid">`;fAll.forEach((c,i)=>{const col=C[c.di];h+=`<div class="gl-c" style="animation-delay:${i*40+200}ms"><img src="${c.photo}"><div class="gl-ci" style="background:${col.lt}"><div class="gl-cn" style="color:${col.tx}">${c.day} · ${c.meal}</div><div class="gl-ct2">${c.time}</div></div></div>`});h+='</div>'}
   // My photos
   const all=[];DAYS.forEach((d,i)=>MK.forEach(m=>{const k=i+'_'+m;if(myCI[k]&&myCI[k].photo)all.push({day:d.dn2,meal:ML[m],di:i,...myCI[k]})}));
   if(all.length){h+=`<div class="gl-label up d4">📸 My Check-ins</div><div class="gl-grid">`;all.forEach((c,i)=>{const col=C[c.di];h+=`<div class="gl-c" style="animation-delay:${i*40+250}ms"><img src="${c.photo}"><div class="gl-ci" style="background:${col.lt}"><div class="gl-cn" style="color:${col.tx}">${c.day} · ${c.meal}</div><div class="gl-ct2">${c.time}</div></div></div>`});h+='</div>'}
@@ -341,22 +370,22 @@ function r3(){const el=document.getElementById('t3');
 function rNav(){const all=Object.values(SHOP).flat(),shR=all.length-all.filter(i=>mySC[i]).length;const badge=shR>0&&shR<all.length?shR:0;
   const tabs=[{ic:'☀️',lb:'Today'},{ic:'📅',lb:'Week'},{ic:'🛒',lb:'Shop',badge},{ic:'👯',lb:U[fr()].nm}];
   document.getElementById('nav').innerHTML=tabs.map((t,i)=>`<button class="nb" onclick="sw(${i})"><span class="ni${tab===i?' on':''}">${t.ic}</span><span class="nl${tab===i?' on':''}">${t.lb}</span>${tab===i?'<div class="ndt"></div>':''}${t.badge?`<div class="nbg">${t.badge}</div>`:''}</button>`).join('')}
-function sw(t){document.getElementById('t'+tab).classList.remove('on');tab=t;document.getElementById('t'+tab).classList.add('on');render()}
+function sw(t){document.getElementById('t'+tab).classList.remove('on');tab=t;document.getElementById('t'+tab).classList.add('on');if(t===3){cloudLoadFriend().then(()=>r3())}render()}
 function render(){document.getElementById('wk-lb').textContent='Week '+wk;document.getElementById('hdr-user').innerHTML=`<span class="hdr-user-av">${U[user].av}</span><span class="hdr-user-nm">${U[user].nm}</span>`;r0();r1();r2();r3();rNav()}
-function startApp(){document.getElementById('picker').classList.add('hide');document.getElementById('app').style.display='block';ld();checkSync();render()}
+function startApp(){document.getElementById('picker').classList.add('hide');document.getElementById('app').style.display='block';ld();checkSync();render();cloudLoadFriend().then(()=>r3())}
 checkSync();const sv=localStorage.getItem('mp_user');if(sv&&U[sv]){user=sv;startApp()}
 const inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.style.display='none';inp.id='fup';
 inp.onchange=e=>{const f=e.target.files[0];if(!f)return;
   const img=new Image();const url=URL.createObjectURL(f);
   img.onload=()=>{
-    const MAX=600;let w=img.width,h=img.height;
+    const MAX=480;let w=img.width,h=img.height;
     if(w>MAX||h>MAX){const s=MAX/Math.max(w,h);w=Math.round(w*s);h=Math.round(h*s)}
     const cv=document.createElement('canvas');cv.width=w;cv.height=h;
-    const ctx=cv.getContext('2d');ctx.drawImage(img,0,0,w,h);
-    const compressed=cv.toDataURL('image/jpeg',0.6);
+    cv.getContext('2d').drawImage(img,0,0,w,h);
     URL.revokeObjectURL(url);
-    myCI[pDi+'_'+pMk]={photo:compressed,time:new Date().toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})};
-    try{svCI();toast('Checked in 🎉')}catch(err){toast('Photo too large, try again');delete myCI[pDi+'_'+pMk]}
+    const photo=cv.toDataURL('image/jpeg',0.55);
+    myCI[pDi+'_'+pMk]={photo,time:new Date().toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})};
+    try{svCI();toast('Checked in 🎉')}catch(err){toast('Storage full');delete myCI[pDi+'_'+pMk]}
     render();
   };
   img.src=url;e.target.value='';
