@@ -243,27 +243,33 @@ function ld(){try{myCI=JSON.parse(localStorage.getItem(K(user,'ci'))||'{}')}catc
 function svCI(){try{localStorage.setItem(K(user,'ci'),JSON.stringify(myCI))}catch{};cloudSave()}
 function svSC(){try{localStorage.setItem(K(user,'sc'),JSON.stringify(mySC))}catch{};cloudSave()}
 
-// ── Cloud Sync ──
+// ── Cloud Sync (direct to Upstash) ──
+const _R='https://vital-aardvark-93781.upstash.io';
+const _T='gQAAAAAAAW5VAAIncDJiZjhkYjI0MzcxZTk0OWZhYjg3YmUyNzc0YzRkODA1OXAyOTM3ODE';
+const _H={'Authorization':'Bearer '+_T,'Content-Type':'application/json'};
 let _syncT=null;
 function cloudSave(){
   clearTimeout(_syncT);
   _syncT=setTimeout(()=>{
-    fetch('/api/sync',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({user,week:wk,data:{ci:myCI,spct:getSP(mySC)}})
+    var val=JSON.stringify({ci:myCI,spct:getSP(mySC)});
+    fetch(_R,{method:'POST',headers:_H,
+      body:JSON.stringify(['SET','mp_'+user+'_w'+wk,val,'EX','1209600'])
     }).then(()=>{}).catch(()=>{});
   },800);
 }
 async function cloudLoadFriend(){
   try{
-    const r=await fetch('/api/sync?user='+fr()+'&week='+wk);
-    const d=await r.json();
-    if(d&&d.ci){
-      // Merge: keep local photos, add cloud data
-      const local=fCI||{};
-      Object.keys(d.ci).forEach(k=>{if(!local[k]||!local[k].photo)local[k]=d.ci[k]});
-      fCI=local;
-      localStorage.setItem(K(fr(),'ci'),JSON.stringify(fCI));
-      if(d.spct!==undefined)localStorage.setItem(fr()+'_sp_w'+wk,d.spct);
+    var r=await fetch(_R+'/get/mp_'+fr()+'_w'+wk,{headers:{'Authorization':'Bearer '+_T}});
+    var d=await r.json();
+    if(d.result){
+      var parsed=JSON.parse(d.result);
+      if(parsed&&parsed.ci){
+        var local=fCI||{};
+        Object.keys(parsed.ci).forEach(function(k){if(!local[k]||!local[k].photo)local[k]=parsed.ci[k]});
+        fCI=local;
+        localStorage.setItem(K(fr(),'ci'),JSON.stringify(fCI));
+        if(parsed.spct!==undefined)localStorage.setItem(fr()+'_sp_w'+wk,parsed.spct);
+      }
     }
   }catch(e){}
 }
