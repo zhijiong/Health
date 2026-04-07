@@ -4,9 +4,9 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  const URL = process.env.KV_REST_API_URL;
-  const TK = process.env.KV_REST_API_TOKEN;
-  if (!URL || !TK) return res.status(500).json({ error: 'KV not configured. Create a KV store in Vercel dashboard → Storage.' });
+  const URL = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
+  const TK = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+  if (!URL || !TK) return res.status(500).json({ error: 'Redis not configured' });
 
   const auth = { Authorization: `Bearer ${TK}` };
 
