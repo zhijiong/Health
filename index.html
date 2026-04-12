@@ -380,10 +380,18 @@ function sw(t){document.getElementById('t'+tab).classList.remove('on');tab=t;doc
 function render(){document.getElementById('wk-lb').textContent='Week '+wk;document.getElementById('hdr-user').innerHTML=`<span class="hdr-user-av">${U[user].av}</span><span class="hdr-user-nm">${U[user].nm}</span>`;r0();r1();r2();r3();rNav()}
 function cleanOldWeeks(){
   try{
-    var keys=Object.keys(localStorage);
-    keys.forEach(function(k){
+    var ver='v2_apr13';
+    if(localStorage.getItem('mp_ver')!==ver){
+      var keys=Object.keys(localStorage);
+      keys.forEach(function(k){
+        if(k.indexOf('_ci_w')!==-1||k.indexOf('_sc_w')!==-1||k.indexOf('_sp_w')!==-1)localStorage.removeItem(k);
+      });
+      localStorage.setItem('mp_ver',ver);
+    }
+    var keys2=Object.keys(localStorage);
+    keys2.forEach(function(k){
       var m=k.match(/_w(\d+)$/);
-      if(m&&parseInt(m[1])<wk){localStorage.removeItem(k)}
+      if(m&&parseInt(m[1])<wk)localStorage.removeItem(k);
     });
   }catch(e){}
 }
