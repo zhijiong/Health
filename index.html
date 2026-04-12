@@ -378,15 +378,21 @@ function rNav(){const all=Object.values(SHOP).flat(),shR=all.length-all.filter(i
   document.getElementById('nav').innerHTML=tabs.map((t,i)=>`<button class="nb" onclick="sw(${i})"><span class="ni${tab===i?' on':''}">${t.ic}</span><span class="nl${tab===i?' on':''}">${t.lb}</span>${tab===i?'<div class="ndt"></div>':''}${t.badge?`<div class="nbg">${t.badge}</div>`:''}</button>`).join('')}
 function sw(t){document.getElementById('t'+tab).classList.remove('on');tab=t;document.getElementById('t'+tab).classList.add('on');if(t===3){cloudLoadFriend().then(()=>r3())}render()}
 function render(){document.getElementById('wk-lb').textContent='Week '+wk;document.getElementById('hdr-user').innerHTML=`<span class="hdr-user-av">${U[user].av}</span><span class="hdr-user-nm">${U[user].nm}</span>`;r0();r1();r2();r3();rNav()}
+var _freshPlan=false;
 function cleanOldWeeks(){
   try{
     var ver='v2_apr13';
     if(localStorage.getItem('mp_ver')!==ver){
+      _freshPlan=true;
       var keys=Object.keys(localStorage);
       keys.forEach(function(k){
         if(k.indexOf('_ci_w')!==-1||k.indexOf('_sc_w')!==-1||k.indexOf('_sp_w')!==-1)localStorage.removeItem(k);
       });
       localStorage.setItem('mp_ver',ver);
+      // Clear cloud data for both users
+      var empty=JSON.stringify({ci:{},spct:0});
+      fetch(_R+'?_token='+_T,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(['SET','mp_joey_w'+wk,empty,'EX','1209600'])}).catch(function(){});
+      fetch(_R+'?_token='+_T,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(['SET','mp_becky_w'+wk,empty,'EX','1209600'])}).catch(function(){});
     }
     var keys2=Object.keys(localStorage);
     keys2.forEach(function(k){
@@ -395,7 +401,7 @@ function cleanOldWeeks(){
     });
   }catch(e){}
 }
-function startApp(){document.getElementById('picker').classList.add('hide');document.getElementById('app').style.display='block';cleanOldWeeks();ld();checkSync();render();cloudLoadFriend().then(()=>r3())}
+function startApp(){document.getElementById('picker').classList.add('hide');document.getElementById('app').style.display='block';cleanOldWeeks();ld();checkSync();render();if(!_freshPlan){cloudLoadFriend().then(()=>r3())}}
 checkSync();const sv=localStorage.getItem('mp_user');if(sv&&U[sv]){user=sv;startApp()}
 const inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.style.display='none';inp.id='fup';
 inp.onchange=e=>{const f=e.target.files[0];if(!f)return;
