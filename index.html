@@ -194,7 +194,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;o
 <div id="app" style="display:none">
   <div class="hdr"><div class="hdr-row">
     <div class="hdr-logo"><img src="icon.png" alt=""></div>
-    <div><div class="hdr-tag">Mediterranean · <span id="wk-lb"></span></div><div class="hdr-title">Meal Plan</div></div>
+    <div><div class="hdr-tag"><span id="hdr-tag-plan">Mediterranean</span> · <span id="wk-lb"></span></div><div class="hdr-title">Meal Plan</div></div>
     <button class="hdr-user" onclick="logout()" id="hdr-user"></button>
   </div></div>
   <div class="hdr-div"></div>
@@ -211,30 +211,140 @@ const C=[
   {bg:"#6a82a0",lt:"#ecf0f5",tx:"#5a7290",gd:"linear-gradient(135deg,#6a82a0,#8ea4bc)"},
   {bg:"#987494",lt:"#f3edf2",tx:"#846480",gd:"linear-gradient(135deg,#987494,#b292ae)"},
   {bg:"#c07a58",lt:"#f8efe9",tx:"#a86848",gd:"linear-gradient(135deg,#c07a58,#d49878)"},
+  {bg:"#7a8c6a",lt:"#eff4eb",tx:"#667a56",gd:"linear-gradient(135deg,#7a8c6a,#a0b490)"},
+  {bg:"#8a7a6a",lt:"#f2efe8",tx:"#74665a",gd:"linear-gradient(135deg,#8a7a6a,#b0a494)"},
 ];
-const DN=['Mon','Tue','Wed','Thu','Fri'];
-const DAYS=[
-  {day:"Monday",dn2:"Mon",b:{e:"🥛",n:"Yogurt Bowl · ~290 kcal",d:"Green Valley low-fat lactose-free yogurt (170g) + homemade granola (20g, no sugar) + 85% dark chocolate (10g) + pistachio butter (8g)"},l:{e:"🥣",n:"Steel-Cut Oats + Cod · ~455 kcal",d:"Steel-cut oats (50g dry / ~150g cooked) + soy milk (100ml) + black sesame paste (8g) + pan-seared cod (160g) + massaged kale (80g) + cherry tomatoes (100g)"},dn:{e:"🧀",n:"Burrata Farro Bowl · ~605 kcal",d:"Torn burrata (125g, Ball 1) + farro (50g dry / ~150g cooked) + roasted cherry tomatoes (200g) + baby spinach (60g) + extra virgin olive oil (1.5 tsp) + lemon juice + fresh basil + sea salt + black pepper"},p:"Daily total ~1665 kcal (meals + Starbucks tall latte 2% + soy tea + fruit)"},
-  {day:"Tuesday",dn2:"Tue",b:{e:"🥛",n:"Yogurt Bowl · ~290 kcal",d:"Green Valley low-fat lactose-free yogurt (170g) + homemade granola (20g, no sugar) + 85% dark chocolate (10g) + pistachio butter (8g)"},l:{e:"🥣",n:"Steel-Cut Oats + Salmon · ~655 kcal",d:"Steel-cut oats (50g dry / ~150g cooked) + soy milk (100ml) + black sesame paste (8g) + pan-seared salmon (160g) + massaged kale (80g) + sauteed mushrooms (100g)"},dn:{e:"🐠",n:"Steamed Sea Bass + Yam + Pea Shoots + Mushrooms · ~375 kcal",d:"Steamed sea bass, 1st half (~160g) + steamed iron stick yam (200g) + stir-fried pea shoots (80g) + sauteed mushrooms (80g) + light soy sauce"},p:"Refrigerate raw sea bass 2nd half for Thu dinner — steam fresh then. · Daily total ~1635 kcal"},
-  {day:"Wednesday",dn2:"Wed",b:{e:"🥛",n:"Yogurt Bowl · ~290 kcal",d:"Green Valley low-fat lactose-free yogurt (170g) + homemade granola (20g, no sugar) + 85% dark chocolate (10g) + pistachio butter (8g)"},l:{e:"🍠",n:"Iron Stick Yam + Burrata Caprese · ~520 kcal",d:"Steamed iron stick yam (200g) + torn burrata (125g, Ball 2) + massaged kale (80g) + cherry tomatoes (100g) + extra virgin olive oil (1 tsp) + fresh basil + sea salt"},dn:{e:"🦐",n:"Shrimp + Egg + Mozzarella + Farro + Spinach + Cherry Tomatoes · ~570 kcal",d:"Argentine red shrimp (100g) + 1 scrambled egg (50g) + torn fresh mozzarella (50g) + farro (50g dry / ~150g cooked) + baby spinach (80g) + cherry tomatoes (100g) + garlic + olive oil (1 tsp)"},p:"Stir-fry edamame & firm tofu tonight — set aside for Fri lunch. · Daily total ~1695 kcal"},
-  {day:"Thursday",dn2:"Thu",b:{e:"🥛",n:"Yogurt Bowl · ~290 kcal",d:"Green Valley low-fat lactose-free yogurt (170g) + homemade granola (20g, no sugar) + 85% dark chocolate (10g) + pistachio butter (8g)"},l:{e:"🥣",n:"Steel-Cut Oats + Cod · ~440 kcal",d:"Steel-cut oats (50g dry / ~150g cooked) + soy milk (100ml) + black sesame paste (5g) + pan-seared cod (160g) + massaged kale (80g) + cherry tomatoes (100g)"},dn:{e:"🐠",n:"Steamed Sea Bass + Store-Bought Bing + Pea Shoots + Mushrooms · ~545 kcal",d:"Steamed sea bass, 2nd half (~160g, steam fresh tonight) + store-bought flatbread / bing (1 piece, ~100g, pan-heated) + stir-fried pea shoots (100g) + sauteed mushrooms (80g) + light soy sauce"},p:"Steam sea bass 2nd half fresh tonight. · Daily total ~1590 kcal"},
-  {day:"Friday",dn2:"Fri",b:{e:"🥛",n:"Yogurt Bowl · ~290 kcal",d:"Green Valley low-fat lactose-free yogurt (170g) + homemade granola (20g, no sugar) + 85% dark chocolate (10g) + pistachio butter (8g)"},l:{e:"🥬",n:"Yam + Edamame & Firm Tofu + Kale + Cherry Tomatoes · ~420 kcal",d:"Steamed iron stick yam (200g) + shelled edamame (80g) + firm dried tofu (80g, cubed) — stir-fried together Wed night, packed for today + massaged kale (80g) + cherry tomatoes (100g)"},dn:{e:"🦐",n:"Shrimp + Egg + Mozzarella + Farro + Spinach + Pea Shoots · ~595 kcal",d:"Argentine red shrimp (100g) + 1 scrambled egg (50g) + torn fresh mozzarella (50g) + farro (50g dry / ~150g cooked) + baby spinach (80g) + stir-fried pea shoots (100g) + garlic + olive oil (1 tsp)"},p:"Daily total ~1620 kcal"},
+
+// ── Joey's plan (Mon–Fri, Mediterranean) ──
+const JDAYS=[
+  {day:"Monday",dn2:"Mon",dow:1,b:{e:"🥛",n:"Yogurt Bowl · ~290 kcal",d:"Green Valley low-fat lactose-free yogurt (170g) + homemade granola (20g, no sugar) + 85% dark chocolate (10g) + pistachio butter (8g)"},l:{e:"🥣",n:"Steel-Cut Oats + Cod · ~455 kcal",d:"Steel-cut oats (50g dry / ~150g cooked) + soy milk (100ml) + black sesame paste (8g) + pan-seared cod (160g) + massaged kale (80g) + cherry tomatoes (100g)"},dn:{e:"🧀",n:"Burrata Farro Bowl · ~605 kcal",d:"Torn burrata (125g, Ball 1) + farro (50g dry / ~150g cooked) + roasted cherry tomatoes (200g) + baby spinach (60g) + extra virgin olive oil (1.5 tsp) + lemon juice + fresh basil + sea salt + black pepper"},p:"Daily total ~1665 kcal (meals + Starbucks tall latte 2% + soy tea + fruit)"},
+  {day:"Tuesday",dn2:"Tue",dow:2,b:{e:"🥛",n:"Yogurt Bowl · ~290 kcal",d:"Green Valley low-fat lactose-free yogurt (170g) + homemade granola (20g, no sugar) + 85% dark chocolate (10g) + pistachio butter (8g)"},l:{e:"🥣",n:"Steel-Cut Oats + Salmon · ~655 kcal",d:"Steel-cut oats (50g dry / ~150g cooked) + soy milk (100ml) + black sesame paste (8g) + pan-seared salmon (160g) + massaged kale (80g) + sauteed mushrooms (100g)"},dn:{e:"🐠",n:"Steamed Sea Bass + Yam + Pea Shoots + Mushrooms · ~375 kcal",d:"Steamed sea bass, 1st half (~160g) + steamed iron stick yam (200g) + stir-fried pea shoots (80g) + sauteed mushrooms (80g) + light soy sauce"},p:"Refrigerate raw sea bass 2nd half for Thu dinner — steam fresh then. · Daily total ~1635 kcal"},
+  {day:"Wednesday",dn2:"Wed",dow:3,b:{e:"🥛",n:"Yogurt Bowl · ~290 kcal",d:"Green Valley low-fat lactose-free yogurt (170g) + homemade granola (20g, no sugar) + 85% dark chocolate (10g) + pistachio butter (8g)"},l:{e:"🍠",n:"Iron Stick Yam + Burrata Caprese · ~520 kcal",d:"Steamed iron stick yam (200g) + torn burrata (125g, Ball 2) + massaged kale (80g) + cherry tomatoes (100g) + extra virgin olive oil (1 tsp) + fresh basil + sea salt"},dn:{e:"🦐",n:"Shrimp + Egg + Mozzarella + Farro + Spinach + Cherry Tomatoes · ~570 kcal",d:"Argentine red shrimp (100g) + 1 scrambled egg (50g) + torn fresh mozzarella (50g) + farro (50g dry / ~150g cooked) + baby spinach (80g) + cherry tomatoes (100g) + garlic + olive oil (1 tsp)"},p:"Stir-fry edamame & firm tofu tonight — set aside for Fri lunch. · Daily total ~1695 kcal"},
+  {day:"Thursday",dn2:"Thu",dow:4,b:{e:"🥛",n:"Yogurt Bowl · ~290 kcal",d:"Green Valley low-fat lactose-free yogurt (170g) + homemade granola (20g, no sugar) + 85% dark chocolate (10g) + pistachio butter (8g)"},l:{e:"🥣",n:"Steel-Cut Oats + Cod · ~440 kcal",d:"Steel-cut oats (50g dry / ~150g cooked) + soy milk (100ml) + black sesame paste (5g) + pan-seared cod (160g) + massaged kale (80g) + cherry tomatoes (100g)"},dn:{e:"🐠",n:"Steamed Sea Bass + Store-Bought Bing + Pea Shoots + Mushrooms · ~545 kcal",d:"Steamed sea bass, 2nd half (~160g, steam fresh tonight) + store-bought flatbread / bing (1 piece, ~100g, pan-heated) + stir-fried pea shoots (100g) + sauteed mushrooms (80g) + light soy sauce"},p:"Steam sea bass 2nd half fresh tonight. · Daily total ~1590 kcal"},
+  {day:"Friday",dn2:"Fri",dow:5,b:{e:"🥛",n:"Yogurt Bowl · ~290 kcal",d:"Green Valley low-fat lactose-free yogurt (170g) + homemade granola (20g, no sugar) + 85% dark chocolate (10g) + pistachio butter (8g)"},l:{e:"🥬",n:"Yam + Edamame & Firm Tofu + Kale + Cherry Tomatoes · ~420 kcal",d:"Steamed iron stick yam (200g) + shelled edamame (80g) + firm dried tofu (80g, cubed) — stir-fried together Wed night, packed for today + massaged kale (80g) + cherry tomatoes (100g)"},dn:{e:"🦐",n:"Shrimp + Egg + Mozzarella + Farro + Spinach + Pea Shoots · ~595 kcal",d:"Argentine red shrimp (100g) + 1 scrambled egg (50g) + torn fresh mozzarella (50g) + farro (50g dry / ~150g cooked) + baby spinach (80g) + stir-fried pea shoots (100g) + garlic + olive oil (1 tsp)"},p:"Daily total ~1620 kcal"},
 ];
-const SHOP={"🐟 Seafood":["Salmon fillet × 1 (Tue lunch, 160g)","Butterflied sea bass × 1 whole (Mon dinner 1st half + Thu dinner 2nd half, ~160g edible per half — buy accordingly)","Cod × 2 pieces ~160g each (Mon lunch + Thu lunch)","Argentine red shrimp × 2 bags (Thu dinner 100g + Fri dinner 100g)"],"🧀 Dairy & Cheese":["Green Valley low-fat lactose-free yogurt (large tub, 170g/day)","Burrata × 2 balls — check pack weight: Italian-style 125g, US grocery often 200–227g (Mon dinner Ball 1 + Wed lunch Ball 2)","Fresh mozzarella × 1 ball ~200g (Wed dinner + Fri dinner, 50g each = 100g used; ~100g leftover)","Pistachio butter (8g/day)","Black sesame paste (Mon 8g + Tue 8g + Thu 5g)","Soy milk — large carton (100ml/day for oats + ~150ml/day for soy tea)"],"🥚 Eggs":["Eggs × 3 (Thu dinner 1 + Fri dinner 1 + 1 spare)"],"🥬 Plant Protein":["Shelled edamame × 100g — fresh or frozen (Fri lunch, stir-fry Wed night)","Firm dried tofu (dou gan) × 100g (Fri lunch, stir-fry Wed night)"],"🌾 Grains & Flatbread":["Steel-cut oats (Mon/Tue/Thu lunch, 50g each — 150g total · ~188 kcal)","Store-bought flatbread / frozen scallion pancake (Wed dinner, 1 piece ~100g)","Farro (Tue + Thu + Fri dinner, 50g each — 150g total · ~180 kcal)","Granola (20g/day, homemade or unsweetened)"],"🥦 Vegetables":["Kale × 1 large bunch (Mon–Fri lunch)","Pea shoots (Mon dinner 80g + Wed dinner 100g + Fri dinner 100g — ~280g total)","Baby spinach × 1 bag (Tue dinner 60g + Thu dinner 80g + Fri dinner 80g — ~220g total)","Cherry tomatoes × 2 boxes (Mon/Thu/Fri lunch 100g each + Wed lunch 100g + Thu dinner 100g + Tue dinner 200g)","Mushrooms × 1 box (Mon dinner 80g + Tue lunch 100g + Wed dinner 80g — ~260g total)","Garlic × 1 head","Lemon × 1 (Tue dinner)","Fresh basil × 1 bunch (Tue dinner + Wed lunch)"],"🍠 Iron Stick Yam":["Iron stick yam × 2 pieces (Mon dinner + Wed lunch + Fri lunch, 200g each — ~600g total)"],"🍑 Fruit & Drinks":["Seasonal fruit (daily snack, ~100 kcal)","Earl Grey / Assam tea bags (unsweetened soy milk tea, ~65 kcal/day)","85% dark chocolate (daily breakfast)"],"🫙 Pantry":["Extra virgin olive oil","Sesame oil (Wed night edamame & tofu stir-fry)","Balsamic vinegar","Light soy sauce (Mon + Wed sea bass)"]};
+const JSHOP={"🐟 Seafood":["Salmon fillet × 1 (Tue lunch, 160g)","Butterflied sea bass × 1 whole (Mon dinner 1st half + Thu dinner 2nd half, ~160g edible per half — buy accordingly)","Cod × 2 pieces ~160g each (Mon lunch + Thu lunch)","Argentine red shrimp × 2 bags (Thu dinner 100g + Fri dinner 100g)"],"🧀 Dairy & Cheese":["Green Valley low-fat lactose-free yogurt (large tub, 170g/day)","Burrata × 2 balls — check pack weight: Italian-style 125g, US grocery often 200–227g (Mon dinner Ball 1 + Wed lunch Ball 2)","Fresh mozzarella × 1 ball ~200g (Wed dinner + Fri dinner, 50g each = 100g used; ~100g leftover)","Pistachio butter (8g/day)","Black sesame paste (Mon 8g + Tue 8g + Thu 5g)","Soy milk — large carton (100ml/day for oats + ~150ml/day for soy tea)"],"🥚 Eggs":["Eggs × 3 (Thu dinner 1 + Fri dinner 1 + 1 spare)"],"🥬 Plant Protein":["Shelled edamame × 100g — fresh or frozen (Fri lunch, stir-fry Wed night)","Firm dried tofu (dou gan) × 100g (Fri lunch, stir-fry Wed night)"],"🌾 Grains & Flatbread":["Steel-cut oats (Mon/Tue/Thu lunch, 50g each — 150g total · ~188 kcal)","Store-bought flatbread / frozen scallion pancake (Wed dinner, 1 piece ~100g)","Farro (Tue + Thu + Fri dinner, 50g each — 150g total · ~180 kcal)","Granola (20g/day, homemade or unsweetened)"],"🥦 Vegetables":["Kale × 1 large bunch (Mon–Fri lunch)","Pea shoots (Mon dinner 80g + Wed dinner 100g + Fri dinner 100g — ~280g total)","Baby spinach × 1 bag (Tue dinner 60g + Thu dinner 80g + Fri dinner 80g — ~220g total)","Cherry tomatoes × 2 boxes (Mon/Thu/Fri lunch 100g each + Wed lunch 100g + Thu dinner 100g + Tue dinner 200g)","Mushrooms × 1 box (Mon dinner 80g + Tue lunch 100g + Wed dinner 80g — ~260g total)","Garlic × 1 head","Lemon × 1 (Tue dinner)","Fresh basil × 1 bunch (Tue dinner + Wed lunch)"],"🍠 Iron Stick Yam":["Iron stick yam × 2 pieces (Mon dinner + Wed lunch + Fri lunch, 200g each — ~600g total)"],"🍑 Fruit & Drinks":["Seasonal fruit (daily snack, ~100 kcal)","Earl Grey / Assam tea bags (unsweetened soy milk tea, ~65 kcal/day)","85% dark chocolate (daily breakfast)"],"🫙 Pantry":["Extra virgin olive oil","Sesame oil (Wed night edamame & tofu stir-fry)","Balsamic vinegar","Light soy sauce (Mon + Wed sea bass)"]};
+
+// ── Becky's plan (Tue dinner → Sun dinner, fat-loss + bone density + muscle) ──
+// Meal keys: b=breakfast, l=lunch, dn=dinner, sn=pre-workout snack, sn2=afternoon snack
+// ex = exercise note for the day
+const BDAYS=[
+  {day:"Tuesday",dn2:"Tue",dow:2,
+    dn:{e:"🐟",n:"Roasted Salmon + Broccoli + Purple Sweet Potato",d:"Roasted salmon (170g) + broccoli (200g) + purple sweet potato, 1 medium"},
+    p:"Prep tonight: roast/steam 5 purple sweet potatoes · cook 3 days of steel-cut oats · portion & freeze extra salmon · wash spinach, kale & bok choy · sort tofu by firmness (firm vs soft)"},
+  {day:"Wednesday",dn2:"Wed",dow:3,
+    b:{e:"🥣",n:"Steel-Cut Oats Bowl",d:"Steel-cut oats (50g) + calcium-fortified unsweetened soy milk (250ml) + blueberries (80g) + pistachios (10g) + granola (15–20g, optional)"},
+    l:{e:"🥚",n:"Eggs + Firm Tofu + Spinach + Kale + Whole Wheat Bread",d:"Eggs × 2 + firm tofu (150g) + spinach (70g) + kale (70g) + whole wheat bread × 2 slices"},
+    sn:{e:"🍌",n:"Pre-Workout Snack (6:00–6:30 PM)",d:"Unsweetened soy milk (250ml) + banana × 1"},
+    dn:{e:"🦐",n:"Shrimp + Soft Tofu + Enoki + Kale + Bread",d:"Shrimp (180g) + soft tofu (200g) + enoki mushrooms (100g) + kale (80–100g) + whole wheat bread × 2 slices"},
+    ex:"7:30 PM Pilates",p:"Don't skip the pre-workout snack. Post-workout: prioritize protein + moderate carbs."},
+  {day:"Thursday",dn2:"Thu",dow:4,
+    b:{e:"🥣",n:"Steel-Cut Oats Bowl",d:"Steel-cut oats (50g) + unsweetened soy milk (250ml) + blueberries (80g) + pine nuts (10g)"},
+    l:{e:"🐟",n:"Salmon + Kale + Whole Wheat Bread + Blueberries",d:"Salmon (140g) + kale (100g) + whole wheat bread × 2 slices + blueberries (50g)"},
+    dn:{e:"🧊",n:"Firm Tofu + Broccoli + Purple Sweet Potato + Pine Nuts",d:"Firm tofu (200g) + broccoli (200g) + purple sweet potato, 1 medium + pine nuts (10g)"},
+    p:"Steady high-protein day. Kale & broccoli are the main greens today."},
+  {day:"Friday",dn2:"Fri",dow:5,
+    b:{e:"🥣",n:"Steel-Cut Oats Bowl",d:"Steel-cut oats (50g) + unsweetened soy milk (250ml) + blueberries (80g) + pistachios (10g)"},
+    l:{e:"🫘",n:"Red Beans + Firm Tofu + Kale",d:"Cooked red beans (150g) + firm tofu (180g) + kale (100–120g)"},
+    dn:{e:"🐟",n:"Salmon + Bok Choy + Enoki + Purple Sweet Potato",d:"Salmon (170g) + bok choy (200g) + enoki mushrooms (100g) + purple sweet potato, 1 medium"},
+    p:"Use up enoki mushrooms today. Kale continues as the bone-support green."},
+  {day:"Saturday",dn2:"Sat",dow:6,
+    b:{e:"🍞",n:"Pre-Workout Breakfast (8:30 AM)",d:"Whole wheat bread × 2 slices + eggs × 2 + blueberries (80g) + unsweetened soy milk (250ml)"},
+    l:{e:"🦐",n:"Post-Workout: Shrimp + Broccoli + Purple Sweet Potato",d:"Shrimp (180g) + broccoli (200g) + purple sweet potato, 1 medium"},
+    sn2:{e:"🥛",n:"Afternoon Snack",d:"Lactose-free unsweetened yogurt / soy yogurt (150g) + blueberries (50g) + granola (15–20g, optional)"},
+    dn:{e:"🧊",n:"Soft Tofu + Egg + Bok Choy + Red Beans",d:"Soft tofu (250g) + egg × 1 + bok choy (200g) + cooked red beans (100g)"},
+    ex:"10:30 AM F45 NOHO",p:"Post-F45 recovery is key — protein + carbs first. Don't skip afternoon snack."},
+  {day:"Sunday",dn2:"Sun",dow:0,
+    b:{e:"🍞",n:"Pre-Workout Breakfast (choose A or B)",d:"Option A: whole wheat bread × 2 slices + lactose-free unsweetened yogurt (150g) + blueberries (80g) + pistachios (10g) · Option B: unsweetened soy milk (250ml) + whole wheat bread × 2 slices + banana × 1"},
+    l:{e:"🦐",n:"Post-Workout: Shrimp + Eggs + Bok Choy + Bread",d:"Shrimp (180g) + eggs × 2 + bok choy (150g) + whole wheat bread × 2 slices"},
+    dn:{e:"🧊",n:"Firm Tofu + Broccoli + Kale + Purple Sweet Potato + Pine Nuts",d:"Firm tofu (220g) + broccoli (150–200g) + kale (80–100g) + purple sweet potato, 1 medium + pine nuts (10g)"},
+    ex:"10:30 AM Pilates",p:"Last day of the week — use up remaining kale & broccoli."},
+];
+const BSHOP={
+  "🐟 Seafood & Protein":[
+    "Salmon fillet ~500g total (Tue dinner 170g + Thu lunch 140g + Fri dinner 170g)",
+    "Shrimp ~540g total (Wed dinner 180g + Sat lunch 180g + Sun lunch 180g)",
+  ],
+  "🥚 Eggs":[
+    "Eggs × 8 (Wed lunch 2 + Sat breakfast 2 + Sat dinner 1 + Sun lunch 2 + 1 spare)",
+  ],
+  "🧊 Tofu":[
+    "Firm tofu ~750g (Wed lunch 150g + Thu dinner 200g + Fri lunch 180g + Sun dinner 220g)",
+    "Soft tofu ~450g (Wed dinner 200g + Sat dinner 250g)",
+  ],
+  "🫘 Beans":[
+    "Dried red beans — cook ~250g total (Fri lunch 150g + Sat dinner 100g)",
+  ],
+  "🌾 Grains & Bread":[
+    "Steel-cut oats (Wed/Thu/Fri breakfast, 50g each — 150g total)",
+    "Whole wheat bread × 1 loaf (Wed lunch + Wed dinner + Thu lunch + Sat breakfast + Sun breakfast + Sun lunch — ~12 slices)",
+    "Granola (15–20g, optional, Wed breakfast + Sat snack)",
+  ],
+  "🥛 Dairy & Soy":[
+    "Calcium-fortified unsweetened soy milk — large carton (Wed–Fri breakfast 250ml + Wed snack 250ml + Sat breakfast 250ml = ~1.25L)",
+    "Lactose-free unsweetened yogurt / soy yogurt (Sat snack 150g + Sun breakfast option A 150g)",
+  ],
+  "🥦 Vegetables":[
+    "Kale × 1 large bunch (Wed lunch 70g + Wed dinner 80–100g + Thu lunch 100g + Fri lunch 100–120g + Sun dinner 80–100g — ~450g total)",
+    "Broccoli × 2 heads (Tue dinner 200g + Thu dinner 200g + Sat lunch 200g + Sun dinner 150–200g — ~800g total)",
+    "Bok choy × 1 bunch (Fri dinner 200g + Sat dinner 200g + Sun lunch 150g — ~550g total)",
+    "Spinach × 1 small bag (Wed lunch 70g)",
+    "Enoki mushrooms × 2 packs (Wed dinner 100g + Fri dinner 100g)",
+  ],
+  "🍠 Purple Sweet Potato":[
+    "Purple sweet potatoes × 5 medium (Tue dinner + Thu dinner + Fri dinner + Sat lunch + Sun dinner)",
+  ],
+  "🍑 Fruit":[
+    "Blueberries × 2 pints (Wed–Sat breakfast 80g each + Thu lunch 50g + Sat snack 50g — ~420g total)",
+    "Bananas × 2 (Wed pre-workout snack + Sun breakfast option B)",
+  ],
+  "🥜 Nuts":[
+    "Pistachios (Wed breakfast 10g + Fri breakfast 10g + Sun breakfast 10g — 30g total)",
+    "Pine nuts (Thu lunch 10g + Thu dinner 10g + Sun dinner 10g — 30g total)",
+  ],
+};
+
+// ── User-aware helpers ──
+function uDAYS(){return user==='becky'?BDAYS:JDAYS}
+function uSHOP(){return user==='becky'?BSHOP:JSHOP}
+function uMK(d){
+  // Return meal keys in chronological order (b, l, sn, sn2, dn)
+  var keys=[];
+  if(d.b)keys.push('b');
+  if(d.l)keys.push('l');
+  if(d.sn)keys.push('sn');
+  if(d.sn2)keys.push('sn2');
+  if(d.dn)keys.push('dn');
+  return keys;
+}
+function uMealCount(d){
+  // Count only main meals (b,l,dn) for progress tracking
+  var n=0;if(d.b)n++;if(d.l)n++;if(d.dn)n++;return n;
+}
+// Expanded meal labels & icons
+const ML2={b:'Breakfast',l:'Lunch',dn:'Dinner',sn:'Pre-Workout Snack',sn2:'Afternoon Snack'};
+const MI2={b:'☀️',l:'🍱',dn:'🌙',sn:'⚡',sn2:'🍵'};
+
+// Map day-of-week to today-index for current user
+function uTDI(){
+  var dow=new Date().getDay(); // 0=Sun,1=Mon,...6=Sat
+  var days=uDAYS();
+  for(var i=0;i<days.length;i++){if(days[i].dow===dow)return i}
+  return -1;
+}
 
 const MK=['b','l','dn'],ML={b:'Breakfast',l:'Lunch',dn:'Dinner'},MI={b:'☀️',l:'🍱',dn:'🌙'};
 
 // Ingredient emoji mapping
-const EM={yogurt:'🥛',granola:'🥣',chocolate:'🍫',pistachio:'🥜',salmon:'🐟','sea bass':'🐠',cod:'🐟','iron stick':'🍠',yam:'🍠','pea shoots':'🌿',shrimp:'🦐',farro:'🌾',egg:'🥚',tofu:'🧊',mushroom:'🍄',spinach:'🥬',kale:'🥬',pasta:'🍝',zucchini:'🥒',basil:'🌿',garlic:'🧄',lemon:'🍋',olive:'🫒',cucumber:'🥒',pepper:'🫑',butter:'🧈',oat:'🥣',sesame:'⚫',scallion:'🧅',vinaigrette:'🫙','soy milk':'🥛',fermented:'🫙',burrata:'🧀',mozzarella:'🧀',sunflower:'🌻',cherry:'🍅',tomato:'🍅',arugula:'🥬'}
+const EM={yogurt:'🥛',granola:'🥣',chocolate:'🍫',pistachio:'🥜',salmon:'🐟','sea bass':'🐠',cod:'🐟','iron stick':'🍠',yam:'🍠','pea shoots':'🌿',shrimp:'🦐',farro:'🌾',egg:'🥚',tofu:'🧊',mushroom:'🍄',enoki:'🍄',spinach:'🥬',kale:'🥬',pasta:'🍝',zucchini:'🥒',basil:'🌿',garlic:'🧄',lemon:'🍋',olive:'🫒',cucumber:'🥒',pepper:'🫑',butter:'🧈',oat:'🥣',sesame:'⚫',scallion:'🧅',vinaigrette:'🫙','soy milk':'🥛',fermented:'🫙',burrata:'🧀',mozzarella:'🧀',sunflower:'🌻',cherry:'🍅',tomato:'🍅',arugula:'🥬','bok choy':'🥬',broccoli:'🥦','sweet potato':'🍠','purple sweet':'🍠',blueberr:'🫐',banana:'🍌','pine nut':'🌰','red bean':'🫘',bread:'🍞','whole wheat':'🍞','option a':'🅰️','option b':'🅱️'}
 function eFor(s){const sl=s.toLowerCase();for(const[k,v]of Object.entries(EM)){if(sl.includes(k))return v}return '·'}
 function cap(s){return s.charAt(0).toUpperCase()+s.slice(1).trim()}
 
 // Shopping item emoji mapping
-const SEM={salmon:'🐟','sea bass':'🐠',cod:'🐟',shrimp:'🦐',egg:'🥚',yogurt:'🥛',butter:'🧈','soy milk':'🥛',pistachio:'🥜',sesame:'⚫',burrata:'🧀',mozzarella:'🧀',farro:'🌾',oat:'🥣',pasta:'🍝',granola:'🥣',sunflower:'🌻',fermented:'🫙',kale:'🥬',spinach:'🥬',tomato:'🍅',pepper:'🫑',cucumber:'🥒',zucchini:'🥒',mushroom:'🍄',tofu:'🧊',scallion:'🧅',garlic:'🧄',lemon:'🍋',basil:'🌿','pea shoots':'🌿',yam:'🍠','iron stick':'🍠',fruit:'🍎',tea:'🍵',chocolate:'🍫',olive:'🫒','sesame oil':'🫙',vinegar:'🫙','soy sauce':'🫙'}
+const SEM={salmon:'🐟','sea bass':'🐠',cod:'🐟',shrimp:'🦐',egg:'🥚',yogurt:'🥛',butter:'🧈','soy milk':'🥛',pistachio:'🥜',sesame:'⚫',burrata:'🧀',mozzarella:'🧀',farro:'🌾',oat:'🥣',pasta:'🍝',granola:'🥣',sunflower:'🌻',fermented:'🫙',kale:'🥬',spinach:'🥬',tomato:'🍅',pepper:'🫑',cucumber:'🥒',zucchini:'🥒',mushroom:'🍄',enoki:'🍄',tofu:'🧊',scallion:'🧅',garlic:'🧄',lemon:'🍋',basil:'🌿','pea shoots':'🌿',yam:'🍠','iron stick':'🍠',fruit:'🍎',tea:'🍵',chocolate:'🍫',olive:'🫒','sesame oil':'🫙',vinegar:'🫙','soy sauce':'🫙','bok choy':'🥬',broccoli:'🥦','sweet potato':'🍠','purple sweet':'🍠',blueberr:'🫐',banana:'🍌','pine nut':'🌰','red bean':'🫘',bread:'🍞','whole wheat':'🍞'}
 function sFor(s){const sl=s.toLowerCase();for(const[k,v]of Object.entries(SEM)){if(sl.includes(k))return v}return '•'}
 const START=new Date('2026-04-13');
 const wk=(()=>{const d=new Date()-START;return d<0?1:Math.floor(d/6048e5)+1})();
-const tdi=(()=>{const d=new Date().getDay();return d>=1&&d<=5?d-1:-1})();
 const greet=(()=>{const h=new Date().getHours();return h<6?'Burning the midnight oil':h<12?'Good morning':h<18?'Good afternoon':'Good evening'})();
 
 let user=null,tab=0,myCI={},mySC={},od={},fCI={},fSC={};
@@ -250,7 +360,7 @@ let _syncT=null;
 function cloudSave(){
   clearTimeout(_syncT);
   _syncT=setTimeout(()=>{
-    var val=JSON.stringify({ci:myCI,spct:getSP(mySC)});
+    var val=JSON.stringify({ci:myCI,spct:getSP(mySC,user)});
     fetch(_R+'?_token='+_T,{method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify(['SET','mp_'+user+'_w'+wk,val,'EX','1209600'])
@@ -276,62 +386,76 @@ async function cloudLoadFriend(){
 function fr(){return user==='joey'?'becky':'joey'}
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';clearTimeout(t._t);t._t=setTimeout(()=>t.style.display='none',2200)}
 function ring(p,sz=68,sw=4,col='#687a58'){const r=(sz-sw)/2,c=2*Math.PI*r,o=c*(1-p);return`<svg width="${sz}" height="${sz}" style="transform:rotate(-90deg)"><circle cx="${sz/2}" cy="${sz/2}" r="${r}" fill="none" stroke="var(--blt)" stroke-width="${sw}"/><circle cx="${sz/2}" cy="${sz/2}" r="${r}" fill="none" stroke="${col}" stroke-width="${sw}" stroke-dasharray="${c}" stroke-dashoffset="${o}" stroke-linecap="round" style="transition:stroke-dashoffset .8s cubic-bezier(.16,1,.3,1)"/></svg>`}
-function getBM(ci){let m=0;DAYS.forEach((_,i)=>MK.forEach((k,j)=>{if(ci[i+'_'+k])m|=1<<(i*3+j)}));return m}
-function getSP(sc){const a=Object.values(SHOP).flat(),t=a.length,d=a.filter(i=>sc[i]).length;return t?Math.round(d/t*100):0}
+function getBM(ci,who){var days=who==='becky'?BDAYS:JDAYS;let m=0;days.forEach((_,i)=>['b','l','dn'].forEach((k,j)=>{if(_[k]&&ci[i+'_'+k])m|=1<<(i*3+j)}));return m}
+function getSP(sc,who){const a=Object.values(who==='becky'?BSHOP:JSHOP).flat(),t=a.length,d=a.filter(i=>sc[i]).length;return t?Math.round(d/t*100):0}
 
 function pickUser(u){user=u;localStorage.setItem('mp_user',u);startApp()}
 function logout(){user=null;localStorage.removeItem('mp_user');document.getElementById('app').style.display='none';document.getElementById('picker').classList.remove('hide')}
 
 function checkSync(){const h=location.hash;if(!h.startsWith('#s='))return;try{const d=decodeURIComponent(h.slice(3)).split('|');if(d.length>=4){const who=d[0],mask=parseInt(d[1]),spct=parseInt(d[2]),week=parseInt(d[3]);if(week===wk&&U[who]){
   let ex={};try{ex=JSON.parse(localStorage.getItem(K(who,'ci'))||'{}')}catch{}
-  DAYS.forEach((_,i)=>MK.forEach((k,j)=>{const key=i+'_'+k;if((mask>>(i*3+j))&1){if(!ex[key])ex[key]={time:'synced'}}else{delete ex[key]}}));
+  var syncDays=who==='becky'?BDAYS:JDAYS;
+  syncDays.forEach((_,i)=>['b','l','dn'].forEach((k,j)=>{if(!_[k])return;const key=i+'_'+k;if((mask>>(i*3+j))&1){if(!ex[key])ex[key]={time:'synced'}}else{delete ex[key]}}));
   localStorage.setItem(K(who,'ci'),JSON.stringify(ex));localStorage.setItem(who+'_sp_w'+wk,spct);
   toast('Got '+U[who].nm+"'s update ✨");if(user!==who)tab=3}}}catch{}history.replaceState(null,'',location.pathname)}
-function shareProgress(){const m=getBM(myCI),sp=getSP(mySC),d=encodeURIComponent([user,m,sp,wk].join('|')),url=location.origin+location.pathname+'#s='+d;if(navigator.share)navigator.share({title:U[user].nm+"'s meal plan progress",url}).catch(()=>{});else{navigator.clipboard?.writeText(url).then(()=>toast('Link copied ✓')).catch(()=>{})}}
+function shareProgress(){const m=getBM(myCI,user),sp=getSP(mySC,user),d=encodeURIComponent([user,m,sp,wk].join('|')),url=location.origin+location.pathname+'#s='+d;if(navigator.share)navigator.share({title:U[user].nm+"'s meal plan progress",url}).catch(()=>{});else{navigator.clipboard?.writeText(url).then(()=>toast('Link copied ✓')).catch(()=>{})}}
 
 let pDi=0,pMk='';
 function trigUp(di,mk){pDi=di;pMk=mk;document.getElementById('fup').click()}
 function mcH(di,mk,meal,c,cls,edit){
   const k=di+'_'+mk,has=edit?myCI[k]:fCI[k];
   let photo='';
-  if(edit){
-    if(has&&has.photo)photo=`<div class="mc-img-w"><img class="mc-img" src="${has.photo}"><div class="mc-meta"><span class="mc-time">${has.time}</span><button class="mc-re" onclick="trigUp(${di},'${mk}')">Retake</button></div></div>`;
-    else if(has)photo=`<div style="font-size:12px;color:var(--acc);font-weight:600">✓ Checked in</div>`;
-    else photo=`<button class="mc-btn" onclick="trigUp(${di},'${mk}')"><span>📷</span>Check in</button>`;
-  }else{
-    if(has&&has.photo)photo=`<div class="mc-img-w"><img class="mc-img" src="${has.photo}"><div class="mc-meta"><span class="mc-time">${has.time}</span></div></div>`;
-    else if(has)photo=`<div style="font-size:12px;color:var(--acc);font-weight:600">✓ Done</div>`;
-    else photo=`<div style="font-size:12px;color:var(--faint);font-family:var(--serif);font-style:italic">Pending</div>`;
+  // snacks (sn, sn2) are info-only — no check-in
+  var isSnack=mk==='sn'||mk==='sn2';
+  if(!isSnack){
+    if(edit){
+      if(has&&has.photo)photo=`<div class="mc-img-w"><img class="mc-img" src="${has.photo}"><div class="mc-meta"><span class="mc-time">${has.time}</span><button class="mc-re" onclick="trigUp(${di},'${mk}')">Retake</button></div></div>`;
+      else if(has)photo=`<div style="font-size:12px;color:var(--acc);font-weight:600">✓ Checked in</div>`;
+      else photo=`<button class="mc-btn" onclick="trigUp(${di},'${mk}')"><span>📷</span>Check in</button>`;
+    }else{
+      if(has&&has.photo)photo=`<div class="mc-img-w"><img class="mc-img" src="${has.photo}"><div class="mc-meta"><span class="mc-time">${has.time}</span></div></div>`;
+      else if(has)photo=`<div style="font-size:12px;color:var(--acc);font-weight:600">✓ Done</div>`;
+      else photo=`<div style="font-size:12px;color:var(--faint);font-family:var(--serif);font-style:italic">Pending</div>`;
+    }
   }
   const items=meal.d.split(' + ').map(s=>s.trim());
-  const descH='<ul class="mc-list">'+items.map(s=>'<li><span class="mc-li-icon">'+eFor(s)+'</span><span class="mc-li-text">'+cap(s)+'</span></li>').join('')+'</ul>';
-  return`<div class="mc up ${cls}"><div class="mc-top"><div class="mc-icon" style="background:${c.lt}">${meal.e}</div><div class="mc-info"><div class="mc-tag" style="color:${c.tx}"><div class="mc-tag-dot" style="background:${c.bg}"></div>${MI[mk]} ${ML[mk]}</div><div class="mc-name">${meal.n}</div></div>${has?`<div class="mc-ck" style="background:${c.gd}">✓</div>`:''}</div><div class="mc-body">${descH}${photo}</div></div>`}
+  // split on ' · ' as well for options
+  var allItems=[];items.forEach(s=>{s.split(' · ').forEach(p=>{if(p.trim())allItems.push(p.trim())})});
+  const descH='<ul class="mc-list">'+allItems.map(s=>'<li><span class="mc-li-icon">'+eFor(s)+'</span><span class="mc-li-text">'+cap(s)+'</span></li>').join('')+'</ul>';
+  var mlbl=(ML2[mk]||ML[mk]||mk),mic=(MI2[mk]||MI[mk]||'');
+  return`<div class="mc up ${cls}"><div class="mc-top"><div class="mc-icon" style="background:${c.lt}">${meal.e}</div><div class="mc-info"><div class="mc-tag" style="color:${c.tx}"><div class="mc-tag-dot" style="background:${c.bg}"></div>${mic} ${mlbl}</div><div class="mc-name">${meal.n}</div></div>${(!isSnack&&has)?`<div class="mc-ck" style="background:${c.gd}">✓</div>`:''}</div><div class="mc-body">${descH}${photo}</div></div>`}
 
 function r0(){const el=document.getElementById('t0');
-  if(tdi<0){el.innerHTML=`<div class="wknd up"><div class="wknd-ic">🌿</div><div class="wknd-t">It's the Weekend</div><div class="wknd-s">Rest up! Don't forget to prep<br>ingredients for next week 😊</div></div>`;return}
-  const d=DAYS[tdi],c=C[tdi],done=MK.filter(m=>myCI[tdi+'_'+m]).length;
-  const left=3-done,sub=done===3?'✓ All meals checked in':left+' meal'+(left>1?'s':'')+' left to check in';
-  let h=`<div class="t-hero up"><div><div class="t-greet">${greet}, ${U[user].nm} ✦</div><div class="t-day">${d.day}</div><div class="t-sub">${sub}</div></div><div class="ring">${ring(done/3,72,4.5,c.bg)}<div class="ring-n" style="color:${c.tx};font-size:16px">${done}/3</div></div></div>`;
-  MK.forEach((mk,i)=>h+=mcH(tdi,mk,d[mk],c,'d'+(i+1),true));
-  if(d.p)h+=`<div class="prep up d4"><div class="prep-ic">📝</div><div><div class="prep-lb">Evening Prep</div><div class="prep-tx">${d.p}</div></div></div>`;
+  var days=uDAYS(),tdi=uTDI();
+  if(tdi<0){el.innerHTML=`<div class="wknd up"><div class="wknd-ic">🌿</div><div class="wknd-t">It's a Rest Day</div><div class="wknd-s">No meals planned for today.<br>Don't forget to prep ingredients! 😊</div></div>`;return}
+  const d=days[tdi],c=C[tdi%C.length],mks=uMK(d),mainMks=mks.filter(m=>m==='b'||m==='l'||m==='dn'),mc2=mainMks.length;
+  const done=mainMks.filter(m=>myCI[tdi+'_'+m]).length;
+  const left=mc2-done,sub=done===mc2?'✓ All meals checked in':left+' meal'+(left>1?'s':'')+' left to check in';
+  let h=`<div class="t-hero up"><div><div class="t-greet">${greet}, ${U[user].nm} ✦</div><div class="t-day">${d.day}</div><div class="t-sub">${sub}</div></div><div class="ring">${ring(done/mc2,72,4.5,c.bg)}<div class="ring-n" style="color:${c.tx};font-size:16px">${done}/${mc2}</div></div></div>`;
+  if(d.ex)h+=`<div class="prep up d1"><div class="prep-ic">🏋️</div><div><div class="prep-lb">Exercise</div><div class="prep-tx">${d.ex}</div></div></div>`;
+  mks.forEach((mk,i)=>h+=mcH(tdi,mk,d[mk],c,'d'+(i+1),true));
+  if(d.p)h+=`<div class="prep up d4"><div class="prep-ic">📝</div><div><div class="prep-lb">Prep & Notes</div><div class="prep-tx">${d.p}</div></div></div>`;
   el.innerHTML=h}
 
-function r1(){const el=document.getElementById('t1');let h='<div class="wk-bar up">';
-  DAYS.forEach((d,i)=>{const c=C[i],done=MK.filter(m=>myCI[i+'_'+m]).length,op=od[i];
-    h+=`<button class="wk-p${op?' on':''}" onclick="togD(${i})" style="${op?'background:'+c.lt+';border-color:'+c.bg:''}"><div class="wk-pd" style="color:${op?c.tx:'var(--text)'}">${d.dn2}</div><div class="wk-dots">${[0,1,2].map(j=>`<div class="wk-dt" style="background:${done>j?c.bg:'#d8d2c6'}"></div>`).join('')}</div></button>`});
+function r1(){const el=document.getElementById('t1');var days=uDAYS();let h='<div class="wk-bar up">';
+  days.forEach((d,i)=>{const c=C[i%C.length],mainMks=['b','l','dn'].filter(m=>d[m]),mc2=mainMks.length,done=mainMks.filter(m=>myCI[i+'_'+m]).length,op=od[i];
+    h+=`<button class="wk-p${op?' on':''}" onclick="togD(${i})" style="${op?'background:'+c.lt+';border-color:'+c.bg:''}"><div class="wk-pd" style="color:${op?c.tx:'var(--text)'}">${d.dn2}</div><div class="wk-dots">${Array.from({length:mc2},(_,j)=>`<div class="wk-dt" style="background:${done>j?c.bg:'#d8d2c6'}"></div>`).join('')}</div></button>`});
   h+='</div>';let any=false;
-  DAYS.forEach((d,i)=>{if(!od[i])return;any=true;const c=C[i],done=MK.filter(m=>myCI[i+'_'+m]).length;
-    h+=`<div class="wk-sec"><div class="wk-sh"><div class="wk-sn" style="background:${c.gd}">${i+1}</div><div><div style="font-family:var(--serif);font-size:22px;font-weight:700">${d.day}</div><div style="font-size:11px;font-weight:600;color:${c.tx};margin-top:3px">${done}/3 checked in</div></div></div>`;
-    MK.forEach((mk,j)=>h+=mcH(i,mk,d[mk],c,'d'+(j+1),true));
-    if(d.p)h+=`<div class="prep sm up d4"><div class="prep-ic">📝</div><div><div class="prep-lb">Prep</div><div class="prep-tx">${d.p}</div></div></div>`;h+='</div>'});
+  days.forEach((d,i)=>{if(!od[i])return;any=true;const c=C[i%C.length],mks=uMK(d),mainMks=mks.filter(m=>m==='b'||m==='l'||m==='dn'),mc2=mainMks.length,done=mainMks.filter(m=>myCI[i+'_'+m]).length;
+    h+=`<div class="wk-sec"><div class="wk-sh"><div class="wk-sn" style="background:${c.gd}">${i+1}</div><div><div style="font-family:var(--serif);font-size:22px;font-weight:700">${d.day}</div><div style="font-size:11px;font-weight:600;color:${c.tx};margin-top:3px">${done}/${mc2} checked in</div></div></div>`;
+    if(d.ex)h+=`<div class="prep sm up d1"><div class="prep-ic">🏋️</div><div><div class="prep-lb">Exercise</div><div class="prep-tx">${d.ex}</div></div></div>`;
+    mks.forEach((mk,j)=>h+=mcH(i,mk,d[mk],c,'d'+(j+1),true));
+    if(d.p)h+=`<div class="prep sm up d4"><div class="prep-ic">📝</div><div><div class="prep-lb">Prep & Notes</div><div class="prep-tx">${d.p}</div></div></div>`;h+='</div>'});
   if(!any)h+=`<div style="text-align:center;padding:40px 20px" class="up d1"><div style="font-size:36px;margin-bottom:8px;opacity:.5">👆</div><div style="font-size:14px;color:var(--muted);font-family:var(--serif);font-style:italic">Tap a day to see meals</div></div>`;
   el.innerHTML=h}
 function togD(i){const was=od[i];od={};if(!was)od[i]=true;r1()}
 
 function r2(){const el=document.getElementById('t2');
-  const all=Object.values(SHOP).flat(),tot=all.length,done=all.filter(i=>mySC[i]).length,pct=tot?Math.round(done/tot*100):0;
-  let h=`<div class="sh-hero up"><div><div class="sh-t">Whole Foods</div><div class="sh-s">Shopping List · ${done} / ${tot}</div></div><div class="ring">${ring(done/tot,60,4,pct===100?'#687a58':'#c09858')}<div class="ring-n" style="font-size:13px;color:var(--text)">${pct}%</div></div></div><div class="sh-bar up d1"><div class="sh-bf" style="width:${pct}%"></div></div>`;
-  let ci2=0;Object.entries(SHOP).forEach(([cat,items])=>{const cd=items.filter(i=>mySC[i]).length;
+  var shop=uSHOP();
+  const all=Object.values(shop).flat(),tot=all.length,done=all.filter(i=>mySC[i]).length,pct=tot?Math.round(done/tot*100):0;
+  var storeName=user==='becky'?'Grocery':'Whole Foods';
+  let h=`<div class="sh-hero up"><div><div class="sh-t">${storeName}</div><div class="sh-s">Shopping List · ${done} / ${tot}</div></div><div class="ring">${ring(done/tot,60,4,pct===100?'#687a58':'#c09858')}<div class="ring-n" style="font-size:13px;color:var(--text)">${pct}%</div></div></div><div class="sh-bar up d1"><div class="sh-bf" style="width:${pct}%"></div></div>`;
+  let ci2=0;Object.entries(shop).forEach(([cat,items])=>{const cd=items.filter(i=>mySC[i]).length;
     h+=`<div class="sh-g up d${Math.min(ci2+2,5)}"><div class="sh-gh"><div class="sh-gn">${cat}</div><div class="sh-gc" style="color:${cd===items.length?'var(--acc)':'var(--muted)'}">${cd}/${items.length}</div></div>`;
     items.forEach(item=>{const ck=!!mySC[item],esc=item.replace(/'/g,"\\'");
       const pm=item.match(/^([^(]+?)(\s*\((.+)\))?$/);
@@ -345,43 +469,47 @@ function rstS(){mySC={};svSC();toast('List reset ✓');r2();rNav()}
 
 function r3(){const el=document.getElementById('t3');
   const f=fr(),fu=U[f],mu=U[user];
-  const myDone=MK.reduce((s,_,j)=>s+DAYS.reduce((s2,_2,i)=>s2+(myCI[i+'_'+MK[j]]?1:0),0),0),mySpct=getSP(mySC);
-  let h=`<div class="fr-card up"><div class="fr-head"><div class="fr-av" style="background:${mu.bg}">${mu.av}</div><div><div class="fr-name">${mu.nm} <span style="font-size:13px;color:var(--muted);font-weight:400;font-family:var(--serif);font-style:italic">(me)</span></div><div class="fr-sub">${myDone}/15 meals · shopping ${mySpct}%</div></div></div>
+  var myDays=uDAYS(),fDays=f==='becky'?BDAYS:JDAYS;
+  var myTotalMeals=0,myDoneMeals=0;
+  myDays.forEach((d,i)=>{['b','l','dn'].forEach(mk=>{if(d[mk]){myTotalMeals++;if(myCI[i+'_'+mk])myDoneMeals++}})});
+  const mySpct=getSP(mySC,user);
+  let h=`<div class="fr-card up"><div class="fr-head"><div class="fr-av" style="background:${mu.bg}">${mu.av}</div><div><div class="fr-name">${mu.nm} <span style="font-size:13px;color:var(--muted);font-weight:400;font-family:var(--serif);font-style:italic">(me)</span></div><div class="fr-sub">${myDoneMeals}/${myTotalMeals} meals · shopping ${mySpct}%</div></div></div>
     <div class="fr-label">This Week</div>
-    <div class="fr-grid">${DAYS.map((d,i)=>{const c=C[i];return`<div class="fr-cell"><div class="fr-cell-d">${d.dn2}</div>${MK.map(mk=>{const has=myCI[i+'_'+mk];return`<div class="fr-dot" style="background:${has?c.bg:'var(--blt)'}"></div><div class="fr-dot-l">${ML[mk][0]}</div>`}).join('')}</div>`}).join('')}</div>
+    <div class="fr-grid" style="grid-template-columns:repeat(${myDays.length},1fr)">${myDays.map((d,i)=>{const c=C[i%C.length];return`<div class="fr-cell"><div class="fr-cell-d">${d.dn2}</div>${['b','l','dn'].filter(mk=>d[mk]).map(mk=>{const has=myCI[i+'_'+mk];return`<div class="fr-dot" style="background:${has?c.bg:'var(--blt)'}"></div><div class="fr-dot-l">${(ML2[mk]||ML[mk])[0]}</div>`}).join('')}</div>`}).join('')}</div>
     <button class="fr-share" onclick="shareProgress()">📤 Share progress with ${fu.nm}</button></div>`;
   h+=`<div class="fr-div">${fu.nm}'s Progress</div>`;
-  const fDone=MK.reduce((s,_,j)=>s+DAYS.reduce((s2,_2,i)=>s2+(fCI[i+'_'+MK[j]]?1:0),0),0);
+  var fTotalMeals=0,fDoneMeals=0;
+  fDays.forEach((d,i)=>{['b','l','dn'].forEach(mk=>{if(d[mk]){fTotalMeals++;if(fCI[i+'_'+mk])fDoneMeals++}})});
   let fSpct=0;try{fSpct=parseInt(localStorage.getItem(f+'_sp_w'+wk)||'0')}catch{}
-  const fSpL=getSP(fSC);if(fSpL>fSpct)fSpct=fSpL;
-  if(fDone>0||fSpct>0){
-    h+=`<div class="fr-card up d2"><div class="fr-head"><div class="fr-av" style="background:${fu.bg}">${fu.av}</div><div><div class="fr-name">${fu.nm}</div><div class="fr-sub">${fDone}/15 meals · shopping ${fSpct}%</div></div></div>
+  const fSpL=getSP(fSC,f);if(fSpL>fSpct)fSpct=fSpL;
+  if(fDoneMeals>0||fSpct>0){
+    h+=`<div class="fr-card up d2"><div class="fr-head"><div class="fr-av" style="background:${fu.bg}">${fu.av}</div><div><div class="fr-name">${fu.nm}</div><div class="fr-sub">${fDoneMeals}/${fTotalMeals} meals · shopping ${fSpct}%</div></div></div>
       <div class="fr-label">This Week</div>
-      <div class="fr-grid">${DAYS.map((d,i)=>{const c=C[i];return`<div class="fr-cell"><div class="fr-cell-d">${d.dn2}</div>${MK.map(mk=>{const has=fCI[i+'_'+mk];return`<div class="fr-dot" style="background:${has?c.bg:'var(--blt)'}"></div><div class="fr-dot-l">${ML[mk][0]}</div>`}).join('')}</div>`}).join('')}</div></div>`;
+      <div class="fr-grid" style="grid-template-columns:repeat(${fDays.length},1fr)">${fDays.map((d,i)=>{const c=C[i%C.length];return`<div class="fr-cell"><div class="fr-cell-d">${d.dn2}</div>${['b','l','dn'].filter(mk=>d[mk]).map(mk=>{const has=fCI[i+'_'+mk];return`<div class="fr-dot" style="background:${has?c.bg:'var(--blt)'}"></div><div class="fr-dot-l">${(ML2[mk]||ML[mk])[0]}</div>`}).join('')}</div>`}).join('')}</div></div>`;
     h+=`<div class="gl-label up d3">📋 ${fu.nm}'s Meals</div>`;
-    DAYS.forEach((d,i)=>{const c=C[i];const fd=MK.filter(m=>fCI[i+'_'+m]).length;if(!fd)return;
+    fDays.forEach((d,i)=>{const c=C[i%C.length];const mainMks=['b','l','dn'].filter(m=>d[m]);const fd=mainMks.filter(m=>fCI[i+'_'+m]).length;if(!fd)return;
       h+=`<div style="font-family:var(--serif);font-size:15px;font-weight:600;color:${c.tx};margin:14px 0 8px;display:flex;align-items:center;gap:8px"><div style="width:8px;height:8px;border-radius:50%;background:${c.bg}"></div>${d.day}</div>`;
-      MK.forEach(mk=>{const has=fCI[i+'_'+mk],meal=d[mk];if(!has)return;
-        h+=`<div class="fr-ro"><div class="fr-ro-h"><div class="fr-ro-ic" style="background:${c.lt}">${meal.e}</div><div><div class="fr-ro-tag" style="color:${c.tx}">${MI[mk]} ${ML[mk]}</div><div class="fr-ro-nm">${meal.n}</div></div><div class="fr-ro-ck">✓</div></div>${has.photo?'<div style="margin-top:10px"><img src="'+has.photo+'" style="width:100%;max-height:180px;object-fit:cover;border-radius:12px;border:1px solid var(--blt)"></div>':''}</div>`})});
+      mainMks.forEach(mk=>{const has=fCI[i+'_'+mk],meal=d[mk];if(!has)return;
+        h+=`<div class="fr-ro"><div class="fr-ro-h"><div class="fr-ro-ic" style="background:${c.lt}">${meal.e}</div><div><div class="fr-ro-tag" style="color:${c.tx}">${(MI2[mk]||MI[mk]||'')} ${(ML2[mk]||ML[mk])}</div><div class="fr-ro-nm">${meal.n}</div></div><div class="fr-ro-ck">✓</div></div>${has.photo?'<div style="margin-top:10px"><img src="'+has.photo+'" style="width:100%;max-height:180px;object-fit:cover;border-radius:12px;border:1px solid var(--blt)"></div>':''}</div>`})});
   }else{
     h+=`<div class="fr-empty up d2"><div class="fr-empty-ic">👯</div><div class="fr-empty-tx">No updates from ${fu.nm} yet<br><br>Ask ${fu.nm} to open the app and tap<br>"Share progress" — then open the link they send you<br><br><span style="font-size:11px;color:var(--faint)">On the same device? ${fu.nm} can just<br>switch profiles by tapping the name badge</span></div></div>`}
   // Friend photos
-  const fAll=[];DAYS.forEach((d,i)=>MK.forEach(m=>{const k=i+'_'+m;if(fCI[k]&&fCI[k].photo)fAll.push({day:d.dn2,meal:ML[m],di:i,...fCI[k]})}));
-  if(fAll.length){h+=`<div class="gl-label up d3">📸 ${fu.nm}'s Check-ins</div><div class="gl-grid">`;fAll.forEach((c,i)=>{const col=C[c.di];h+=`<div class="gl-c" style="animation-delay:${i*40+200}ms"><img src="${c.photo}"><div class="gl-ci" style="background:${col.lt}"><div class="gl-cn" style="color:${col.tx}">${c.day} · ${c.meal}</div><div class="gl-ct2">${c.time}</div></div></div>`});h+='</div>'}
+  const fAll=[];fDays.forEach((d,i)=>['b','l','dn'].filter(m=>d[m]).forEach(m=>{const k=i+'_'+m;if(fCI[k]&&fCI[k].photo)fAll.push({day:d.dn2,meal:(ML2[m]||ML[m]),di:i,...fCI[k]})}));
+  if(fAll.length){h+=`<div class="gl-label up d3">📸 ${fu.nm}'s Check-ins</div><div class="gl-grid">`;fAll.forEach((c,i)=>{const col=C[c.di%C.length];h+=`<div class="gl-c" style="animation-delay:${i*40+200}ms"><img src="${c.photo}"><div class="gl-ci" style="background:${col.lt}"><div class="gl-cn" style="color:${col.tx}">${c.day} · ${c.meal}</div><div class="gl-ct2">${c.time}</div></div></div>`});h+='</div>'}
   // My photos
-  const all=[];DAYS.forEach((d,i)=>MK.forEach(m=>{const k=i+'_'+m;if(myCI[k]&&myCI[k].photo)all.push({day:d.dn2,meal:ML[m],di:i,...myCI[k]})}));
-  if(all.length){h+=`<div class="gl-label up d4">📸 My Check-ins</div><div class="gl-grid">`;all.forEach((c,i)=>{const col=C[c.di];h+=`<div class="gl-c" style="animation-delay:${i*40+250}ms"><img src="${c.photo}"><div class="gl-ci" style="background:${col.lt}"><div class="gl-cn" style="color:${col.tx}">${c.day} · ${c.meal}</div><div class="gl-ct2">${c.time}</div></div></div>`});h+='</div>'}
+  const all=[];myDays.forEach((d,i)=>['b','l','dn'].filter(m=>d[m]).forEach(m=>{const k=i+'_'+m;if(myCI[k]&&myCI[k].photo)all.push({day:d.dn2,meal:(ML2[m]||ML[m]),di:i,...myCI[k]})}));
+  if(all.length){h+=`<div class="gl-label up d4">📸 My Check-ins</div><div class="gl-grid">`;all.forEach((c,i)=>{const col=C[c.di%C.length];h+=`<div class="gl-c" style="animation-delay:${i*40+250}ms"><img src="${c.photo}"><div class="gl-ci" style="background:${col.lt}"><div class="gl-cn" style="color:${col.tx}">${c.day} · ${c.meal}</div><div class="gl-ct2">${c.time}</div></div></div>`});h+='</div>'}
   el.innerHTML=h}
 
-function rNav(){const all=Object.values(SHOP).flat(),shR=all.length-all.filter(i=>mySC[i]).length;const badge=shR>0&&shR<all.length?shR:0;
+function rNav(){const all=Object.values(uSHOP()).flat(),shR=all.length-all.filter(i=>mySC[i]).length;const badge=shR>0&&shR<all.length?shR:0;
   const tabs=[{ic:'☀️',lb:'Today'},{ic:'📅',lb:'Week'},{ic:'🛒',lb:'Shop',badge},{ic:'👯',lb:U[fr()].nm}];
   document.getElementById('nav').innerHTML=tabs.map((t,i)=>`<button class="nb" onclick="sw(${i})"><span class="ni${tab===i?' on':''}">${t.ic}</span><span class="nl${tab===i?' on':''}">${t.lb}</span>${tab===i?'<div class="ndt"></div>':''}${t.badge?`<div class="nbg">${t.badge}</div>`:''}</button>`).join('')}
 function sw(t){document.getElementById('t'+tab).classList.remove('on');tab=t;document.getElementById('t'+tab).classList.add('on');if(t===3){cloudLoadFriend().then(()=>r3())}render()}
-function render(){document.getElementById('wk-lb').textContent='Week '+wk;document.getElementById('hdr-user').innerHTML=`<span class="hdr-user-av">${U[user].av}</span><span class="hdr-user-nm">${U[user].nm}</span>`;r0();r1();r2();r3();rNav()}
+function render(){var planTag=user==='becky'?'Fat Loss · Bone Density':'Mediterranean';document.getElementById('wk-lb').textContent='Week '+wk;document.getElementById('hdr-tag-plan').textContent=planTag;document.getElementById('hdr-user').innerHTML=`<span class="hdr-user-av">${U[user].av}</span><span class="hdr-user-nm">${U[user].nm}</span>`;r0();r1();r2();r3();rNav()}
 var _freshPlan=false;
 function cleanOldWeeks(){
   try{
-    var ver='v3_apr13b';
+    var ver='v4_becky_plan';
     if(localStorage.getItem('mp_ver')!==ver){
       _freshPlan=true;
       var keys=Object.keys(localStorage);
