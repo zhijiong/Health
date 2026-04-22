@@ -227,17 +227,16 @@ const JDAYS=[
     dn:{e:"🐠",n:"Steamed Sea Bass (Half) + Spinach Mushroom Farro · ~490 kcal",d:"Steamed sea bass, half (~180g) + baby spinach (100g) + mushrooms (100g) + farro (50g dry, prepped Sun night) + garlic + sesame oil"},
     p:"Pilates morning — eat breakfast before class, then coffee after · Tonight prep: cook Tue farro (50g dry) + 1 serving tri-color quinoa for Tue lunch"},
   {day:"Tuesday · Apr 21",dn2:"Tue 21",dow:2,date:"2026-04-21",
-    ex:"7:15 – 8:15 AM · OrangeTheory Fitness 2G",
-    total:"~1485",
+    b:{e:"🍵",n:"Taro Soy Milk Fish Maw Pudding · ~230 kcal",d:"Shijia Summer taro soy milk fish maw pudding (252g)"},
+    l:{e:"🍲",n:"CHEAT · Hot Pot",d:"Enjoy hot pot — pick your broth, load up on protein and vegetables"},
+    dn:{e:"🍉",n:"Watermelon",d:"Watermelon"}},
+  {day:"Wednesday · Apr 22",dn2:"Wed 22",dow:3,date:"2026-04-22",
     b:{e:"🍵",n:"Taro Soy Milk Fish Maw Pudding · ~230 kcal",d:"Shijia Summer taro soy milk fish maw pudding (252g)"},
     sn:{e:"☕",n:"Morning Coconut Espresso · ~185 kcal",d:"Coconut espresso concentrate + 2% milk (300ml)",slbl:"Morning Coffee",sic:"☕"},
-    l:{e:"🥗",n:"Kale Shrimp Quinoa Salad · ~510 kcal",d:"Massaged kale + cherry tomatoes + avocado (half, ~60g) + pan-seared Argentine red shrimp (~100g) + tri-color quinoa (~100g cooked, prepped Mon night) + olive oil (1 tsp) + balsamic vinegar"},
+    l:{e:"🥗",n:"Kale Shrimp Quinoa Salad · ~510 kcal",d:"Massaged kale + cherry tomatoes + avocado (half, ~60g) + pan-seared Argentine red shrimp (~100g) + tri-color quinoa (~100g cooked, prepped Tue night) + olive oil (1 tsp) + balsamic vinegar"},
     sn2:{e:"🍵",n:"Osmanthus Oolong Soy Milk Tea + Blueberries · ~175 kcal",d:"Osmanthus oolong tea bag steeped in soy milk (300ml) — 4 min, no sugar + blueberries (half pack, ~125g)",slbl:"Afternoon Tea",sic:"🍵"},
     dn:{e:"🍲",n:"Egg Tofu Miso Soup + Steamed Iron Stick Yam · ~385 kcal",d:"White miso (1 tbsp) + dried seaweed + dried shrimp (1 tsp) + egg × 1 (swirled in) + soft tofu, half block (~150g) + baby greens (handful) · Steamed iron stick yam × 2 (200g each)"},
-    p:"OrangeTheory morning — eat breakfast before class, then coffee after · Soup is light; add an extra yam if still hungry"},
-  {day:"Wednesday · Apr 22",dn2:"Wed 22",dow:3,date:"2026-04-22",
-    dn:{e:"📋",n:"To Be Determined",d:"Meals for Wednesday will be added soon — stay tuned"},
-    p:"Plan pending"},
+    p:"Prep Tue night: cook tri-color quinoa for tomorrow's lunch · Soup is light; add an extra yam if still hungry"},
   {day:"Thursday · Apr 23",dn2:"Thu 23",dow:4,date:"2026-04-23",
     dn:{e:"📋",n:"To Be Determined",d:"Meals for Thursday will be added soon — stay tuned"},
     p:"Plan pending"},
@@ -592,7 +591,7 @@ function render(){var planTag=user==='becky'?'Fat Loss · Bone · Muscle':'Medit
 var _freshPlan=false;
 function cleanOldWeeks(){
   try{
-    var ver='v7_joey_apr20_apr26';
+    var ver='v12_joey_apr20_apr26';
     if(localStorage.getItem('mp_ver')!==ver){
       _freshPlan=true;
       var keys=Object.keys(localStorage);
