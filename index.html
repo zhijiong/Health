@@ -253,10 +253,12 @@ const JDAYS=[
     p:"Orangetheory 9:45 AM — light yogurt bowl ~45 min before class, grab Blue Bottle cold foam NOLA after · Afternoon study at Elysee Cafe · Cook tri-color quinoa Fri night (extra from Fri L) so Sat L assembles fast"},
   {day:"Sunday · Apr 26",dn2:"Sun 26",dow:0,date:"2026-04-26",
     total:"~1740",
+    am:{e:"🧺",n:"Morning Laundry",d:"Wash, dry, and fold the laundry",slbl:"Morning",sic:"🧺"},
     b:{e:"🥟",n:"Red Bean Bun + Soy Milk Tea · ~370 kcal",d:"Red bean steamed bun roll × 1 (~220 kcal) + soy milk tea, 1 cup (~150 kcal)"},
-    l:{e:"🥪",n:"Le Pain Quotidien · Tuscan Tuna Toast + Strawberry Matcha Latte · ~740 kcal",d:"Tuscan tuna tartine (~480 kcal) + strawberry matcha latte (~260 kcal) — afternoon study session at Le Pain Quotidien"},
-    dn:{e:"🦐",n:"Shrimp Asparagus Egg Stir-Fry + Taro Pancake · ~630 kcal",d:"Shrimp stir-fried with asparagus and egg (~350 kcal) + taro-filled pancake × 1 (~280 kcal)"},
-    p:"Morning laundry · Grocery shopping before lunch · Afternoon study session at Le Pain Quotidien (lunch on-site)"},
+    sn:{e:"🛒",n:"Grocery Shopping",d:"Pick up groceries before heading to lunch",slbl:"Mid-Morning",sic:"🛒"},
+    l:{e:"🥪",n:"Le Pain Quotidien · Tuscan Tuna Toast + Strawberry Matcha Latte · ~740 kcal",d:"Tuscan tuna tartine (~480 kcal) + strawberry matcha latte (~260 kcal)"},
+    sn2:{e:"📚",n:"Le Pain Quotidien Study Session",d:"Afternoon study session at Le Pain Quotidien",slbl:"Afternoon",sic:"📚"},
+    dn:{e:"🦐",n:"Shrimp Asparagus Egg Stir-Fry + Taro Pancake · ~630 kcal",d:"Shrimp stir-fried with asparagus and egg (~350 kcal) + taro-filled pancake × 1 (~280 kcal)"}},
 ];
 const JSHOP={"🍵 Breakfast & Coffee (Mon + Wed + Thu)":["Shijia Summer taro soy milk fish maw pudding × 2 (Mon B + Tue B, 252g each)","Blueberries × 1 pack ~250g (half for Mon afternoon + half for Wed afternoon, ~125g each)","Italian espresso concentrate (Mon + Thu morning — check pantry)","Coconut espresso concentrate (Wed morning)","2% milk — small carton (Mon + Wed + Thu morning coffee)"],"🥗 Mon Lunch":["Painterland Sisters plain yogurt × 1 serving","Homemade granola (20g)","Pistachio butter (5g)","Farro — PANTRY (Mon L salad + Mon D stir-fry, cook Sun night)"],"🥗 Wed Lunch":["Argentine red shrimp ~100g (pan-sear for salad — check freezer first)","Tri-color quinoa — PANTRY (prep Tue night, also for Thu D salad)","Avocado × 2 (half for Wed L + Thu D salad)"],"🍵 Afternoon Tea (Mon + Wed)":["Peach oolong tea bags (Mon afternoon)","Osmanthus oolong tea bags (Wed afternoon)","Soy milk — carton (Mon + Wed afternoon tea)"],"🐠 Mon Dinner":["Sea bass × 1 whole or half at seafood counter (~180g portion)","Baby spinach ~120g (Mon D stir-fry)","Mushrooms ~120g (Mon D stir-fry)"],"🍲 Thu Lunch":["White miso paste (1 tbsp — check fridge)","Dried seaweed — PANTRY","Dried shrimp — PANTRY","Soft tofu × 1 block (use half for soup ~150g)","Baby greens × 1 small bunch","Iron stick yam × 2 (200g each, steamed)","Eggs — PANTRY (1 for Thu L soup)"],"🥗 Fri Lunch":["Asparagus × 1 bunch (Fri L + Sat L salad)","Zucchini × 1 (Fri L + Sat L salad)","Mozzarella — fresh ball (Fri L salad)"],"🍲 Fri Dinner":["Extra soft tofu × 1 box (half for Fri D miso soup, ~150g)","Shanghai bok choy × 1 bag (half for Fri D miso soup, ~150g)","Trader Joe's scallion pancake × 1 piece (Fri D)","White miso paste — check fridge (shared w/ Thu L)","Eggs — PANTRY (1 for Fri D poached egg)"],"🥣 Sat Breakfast":["Greek yogurt × 1 small tub (Sat B bowl)","Dark chocolate — small bar, 70%+ (Sat B bowl, shaved or chopped)","Homemade granola — PANTRY (shared w/ Mon B)","Pistachio butter — PANTRY (shared w/ Mon L)"],"🥗 Sat Lunch":["Salmon fillet ~150g (Sat L pan-seared, salad)","Tomato × 2 medium (Sat L salad)","Tri-color quinoa — PANTRY (cook extra Fri night, shared w/ Wed L + Fri L)"],"🥟 Sat Dinner":["Frozen seafood dumplings × 1 bag (Sat D pan-fried)","Baby spinach ~100g (Sat D side, sautéed or wilted in)","Strawberry kefir × 1 bottle (Sat D)","Eggs — PANTRY (1 for Sat D dumplings with egg)"],"🥬 Produce (all days)":["Kale × 1 bunch (Mon L + Wed L salads, massaged)","Cherry tomatoes × 1 pint (Mon L + Wed L)","Garlic × 1 head"],"🫙 Pantry":["Extra virgin olive oil (Mon L + Wed L dressing)","Balsamic vinegar (Mon L + Wed L dressing)","Sesame oil (Mon D stir-fry)"]};
 
@@ -393,8 +395,9 @@ const BSHOP={
 function uDAYS(){return user==='becky'?BDAYS:JDAYS}
 function uSHOP(){return user==='becky'?BSHOP:JSHOP}
 function uMK(d){
-  // Return meal keys in chronological order (b, sn, l, sn2, dn)
+  // Return meal keys in chronological order (am, b, sn, l, sn2, dn)
   var keys=[];
+  if(d.am)keys.push('am');
   if(d.b)keys.push('b');
   if(d.sn)keys.push('sn');
   if(d.l)keys.push('l');
@@ -407,8 +410,8 @@ function uMealCount(d){
   var n=0;if(d.b)n++;if(d.l)n++;if(d.dn)n++;return n;
 }
 // Expanded meal labels & icons — per-meal slbl/sic overrides take precedence
-const ML2={b:'Breakfast',l:'Lunch',dn:'Dinner',sn:'Pre-Workout Snack',sn2:'Afternoon Snack'};
-const MI2={b:'☀️',l:'🍱',dn:'🌙',sn:'⚡',sn2:'🍵'};
+const ML2={b:'Breakfast',l:'Lunch',dn:'Dinner',sn:'Pre-Workout Snack',sn2:'Afternoon Snack',am:'Morning'};
+const MI2={b:'☀️',l:'🍱',dn:'🌙',sn:'⚡',sn2:'🍵',am:'🌅'};
 
 // Map today -> plan-day index. Prefer exact date (handles two-Sunday plans),
 // fall back to day-of-week for plans that don't carry dates.
@@ -495,8 +498,8 @@ function trigUp(di,mk){pDi=di;pMk=mk;document.getElementById('fup').click()}
 function mcH(di,mk,meal,c,cls,edit){
   const k=di+'_'+mk,has=edit?myCI[k]:fCI[k];
   let photo='';
-  // snacks (sn, sn2) are info-only — no check-in
-  var isSnack=mk==='sn'||mk==='sn2';
+  // snacks/activities (am, sn, sn2) are info-only — no check-in
+  var isSnack=mk==='sn'||mk==='sn2'||mk==='am';
   if(!isSnack){
     if(edit){
       if(has&&has.photo)photo=`<div class="mc-img-w"><img class="mc-img" src="${has.photo}"><div class="mc-meta"><span class="mc-time">${has.time}</span><button class="mc-re" onclick="trigUp(${di},'${mk}')">Retake</button></div></div>`;
