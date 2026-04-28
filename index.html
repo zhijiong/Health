@@ -122,7 +122,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;o
 .sh-gh{padding:14px 20px 12px;border-bottom:1px solid var(--blt);display:flex;justify-content:space-between;align-items:center}
 .sh-gn{font-size:14px;font-weight:700;color:var(--text)}
 .sh-gc{font-size:11px;font-weight:600}
-.sh-r{padding:12px 18px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #f5f1e8;cursor:pointer;transition:background .12s}
+.sh-r{width:100%;text-align:left;padding:12px 18px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #f5f1e8;cursor:pointer;transition:background .12s}
 .sh-r:last-child{border-bottom:none}
 .sh-r:active{background:#f0ece2}
 .sh-r.dn{background:#f8faf6}
@@ -219,7 +219,7 @@ const C=[
 const JDAYS=[
   {day:"Saturday · Apr 25",dn2:"Sat 25",dow:6,date:"2026-04-25",
     total:"~1880",
-    ex:"9:45 AM Orangetheory Fitness",
+    ex:"9:45 AM · Orangetheory Fitness",
     b:{e:"🥣",n:"Greek Yogurt Bowl · ~390 kcal",d:"Greek yogurt + homemade granola + dark chocolate + pistachio butter"},
     sn:{e:"☕",n:"Blue Bottle Cold Foam NOLA · ~180 kcal",d:"Blue Bottle cold foam New Orleans iced coffee",slbl:"Morning Coffee",sic:"☕"},
     l:{e:"🥗",n:"Salmon Tri-Color Quinoa Salad · ~750 kcal",d:"Pan-seared salmon + tri-color quinoa + asparagus + zucchini + tomato"},
@@ -253,14 +253,15 @@ const JDAYS=[
     dn:{e:"🍲",n:"Post-Workout · Farro Edamame Tofu Beef + Garlic Spinach · ~760 kcal",d:"Farro with edamame, dried tofu, and ground beef fried together + garlic spinach"},
     p:"OTF Tread 50 at 6:45 PM — light pre-workout snack ~1h before class · Eat dinner after class · Reuse Mon's farro + edamame-dried-tofu-beef stir-fry · Sauté garlic spinach fresh after class (quick — 3-4 min)"},
   {day:"Wednesday · Apr 29",dn2:"Wed 29",dow:3,date:"2026-04-29",
-    total:"~1620",
+    total:"~1640",
     b:{e:"🥣",n:"Yogurt Bowl · ~450 kcal",d:"Greek yogurt + red kiwi + homemade granola + dark chocolate + pistachio paste"},
     sn:{e:"☕",n:"Morning Latte · ~120 kcal",d:"Espresso + 2% milk",slbl:"Morning Latte",sic:"☕"},
     l:{e:"🥪",n:"Shrimp Avocado Egg Sandwich + Kale Tomato · ~550 kcal",d:"Sandwich: 2 slices sprouted bread + shrimp + half avocado + 1 egg · Kale with tomato"},
     sn2:{e:"🍵",n:"Afternoon Tea · ~0 kcal",d:"Tea — no sugar",slbl:"Afternoon Tea",sic:"🍵"},
-    dn:{e:"🍲",n:"White Miso Tofu Soup + Steel-Cut Oats · ~500 kcal",d:"White miso tofu soup with seaweed + steel-cut oats with soy milk and black sesame paste"},
-    p:"Prep oats ahead if you want dinner fast · Keep the miso soup gentle after boiling so the tofu stays soft · Shrimp avocado egg sandwich uses the same sprouted bread base as Tue lunch"},
+    dn:{e:"🍲",n:"White Miso Tofu Soup + Steel-Cut Oats · ~520 kcal",d:"White miso tofu soup with seaweed and Chinese cabbage + steel-cut oats with soy milk and black sesame paste"},
+    p:"Prep oats ahead if you want dinner fast · Add Chinese cabbage near the end so it stays tender-crisp · Keep the miso soup gentle after boiling so the tofu stays soft · Shrimp avocado egg sandwich uses the same sprouted bread base as Tue lunch"},
   {day:"Thursday · Apr 30",dn2:"Thu 30",dow:4,date:"2026-04-30",
+    ex:"17:30 · Pilates",
     b:{e:"📝",n:"TBD",d:"To be planned"},
     l:{e:"📝",n:"TBD",d:"To be planned"},
     dn:{e:"📝",n:"TBD",d:"To be planned"}},
@@ -305,6 +306,7 @@ const JSHOP={
     "Soft tofu × 2 blocks (Mon D + Wed D miso soups)",
     "White miso paste (Mon D + Wed D — check fridge)",
     "Dried seaweed — PANTRY (Mon D + Wed D miso soups)",
+    "Chinese cabbage / napa cabbage × 1 small head (Wed D miso soup)",
     "Strawberry kefir × 1 bottle (Mon D)",
   ],
   "🥒 Mon Dinner — Roasted Zucchini":[
@@ -474,9 +476,9 @@ function uTDI(){
   var days=uDAYS();
   var now=new Date();
   var ymd=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
-  for(var i=0;i<days.length;i++){if(days[i].date===ymd)return i}
+  for(var i=0;i<days.length;i++){if(days[i]&&days[i].date===ymd)return i}
   var dow=now.getDay();
-  for(var i=0;i<days.length;i++){if(days[i].dow===dow&&!days[i].date)return i}
+  for(var i=0;i<days.length;i++){if(days[i]&&days[i].dow===dow&&!days[i].date)return i}
   return -1;
 }
 
@@ -496,11 +498,12 @@ const START=new Date('2026-04-25');
 const wk=(()=>{const d=new Date()-START;return d<0?1:Math.floor(d/(8*864e5))+1})();
 const greet=(()=>{const h=new Date().getHours();return h<6?'Burning the midnight oil':h<12?'Good morning':h<18?'Good afternoon':'Good evening'})();
 
-let user=null,tab=0,myCI={},mySC={},od={},fCI={},fSC={};
+let user=null,tab=0,myCI={},mySC={},myEX={},od={},fCI={},fSC={},fEX={};
 function K(u,k){return u+'_'+k+'_w'+wk}
-function ld(){try{myCI=JSON.parse(localStorage.getItem(K(user,'ci'))||'{}')}catch{}try{mySC=JSON.parse(localStorage.getItem(K(user,'sc'))||'{}')}catch{}const f=fr();try{fCI=JSON.parse(localStorage.getItem(K(f,'ci'))||'{}')}catch{}try{fSC=JSON.parse(localStorage.getItem(K(f,'sc'))||'{}')}catch{}}
+function ld(){try{myCI=JSON.parse(localStorage.getItem(K(user,'ci'))||'{}')}catch{}try{mySC=JSON.parse(localStorage.getItem(K(user,'sc'))||'{}')}catch{}try{myEX=JSON.parse(localStorage.getItem(K(user,'ex'))||'{}')}catch{}const f=fr();try{fCI=JSON.parse(localStorage.getItem(K(f,'ci'))||'{}')}catch{}try{fSC=JSON.parse(localStorage.getItem(K(f,'sc'))||'{}')}catch{}try{fEX=JSON.parse(localStorage.getItem(K(f,'ex'))||'{}')}catch{}}
 function svCI(){try{localStorage.setItem(K(user,'ci'),JSON.stringify(myCI))}catch{};cloudSave()}
 function svSC(){try{localStorage.setItem(K(user,'sc'),JSON.stringify(mySC))}catch{};cloudSave()}
+function svEX(){try{localStorage.setItem(K(user,'ex'),JSON.stringify(myEX))}catch{};cloudSave()}
 
 // ── Cloud Sync ──
 function syncBase(){
@@ -530,7 +533,7 @@ function cloudSave(){
     if(!url){syncWarn();return}
     fetch(url,{method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({user:user,week:wk,data:{ci:myCI,spct:getSP(mySC,user)}})
+      body:JSON.stringify({user:user,week:wk,data:{ci:myCI,ex:myEX,spct:getSP(mySC,user)}})
     }).then(()=>{}).catch(()=>{});
   },800);
 }
@@ -550,9 +553,15 @@ async function cloudLoadUser(who){
         Object.keys(parsed.ci).forEach(function(k){if(!local[k]||!local[k].photo)local[k]=parsed.ci[k]});
         if(who===user)myCI=local;else fCI=local;
         localStorage.setItem(K(who,'ci'),JSON.stringify(local));
-        if(parsed.spct!==undefined)localStorage.setItem(who+'_sp_w'+wk,parsed.spct);
-        return true;
       }
+      if(parsed&&parsed.ex){
+        var exLocal=who===user?(myEX||{}):(fEX||{});
+        Object.keys(parsed.ex).forEach(function(k){exLocal[k]=parsed.ex[k]});
+        if(who===user)myEX=exLocal;else fEX=exLocal;
+        localStorage.setItem(K(who,'ex'),JSON.stringify(exLocal));
+      }
+      if(parsed.spct!==undefined)localStorage.setItem(who+'_sp_w'+wk,parsed.spct);
+      return true;
     }
   }catch(e){}
   return false;
@@ -562,6 +571,9 @@ function toast(m){const t=document.getElementById('toast');t.textContent=m;t.sty
 function ring(p,sz=68,sw=4,col='#687a58'){const r=(sz-sw)/2,c=2*Math.PI*r,o=c*(1-p);return`<svg width="${sz}" height="${sz}" style="transform:rotate(-90deg)"><circle cx="${sz/2}" cy="${sz/2}" r="${r}" fill="none" stroke="var(--blt)" stroke-width="${sw}"/><circle cx="${sz/2}" cy="${sz/2}" r="${r}" fill="none" stroke="${col}" stroke-width="${sw}" stroke-dasharray="${c}" stroke-dashoffset="${o}" stroke-linecap="round" style="transition:stroke-dashoffset .8s cubic-bezier(.16,1,.3,1)"/></svg>`}
 function getBM(ci,who){var days=who==='becky'?BDAYS:JDAYS;let m=0;days.forEach((_,i)=>['b','l','dn'].forEach((k,j)=>{if(_[k]&&ci[i+'_'+k])m|=1<<(i*3+j)}));return m}
 function getSP(sc,who){const a=Object.values(who==='becky'?BSHOP:JSHOP).flat(),t=a.length,d=a.filter(i=>sc[i]).length;return t?Math.round(d/t*100):0}
+function exList(d){return Array.isArray(d.ex)?d.ex:(d.ex?[d.ex]:[])}
+function exKey(i,j){return i+'_ex_'+j}
+function togEx(i,j){const k=exKey(i,j);if(myEX[k])delete myEX[k];else myEX[k]={time:new Date().toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})};svEX();r2();toast(myEX[k]?'Exercise checked off ✓':'Exercise unchecked')}
 
 function pickUser(u){user=u;localStorage.setItem('mp_user',u);startApp()}
 function logout(){user=null;localStorage.removeItem('mp_user');document.getElementById('app').style.display='none';document.getElementById('picker').classList.remove('hide')}
@@ -624,14 +636,16 @@ function togD(i){const was=od[i];od={};if(!was)od[i]=true;r1()}
 
 function r2(){const el=document.getElementById('t2');
   var days=uDAYS();
-  var withEx=days.filter(d=>d.ex).length;
-  let h=`<div class="sh-hero up"><div><div class="sh-t">Exercise</div><div class="sh-s">${withEx} session${withEx===1?'':'s'} this week</div></div><div style="font-size:32px">🏋️</div></div>`;
+  var totalEx=days.reduce((n,d)=>n+exList(d).length,0),doneEx=days.reduce((n,d,i)=>n+exList(d).filter((_,j)=>myEX[exKey(i,j)]).length,0);
+  let h=`<div class="sh-hero up"><div><div class="sh-t">Exercise</div><div class="sh-s">${doneEx}/${totalEx} session${totalEx===1?'':'s'} checked off</div></div><div style="font-size:32px">🏋️</div></div>`;
   days.forEach((d,i)=>{const c=C[i%C.length];const isRest=!d.ex;
     h+=`<div class="sh-g up d${Math.min(i+2,5)}"><div class="sh-gh" style="background:${isRest?'transparent':c.lt}"><div class="sh-gn" style="color:${isRest?'var(--muted)':c.tx}">${d.day}</div>${isRest?'<div class="sh-gc" style="color:var(--faint)">Rest</div>':''}</div>`;
     if(isRest){
       h+=`<div class="sh-r"><span class="sh-ic">🛌</span><div class="sh-tx"><span class="sh-item" style="color:var(--muted);font-style:italic;font-family:var(--serif)">No workout planned</span></div></div>`;
     }else{
-      h+=`<div class="sh-r"><span class="sh-ic">🏋️</span><div class="sh-tx"><span class="sh-item">${d.ex}</span></div></div>`;
+      exList(d).forEach((ex,j)=>{const done=myEX[exKey(i,j)];
+        h+=`<button class="sh-r${done?' dn':''}" onclick="togEx(${i},${j})"><span class="sh-c${done?' on':''}">${done?'✓':''}</span><span class="sh-ic">🏋️</span><div class="sh-tx"><span class="sh-item">${ex}</span>${done?'<span class="sh-note">Completed '+done.time+'</span>':''}</div></button>`;
+      });
     }
     h+='</div>';
   });
@@ -687,7 +701,7 @@ function cleanOldWeeks(){
       // Wipe all _ci/_sc/_sp keys (resets shopping + Becky check-ins for fresh session).
       var keys=Object.keys(localStorage);
       keys.forEach(function(k){
-        if(k.indexOf('_ci_w')!==-1||k.indexOf('_sc_w')!==-1||k.indexOf('_sp_w')!==-1)localStorage.removeItem(k);
+        if(k.indexOf('_ci_w')!==-1||k.indexOf('_sc_w')!==-1||k.indexOf('_ex_w')!==-1||k.indexOf('_sp_w')!==-1)localStorage.removeItem(k);
       });
       // Restore Joey check-ins (Becky's stay wiped).
       localStorage.setItem('joey_ci_w1',JSON.stringify(oldJoeyCI));
@@ -695,8 +709,8 @@ function cleanOldWeeks(){
       // Push migrated state to cloud so other devices stay in sync.
       var url=syncUrl('');
       if(url){
-        fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user:'joey',week:wk,data:{ci:oldJoeyCI,spct:0}})}).catch(function(){});
-        fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user:'becky',week:wk,data:{ci:{},spct:0}})}).catch(function(){});
+        fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user:'joey',week:wk,data:{ci:oldJoeyCI,ex:{},spct:0}})}).catch(function(){});
+        fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user:'becky',week:wk,data:{ci:{},ex:{},spct:0}})}).catch(function(){});
       }
     }
     var keys2=Object.keys(localStorage);
