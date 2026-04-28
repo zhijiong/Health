@@ -8,8 +8,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Meal Plan">
 <title>Meal Plan</title>
-<link rel="icon" type="image/png" href="icon.png">
-<link rel="apple-touch-icon" sizes="180x180" href="icon.png">
+<link rel="icon" type="image/png" href="assets/icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/icon.png">
 <link rel="manifest" href="manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
 <style>
@@ -174,7 +174,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;o
 </head>
 <body>
 <div class="picker" id="picker">
-  <div class="pk-logo"><img src="icon.png" alt=""></div>
+  <div class="pk-logo"><img src="assets/icon.png" alt=""></div>
   <div class="pk-t">Meal Plan</div>
   <div class="pk-s">Who's cooking today?</div>
   <div class="pk-cards">
@@ -193,7 +193,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;o
 
 <div id="app" style="display:none">
   <div class="hdr"><div class="hdr-row">
-    <div class="hdr-logo"><img src="icon.png" alt=""></div>
+    <div class="hdr-logo"><img src="assets/icon.png" alt=""></div>
     <div><div class="hdr-tag"><span id="hdr-tag-plan">Mediterranean</span> · <span id="wk-lb"></span></div><div class="hdr-title">Meal Plan</div></div>
     <button class="hdr-user" onclick="logout()" id="hdr-user"></button>
   </div></div>
@@ -218,44 +218,48 @@ const C=[
 // ── Joey's plan (Sat Apr 25 → Fri May 1, Mediterranean) ──
 const JDAYS=[
   {day:"Saturday · Apr 25",dn2:"Sat 25",dow:6,date:"2026-04-25",
-    total:"~1800",
+    total:"~1880",
     ex:"9:45 AM Orangetheory Fitness",
-    b:{e:"🥣",n:"Greek Yogurt Bowl · ~370 kcal",d:"Greek yogurt + homemade granola + dark chocolate + pistachio butter"},
-    sn:{e:"☕",n:"Blue Bottle Cold Foam NOLA · ~150 kcal",d:"Blue Bottle cold foam New Orleans iced coffee",slbl:"Morning Coffee",sic:"☕"},
-    l:{e:"🥗",n:"Salmon Tri-Color Quinoa Salad · ~680 kcal",d:"Pan-seared salmon + tri-color quinoa + asparagus + zucchini + tomato"},
+    b:{e:"🥣",n:"Greek Yogurt Bowl · ~390 kcal",d:"Greek yogurt + homemade granola + dark chocolate + pistachio butter"},
+    sn:{e:"☕",n:"Blue Bottle Cold Foam NOLA · ~180 kcal",d:"Blue Bottle cold foam New Orleans iced coffee",slbl:"Morning Coffee",sic:"☕"},
+    l:{e:"🥗",n:"Salmon Tri-Color Quinoa Salad · ~750 kcal",d:"Pan-seared salmon + tri-color quinoa + asparagus + zucchini + tomato"},
     sn2:{e:"📚",n:"Elysee Cafe Study Session",d:"Afternoon study session at Elysee Cafe",slbl:"Afternoon",sic:"📚"},
-    dn:{e:"🥟",n:"Pan-Fried Seafood Dumplings with Egg + Baby Spinach + Strawberry Kefir · ~600 kcal",d:"Pan-fried seafood dumplings with egg + baby spinach · Strawberry kefir"},
+    dn:{e:"🥟",n:"Pan-Fried Seafood Dumplings with Egg + Baby Spinach + Strawberry Kefir · ~560 kcal",d:"Pan-fried seafood dumplings with egg + baby spinach · Strawberry kefir"},
     p:"Orangetheory 9:45 AM — light yogurt bowl ~45 min before class, grab Blue Bottle cold foam NOLA after · Afternoon study at Elysee Cafe · Cook tri-color quinoa Fri night (extra from Fri L) so Sat L assembles fast"},
   {day:"Sunday · Apr 26",dn2:"Sun 26",dow:0,date:"2026-04-26",
-    total:"~1780",
+    total:"~1670",
     am:{e:"🧺",n:"Morning Laundry",d:"Wash, dry, and fold the laundry",slbl:"Morning",sic:"🧺"},
     b:{e:"🥟",n:"Red Bean Bun + Soy Milk Tea · ~370 kcal",d:"Red bean steamed bun roll × 1 + soy milk tea, 1 cup"},
     sn:{e:"🛒",n:"Grocery Shopping",d:"Pick up groceries before heading to lunch",slbl:"Mid-Morning",sic:"🛒"},
     l:{e:"🥪",n:"Le Pain Quotidien · Tuscan Tuna Toast + Strawberry Matcha Latte · ~740 kcal",d:"Tuscan tuna tartine + strawberry matcha latte"},
     sn2:{e:"📚",n:"Le Pain Quotidien Study Session",d:"Afternoon study session at Le Pain Quotidien",slbl:"Afternoon",sic:"📚"},
-    dn:{e:"🦐",n:"Shrimp Asparagus Egg Stir-Fry + Taro Pancake + Raspberries · ~670 kcal",d:"Shrimp stir-fried with asparagus and egg + taro-filled pancake × 1 + raspberries ~80g"}},
+    dn:{e:"🦐",n:"Shrimp Asparagus Egg Stir-Fry + Taro Pancake + Raspberries · ~560 kcal",d:"Shrimp stir-fried with asparagus and egg + taro-filled pancake × 1 + raspberries ~80g"}},
   {day:"Monday · Apr 27",dn2:"Mon 27",dow:1,date:"2026-04-27",
-    total:"~1635",
+    total:"~1805",
     ex:"6:00 PM · 50 min Pilates",
-    b:{e:"🥣",n:"Yogurt Bowl · ~375 kcal",d:"Greek yogurt + raspberries + homemade granola + dark chocolate + black sesame paste"},
-    sn:{e:"☕",n:"Morning Espresso · ~30 kcal",d:"Espresso concentrate + 2% milk",slbl:"Morning Coffee",sic:"☕"},
-    l:{e:"🥪",n:"Sprouted Bread + Edamame Tofu Beef Stir-Fry + Kale Tomato · ~680 kcal",d:"Sprouted bread × 2 slices + edamame and dried tofu fried with ground beef + kale with tomato"},
+    b:{e:"🥣",n:"Yogurt Bowl · ~405 kcal",d:"Greek yogurt + raspberries + homemade granola + dark chocolate + black sesame paste"},
+    sn:{e:"☕",n:"Morning Latte · ~120 kcal",d:"Espresso + 2% milk",slbl:"Morning Latte",sic:"☕"},
+    l:{e:"🥪",n:"Sprouted Bread + Edamame Tofu Beef Stir-Fry + Kale Tomato · ~710 kcal",d:"Sprouted bread × 2 slices + edamame and dried tofu fried with ground beef + kale with tomato"},
     sn2:{e:"🍵",n:"Afternoon Oolong Tea · ~0 kcal",d:"Oolong tea — no sugar",slbl:"Afternoon Tea",sic:"🍵"},
-    dn:{e:"🍲",n:"Roasted Zucchini + Farro + Miso Tofu Egg Soup + Strawberry Kefir · ~550 kcal",d:"Roasted zucchini + plain farro + white miso tofu egg seaweed soup + strawberry kefir"},
+    dn:{e:"🍲",n:"Roasted Zucchini + Farro + Miso Tofu Egg Soup + Strawberry Kefir · ~570 kcal",d:"Roasted zucchini + plain farro + white miso tofu egg seaweed soup + strawberry kefir"},
     p:"Pilates 6 PM — light afternoon snack before class · Cook farro Sun night (extra portion for Tue D) · Cook double the edamame-dried-tofu-beef stir-fry today (Mon L) to reuse Tue D · Roast zucchini tonight (400°F / 15-20 min)"},
   {day:"Tuesday · Apr 28",dn2:"Tue 28",dow:2,date:"2026-04-28",
-    total:"~1935",
+    total:"~1900",
     ex:"6:45 PM · OTF Tread 50",
-    b:{e:"🍵",n:"Taro Soy Milk Fish Maw Multi-Grain Porridge + Red Kiwi · ~325 kcal",d:"Taro soy milk fish maw multi-grain porridge + red kiwi × 1"},
-    sn:{e:"🍵",n:"Morning Matcha · ~30 kcal",d:"Matcha + 2% milk",slbl:"Morning Matcha",sic:"🍵"},
+    b:{e:"🍵",n:"Taro Soy Milk Fish Maw Multi-Grain Porridge + Red Kiwi · ~310 kcal",d:"Taro soy milk fish maw multi-grain porridge + red kiwi × 1"},
+    sn:{e:"🍵",n:"Morning Matcha Latte · ~120 kcal",d:"Matcha + 2% milk",slbl:"Morning Matcha Latte",sic:"🍵"},
     l:{e:"🥪",n:"Avocado Scallop Egg Sandwich + Kale Tomato · ~560 kcal",d:"Sandwich: 2 slices sprouted bread + half avocado + scallop + 1 egg · Kale with tomato"},
     sn2:{e:"📚",n:"Campus Study · Green Tea + Cookie · ~150 kcal",d:"Afternoon study on campus — green tea + cookie",slbl:"Afternoon",sic:"📚"},
-    dn:{e:"🍲",n:"Post-Workout · Farro Edamame Tofu Beef + Garlic Spinach · ~870 kcal",d:"Farro with edamame, dried tofu, and ground beef fried together + garlic spinach"},
+    dn:{e:"🍲",n:"Post-Workout · Farro Edamame Tofu Beef + Garlic Spinach · ~760 kcal",d:"Farro with edamame, dried tofu, and ground beef fried together + garlic spinach"},
     p:"OTF Tread 50 at 6:45 PM — light pre-workout snack ~1h before class · Eat dinner after class · Reuse Mon's farro + edamame-dried-tofu-beef stir-fry · Sauté garlic spinach fresh after class (quick — 3-4 min)"},
   {day:"Wednesday · Apr 29",dn2:"Wed 29",dow:3,date:"2026-04-29",
-    b:{e:"📝",n:"TBD",d:"To be planned"},
-    l:{e:"📝",n:"TBD",d:"To be planned"},
-    dn:{e:"📝",n:"TBD",d:"To be planned"}},
+    total:"~1620",
+    b:{e:"🥣",n:"Yogurt Bowl · ~450 kcal",d:"Greek yogurt + red kiwi + homemade granola + dark chocolate + pistachio paste"},
+    sn:{e:"☕",n:"Morning Latte · ~120 kcal",d:"Espresso + 2% milk",slbl:"Morning Latte",sic:"☕"},
+    l:{e:"🥪",n:"Shrimp Avocado Egg Sandwich + Kale Tomato · ~550 kcal",d:"Sandwich: 2 slices sprouted bread + shrimp + half avocado + 1 egg · Kale with tomato"},
+    sn2:{e:"🍵",n:"Afternoon Tea · ~0 kcal",d:"Tea — no sugar",slbl:"Afternoon Tea",sic:"🍵"},
+    dn:{e:"🍲",n:"White Miso Tofu Soup + Steel-Cut Oats · ~500 kcal",d:"White miso tofu soup with seaweed + steel-cut oats with soy milk and black sesame paste"},
+    p:"Prep oats ahead if you want dinner fast · Keep the miso soup gentle after boiling so the tofu stays soft · Shrimp avocado egg sandwich uses the same sprouted bread base as Tue lunch"},
   {day:"Thursday · Apr 30",dn2:"Thu 30",dow:4,date:"2026-04-30",
     b:{e:"📝",n:"TBD",d:"To be planned"},
     l:{e:"📝",n:"TBD",d:"To be planned"},
@@ -273,20 +277,21 @@ const JSHOP={
     "Dark chocolate — small bar 70%+ (Mon B)",
     "Black sesame paste 黑芝麻醤 (Mon B — check pantry, Asian market)",
   ],
-  "☕ Morning Coffee + Matcha (Mon + Tue)":[
-    "Italian espresso concentrate (Mon morning — check pantry)",
-    "Matcha powder (Tue morning — check pantry)",
-    "2% milk — small carton (Mon espresso + Tue matcha)",
+  "☕ Morning Lattes + Matcha Latte (Mon-Wed)":[
+    "Italian espresso concentrate (Mon + Wed lattes — check pantry)",
+    "Matcha powder (Tue matcha latte — check pantry)",
+    "2% milk — small carton (Mon latte + Tue matcha latte + Wed latte)",
   ],
-  "🥪 Sprouted Bread Lunches (Mon + Tue)":[
-    "Sprouted bread × 1 loaf (Mon L 2 slices + Tue L 2 slices)",
-    "Avocado × 1 (Tue L sandwich, half)",
+  "🥪 Sprouted Bread Lunches (Mon-Wed)":[
+    "Sprouted bread × 1 loaf (Mon L 2 slices + Tue L 2 slices + Wed L 2 slices)",
+    "Avocado × 2 (Tue L half + Wed L half, with buffer)",
     "Scallops ~100g (Tue L sandwich — sea or bay)",
-    "Eggs × 2 (Tue L sandwich 1 + Mon D miso soup 1)",
+    "Shrimp ~120g (Wed L sandwich)",
+    "Eggs × 3 (Tue L sandwich 1 + Wed L sandwich 1 + Mon D miso soup 1)",
   ],
-  "🥬 Kale + Tomato (Mon L + Tue L)":[
-    "Kale × 1 bunch (Mon L + Tue L)",
-    "Tomatoes × 2-3 medium (Mon L + Tue L)",
+  "🥬 Kale + Tomato (Mon-Wed Lunches)":[
+    "Kale × 1-2 bunches (Mon L + Tue L + Wed L)",
+    "Tomatoes × 3-4 medium (Mon L + Tue L + Wed L)",
   ],
   "🍱 Edamame · Dried Tofu · Ground Beef (Mon L + Tue D)":[
     "Edamame — frozen × 1 bag (Mon L + Tue D)",
@@ -296,18 +301,23 @@ const JSHOP={
   "🌾 Farro (Mon D + Tue D)":[
     "Farro — PANTRY (cook Sun night, extra for Tue D)",
   ],
-  "🍲 Mon Dinner — Miso Soup + Kefir":[
-    "Soft tofu × 1 block (Mon D miso soup)",
-    "White miso paste (Mon D — check fridge)",
-    "Dried seaweed — PANTRY (Mon D miso soup)",
+  "🍲 Miso Soup + Kefir (Mon + Wed)":[
+    "Soft tofu × 2 blocks (Mon D + Wed D miso soups)",
+    "White miso paste (Mon D + Wed D — check fridge)",
+    "Dried seaweed — PANTRY (Mon D + Wed D miso soups)",
     "Strawberry kefir × 1 bottle (Mon D)",
   ],
   "🥒 Mon Dinner — Roasted Zucchini":[
     "Zucchini × 1-2 (Mon D roasted, 400°F / 15-20 min)",
   ],
-  "🍵 Tue Breakfast":[
+  "🍵 Tue + Wed Breakfast Fruit":[
     "Taro soy milk fish maw multi-grain porridge × 1 (Shijia Summer or similar)",
-    "Red kiwi × 1 (Tue B)",
+    "Red kiwi × 2 (Tue B + Wed B)",
+  ],
+  "🥣 Wed Dinner — Steel-Cut Oats":[
+    "Steel-cut oats — PANTRY (Wed D)",
+    "Soy milk — small carton or pantry stock (Wed D)",
+    "Black sesame paste 黑芝麻醤 (Wed D — check pantry)",
   ],
   "🥬 Tue Dinner — Garlic Spinach":[
     "Baby spinach × 1 bunch (Tue D garlic spinach)",
@@ -492,35 +502,60 @@ function ld(){try{myCI=JSON.parse(localStorage.getItem(K(user,'ci'))||'{}')}catc
 function svCI(){try{localStorage.setItem(K(user,'ci'),JSON.stringify(myCI))}catch{};cloudSave()}
 function svSC(){try{localStorage.setItem(K(user,'sc'),JSON.stringify(mySC))}catch{};cloudSave()}
 
-// ── Cloud Sync (direct to Upstash) ──
-const _R='https://vital-aardvark-93781.upstash.io';
-const _T='gQAAAAAAAW5VAAIncDJiZjhkYjI0MzcxZTk0OWZhYjg3YmUyNzc0YzRkODA1OXAyOTM3ODE';
+// ── Cloud Sync ──
+function syncBase(){
+  try{
+    var q=new URLSearchParams(location.search).get('sync');
+    if(q){localStorage.setItem('mp_sync_base',q.replace(/\/$/,''));history.replaceState(null,'',location.pathname+location.hash)}
+    return (localStorage.getItem('mp_sync_base')||'').replace(/\/$/,'');
+  }catch(e){return ''}
+}
+const _SYNC_BASE=syncBase();
+let _syncWarned=false;
+function syncUrl(qs){
+  if(_SYNC_BASE)return _SYNC_BASE+'/api/sync'+(qs||'');
+  if(location.protocol==='file:'||location.hostname.endsWith('github.io'))return '';
+  return '/api/sync'+(qs||'');
+}
+function syncWarn(){
+  if(_syncWarned)return;
+  _syncWarned=true;
+  toast('Cloud history needs the deployed app');
+}
 let _syncT=null;
 function cloudSave(){
   clearTimeout(_syncT);
   _syncT=setTimeout(()=>{
-    var val=JSON.stringify({ci:myCI,spct:getSP(mySC,user)});
-    fetch(_R+'?_token='+_T,{method:'POST',
+    var url=syncUrl('');
+    if(!url){syncWarn();return}
+    fetch(url,{method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(['SET','mp_'+user+'_w'+wk,val,'EX','1209600'])
+      body:JSON.stringify({user:user,week:wk,data:{ci:myCI,spct:getSP(mySC,user)}})
     }).then(()=>{}).catch(()=>{});
   },800);
 }
 async function cloudLoadFriend(){
+  return cloudLoadUser(fr());
+}
+async function cloudLoadUser(who){
   try{
-    var r=await fetch(_R+'/get/mp_'+fr()+'_w'+wk+'?_token='+_T);
-    var d=await r.json();
-    if(d.result){
-      var parsed=JSON.parse(d.result);
+    var url=syncUrl('?user='+encodeURIComponent(who)+'&week='+encodeURIComponent(wk));
+    if(!url){syncWarn();return false}
+    var r=await fetch(url);
+    if(!r.ok)return false;
+    var parsed=await r.json();
+    if(parsed){
       if(parsed&&parsed.ci){
-        var local=fCI||{};
+        var local=who===user?(myCI||{}):(fCI||{});
         Object.keys(parsed.ci).forEach(function(k){if(!local[k]||!local[k].photo)local[k]=parsed.ci[k]});
-        fCI=local;
-        localStorage.setItem(K(fr(),'ci'),JSON.stringify(fCI));
-        if(parsed.spct!==undefined)localStorage.setItem(fr()+'_sp_w'+wk,parsed.spct);
+        if(who===user)myCI=local;else fCI=local;
+        localStorage.setItem(K(who,'ci'),JSON.stringify(local));
+        if(parsed.spct!==undefined)localStorage.setItem(who+'_sp_w'+wk,parsed.spct);
+        return true;
       }
     }
   }catch(e){}
+  return false;
 }
 function fr(){return user==='joey'?'becky':'joey'}
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';clearTimeout(t._t);t._t=setTimeout(()=>t.style.display='none',2200)}
@@ -658,10 +693,11 @@ function cleanOldWeeks(){
       localStorage.setItem('joey_ci_w1',JSON.stringify(oldJoeyCI));
       localStorage.setItem('mp_ver',ver);
       // Push migrated state to cloud so other devices stay in sync.
-      var joeyCloud=JSON.stringify({ci:oldJoeyCI,spct:0});
-      var beckyCloud=JSON.stringify({ci:{},spct:0});
-      fetch(_R+'?_token='+_T,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(['SET','mp_joey_w'+wk,joeyCloud,'EX','1209600'])}).catch(function(){});
-      fetch(_R+'?_token='+_T,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(['SET','mp_becky_w'+wk,beckyCloud,'EX','1209600'])}).catch(function(){});
+      var url=syncUrl('');
+      if(url){
+        fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user:'joey',week:wk,data:{ci:oldJoeyCI,spct:0}})}).catch(function(){});
+        fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user:'becky',week:wk,data:{ci:{},spct:0}})}).catch(function(){});
+      }
     }
     var keys2=Object.keys(localStorage);
     keys2.forEach(function(k){
@@ -670,7 +706,7 @@ function cleanOldWeeks(){
     });
   }catch(e){}
 }
-function startApp(){document.getElementById('picker').classList.add('hide');document.getElementById('app').style.display='block';cleanOldWeeks();ld();checkSync();render();if(!_freshPlan){cloudLoadFriend().then(()=>r3())}}
+function startApp(){document.getElementById('picker').classList.add('hide');document.getElementById('app').style.display='block';cleanOldWeeks();ld();checkSync();render();cloudLoadUser(user).then(function(loaded){if(loaded)render();if(!_freshPlan){cloudLoadFriend().then(()=>r3())}})}
 checkSync();const sv=localStorage.getItem('mp_user');if(sv&&U[sv]){user=sv;startApp()}
 const inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.style.display='none';inp.id='fup';
 inp.onchange=e=>{const f=e.target.files[0];if(!f)return;

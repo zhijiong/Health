@@ -1,5 +1,7 @@
 {
-  "builds": [
-    { "src": "**/*", "use": "@vercel/static" }
-  ]
+  "functions": {
+    "api/sync.js": {
+      "maxDuration": 10
+    }
+  }
 }
