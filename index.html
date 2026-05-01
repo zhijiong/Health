@@ -428,9 +428,9 @@ function cap(s){return s.charAt(0).toUpperCase()+s.slice(1).trim()}
 // Shopping item emoji mapping
 const SEM={salmon:'🐟','sea bass':'🐠',cod:'🐟',shrimp:'🦐',egg:'🥚',yogurt:'🥛',butter:'🧈','soy milk':'🥛',pistachio:'🥜',sesame:'⚫',burrata:'🧀',mozzarella:'🧀',farro:'🌾',oat:'🥣',pasta:'🍝',granola:'🥣',sunflower:'🌻',fermented:'🫙',kale:'🥬',spinach:'🥬',tomato:'🍅',pepper:'🫑',cucumber:'🥒',zucchini:'🥒',mushroom:'🍄',enoki:'🍄',tofu:'🧊',scallion:'🧅',garlic:'🧄',lemon:'🍋',basil:'🌿','pea shoots':'🌿',yam:'🍠','iron stick':'🍠',fruit:'🍎',tea:'🍵',chocolate:'🍫',olive:'🫒','sesame oil':'🫙',vinegar:'🫙','soy sauce':'🫙','bok choy':'🥬',broccoli:'🥦','sweet potato':'🍠','purple sweet':'🍠',blueberr:'🫐',banana:'🍌','pine nut':'🌰','red bean':'🫘',bread:'🍞','whole wheat':'🍞'}
 function sFor(s){const sl=s.toLowerCase();for(const[k,v]of Object.entries(SEM)){if(sl.includes(k))return v}return '•'}
-// Joey's plan runs Sat Apr 25 → Fri May 1 (7-day Sat-start week).
+// Joey's plan runs Sat May 2 → Fri May 8 (7-day Sat-start week).
 // Becky's previous plan was Apr 19 → Apr 26 (now passed, no new plan yet).
-const START=new Date('2026-04-25');
+const START=new Date('2026-05-02');
 const wk=(()=>{const d=new Date()-START;return d<0?1:Math.floor(d/(8*864e5))+1})();
 const greet=(()=>{const h=new Date().getHours();return h<6?'Burning the midnight oil':h<12?'Good morning':h<18?'Good afternoon':'Good evening'})();
 
@@ -626,26 +626,21 @@ function render(){var planTag=user==='becky'?'Fat Loss · Bone · Muscle':'Medit
 var _freshPlan=false;
 function cleanOldWeeks(){
   try{
-    var ver='v15_becky_apr28_may3';
+    var ver='v16_joey_may2_may8';
     var oldVer=localStorage.getItem('mp_ver');
     if(oldVer!==ver){
       _freshPlan=true;
-      // Becky: dates changed (Apr 28 → May 3, 6 days). Wipe Becky check-ins for fresh plan.
-      // Joey: array unchanged from v14. Preserve Joey check-ins as-is.
-      var oldJoeyCI={};
-      try{oldJoeyCI=JSON.parse(localStorage.getItem('joey_ci_w1')||'{}')}catch(e){}
-      // Wipe all _ci/_sc/_sp keys (resets shopping + Becky check-ins for fresh session).
+      // Joey: new week (May 2 → May 8). Wipe Joey check-ins for fresh plan.
+      // Becky: still on Apr 28 → May 3 plan, but week-keyed storage gets reset below.
       var keys=Object.keys(localStorage);
       keys.forEach(function(k){
         if(k.indexOf('_ci_w')!==-1||k.indexOf('_sc_w')!==-1||k.indexOf('_ex_w')!==-1||k.indexOf('_sp_w')!==-1)localStorage.removeItem(k);
       });
-      // Restore Joey check-ins (Becky's stay wiped).
-      localStorage.setItem('joey_ci_w1',JSON.stringify(oldJoeyCI));
       localStorage.setItem('mp_ver',ver);
-      // Push migrated state to cloud so other devices stay in sync.
+      // Push wiped state to cloud so other devices stay in sync.
       var url=syncUrl('');
       if(url){
-        fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user:'joey',week:wk,data:{ci:oldJoeyCI,ex:{},spct:0}})}).catch(function(){});
+        fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user:'joey',week:wk,data:{ci:{},ex:{},spct:0}})}).catch(function(){});
         fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user:'becky',week:wk,data:{ci:{},ex:{},spct:0}})}).catch(function(){});
       }
     }
