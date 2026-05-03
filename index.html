@@ -198,7 +198,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;o
     <button class="hdr-user" onclick="logout()" id="hdr-user"></button>
   </div></div>
   <div class="hdr-div"></div>
-  <div id="t0" class="ct on"></div><div id="t1" class="ct"></div><div id="t2" class="ct"></div><div id="t3" class="ct"></div>
+  <div id="t0" class="ct on"></div><div id="t1" class="ct"></div><div id="t2" class="ct"></div><div id="t3" class="ct"></div><div id="t4" class="ct"></div>
   <nav class="nav" id="nav"></nav>
 </div>
 <div class="toast" id="toast"></div>
@@ -270,118 +270,128 @@ const JSHOP={
   ],
 };
 
-// ── Becky's plan (Apr 28 Tue → May 3 Sun, fat-loss + bone density + muscle) ──
-// Date-based plan. Goals: ↓LDL, ↑bone density, maintain/build muscle.
+// ── Becky's plan (Sun May 3 → Sat May 9, bone density + fat loss + muscle) ──
+// Date-based plan. Goals: ↑bone density (#1), ↓LDL, maintain/build muscle.
+// Exercise: Sun Pilates 10AM · Mon yoga · Tue weights · Wed yoga · Thu weights · Fri/Sat rest
 // Meal keys: b=breakfast, l=lunch, dn=dinner, sn=pre-workout snack, sn2=afternoon snack
 const BDAYS=[
-  {day:"Tuesday · Apr 28",dn2:"Tue 28",dow:2,date:"2026-04-28",
-    b:{e:"🥛",n:"Yogurt + Home-Made Granola Bowl (use-up day)",d:"Remaining yogurt (1 serving, ~150–200g) + home-made granola (~40g) + blueberries (80g) + chia seeds (1 tsp) + a few pistachios (5g) · Quick, no-cook — perfect for a workout day"},
-    l:{e:"🥗",n:"NO-HEAT Quinoa Power Bowl",d:"Pre-cooked quinoa (~150g, cooked Mon night) + TJ ready-to-eat edamame with sea salt (100g, cold) + firm tofu (~100g, cubed cold) + cherry tomatoes (100g) + baby kale (50g, massaged) + olive oil (1 tsp) + lemon juice + sea salt"},
-    sn:{e:"🍌",n:"Pre-Workout Snack (6:30 PM)",d:"Banana × 1 + kefir yogurt (100g) — fast carbs + a little protein before strength work"},
-    dn:{e:"🦐",n:"EARLY Pre-Workout Dinner (5:30 PM) · Shrimp + Baby Broccoli + Quinoa",d:"Pan-seared shrimp (170g) + garlic TJ baby broccoli (half the bag, ~170g) + pre-cooked quinoa (~120g) + ginger + garlic + olive oil (1 tsp)"},
-    ex:"After dinner · 30 min Osteoporosis Exercise + 10 min Stretch",
-    p:"🥛 USE-UP DAY: finish the last yogurt today before it turns — paired with your home-made granola = fast, satisfying breakfast (granola is calorie-dense though, weigh ~40g, don't free-pour) · Prep Mon night: cook quinoa (1.5 cups dry → enough for Tue L + Tue D + Sun D side) · Lunch is fully cold-pack — assemble Mon night, quinoa holds great overnight (cooked tofu also holds well cold) · Eat dinner by 5:30–6 PM so it settles before strength work · Open the TJ baby broccoli bag tonight — must be finished by Thu D (2-day rule) · 💪 Osteoporosis exercise = weight-bearing + impact: squats, lunges, step-ups, push-ups, light jumping/heel drops — bone loves load · Vitamin D with dinner (fat helps absorption)"},
-
-  {day:"Wednesday · Apr 29",dn2:"Wed 29",dow:3,date:"2026-04-29",
-    b:{e:"🥣",n:"Steel-Cut Oats + Granola Topper",d:"Steel-cut oats (50g) + soy milk (250ml) + chia seeds (1 tbsp) + blueberries (80g) + home-made granola (~20g, sprinkled on top for crunch) + pine nuts (5g)"},
-    l:{e:"🍚",n:"LIGHT-HEAT Millet + Red Bean Bowl",d:"Hulled millet (50g dry) + red beans (50g dry) — cooked together Tue night, reheat 1 min + TJ edamame (80g, cold) + baby kale (50g, raw) + 1 hard-boiled egg + olive oil (1 tsp) + dash soy sauce"},
-    dn:{e:"🍲",n:"CHEAT · Hot Pot at Lao Ma Tou with Friday",d:"Enjoy the meal with friends — see hot-pot playbook below so it stays a win"},
-    p:"Cook millet + red beans Tue night for Wed L (make extra — keeps 3 days, also feeds Sat L millet side) · 🔥 HOT-POT CHEAT PLAYBOOK · BROTH: pick CLEAR / mushroom / tomato over the 麻辣 oily one (or split pot and take less from spicy side) · LOAD UP: shrimp, lean fish slices, beef tenderloin (NOT fatty lamb/beef rolls), tofu, all the mushrooms, leafy greens, daikon, kelp, glass noodles in moderation · LIMIT: fatty lamb rolls 肥牛/肥羊, fried fritters 油条/腐皮卷, cheese balls, processed frozen meatballs (sat-fat + sodium bombs that fight LDL goal) · DIPPING SAUCE TRAP: traditional sesame paste 麻酱 bowl = 600+ kcal — make a LIGHT sauce instead with soy sauce + black vinegar + scallion + cilantro + garlic + a tiny dab of sesame paste for flavor · DRINKS: tea, sparkling water, NOT sweet sodas / juice · Cap alcohol at 1 glass beer or wine (zero is better for bone density + LDL) · Stop at ~80% full — hot pot is sneaky, you keep adding · One meal doesn't derail a week ✨"},
-
-  {day:"Thursday · Apr 30",dn2:"Thu 30",dow:4,date:"2026-04-30",
-    b:{e:"🥣",n:"Steel-Cut Oats + Chia Bowl",d:"Steel-cut oats (50g) + soy milk (250ml) + chia seeds (1 tbsp) + blueberries (80g) + pumpkin seeds (10g)"},
-    l:{e:"🍱",n:"CHEAT · Company Dining with Visiting Friend",d:"Friend visiting — eating at the company canteen instead of bringing your own. See cheat playbook below"},
-    sn:{e:"⚡",n:"Pre-Workout Snack (~1h before)",d:"Banana × 1 + chia pudding (chia 1 tbsp soaked in 150ml soy milk + few blueberries, made Wed night) — light, quick energy"},
-    dn:{e:"🐟",n:"Rebalance · Air-Fryer Salmon + Baby Broccoli + Murasaki",d:"Salmon fillet (~170g, skin-on, rubbed with avocado oil + S&P, air fry 400°F / 8–10 min) + rest of TJ baby broccoli bag (~170g, garlic) + steamed murasaki sweet potato × 1 small + lemon"},
-    ex:"After dinner · 30 min Osteoporosis Exercise + 10 min Stretch",
-    p:"🍱 COMPANY-DINING CHEAT PLAYBOOK · You don't pick the menu, but you pick the plate · PRIORITIZE: grilled / steamed protein (chicken, fish, tofu, eggs), salads & veg sides, broth-based soups · GO LIGHT: rice or noodles ½ portion, sauces on the side · SKIP: deep-fried mains, sweet glazed dishes, sugary drinks, dessert · Eat slowly, stop at ~80% full · Be present with your friend — this is also rest for your nervous system 🤝 · 🐟 Tonight is intentionally salmon — omega-3 + lean protein to rebalance after a less-controlled lunch · FINISH the baby broccoli bag tonight (opened Tue, must go) · 💡 AIR-FRYER SALMON: 400°F / 8–10 min for 170g, skin-on, avocado oil + S&P; pull at ~125°F internal / when it just flakes — overcooked salmon = oxidized omega-3 · Vitamin D with this fatty dinner · 💪 Same osteo routine as Tue: squats, lunges, step-ups, push-ups, heel drops + 10 min stretch"},
-
-  {day:"Friday · May 1",dn2:"Fri 1",dow:5,date:"2026-05-01",
-    b:{e:"🥣",n:"Steel-Cut Oats + Granola Topper",d:"Steel-cut oats (50g) + soy milk (250ml) + chia seeds (1 tbsp) + blueberries (80g) + home-made granola (~20g) + pistachios (5g)"},
-    l:{e:"🍜",n:"NO-HEAT Cold Rice Vermicelli + Shrimp Bowl",d:"Rice vermicelli (50g dry, cooked Thu night, rinsed cold) + shrimp (150g, poached Thu night) + shanghai bok choy (80g, blanched Thu night) + cucumber ribbons + pumpkin seeds (10g) + sesame oil + rice vinegar + soy sauce"},
-    dn:{e:"🐟",n:"Air-Fryer Salmon + Bok Choy + Murasaki",d:"Salmon fillet (~170g, skin-on, avocado oil + S&P, air fry 400°F / 8–10 min) + garlic shanghai bok choy (150g) + steamed murasaki sweet potato × 1 small + pine nuts (10g) + lemon"},
-    p:"Prep Thu night: cook vermicelli, rinse cold, toss with a little sesame oil so it doesn't clump + poach shrimp + blanch bok choy (shock in ice water — stays green) · Cold vermicelli does NOT reheat — assemble Fri morning, keep dressing separate until eating · Salmon #2 of the week — double omega-3 hit for LDL ✅ · 🐟 Same air-fryer settings as Thu: 400°F, 8–10 min, skin-on, avoid sugary glazes (teriyaki / sweet miso) — added sugar fights fat loss · Vitamin D with dinner"},
-
-  {day:"Saturday · May 2",dn2:"Sat 2",dow:6,date:"2026-05-02",
-    b:{e:"🥛",n:"Kefir Yogurt Breakfast",d:"Kefir yogurt (200g) + whole wheat bread × 1 slice (toasted) + 1 hard-boiled egg + blueberries (80g) + pistachios (10g)"},
-    l:{e:"🍲",n:"Korean Soondubu Tofu Soup",d:"Lean beef sirloin (100g, thinly sliced) + soft tofu (1 tube, ~300g) + enoki mushrooms (100g) + shanghai bok choy (100g) + egg × 1 (cracked in at end) + garlic + gochugaru + anchovy/veg broth · Side: small bowl hulled millet (your portion ~1/2 cup cooked, from Tue's batch)"},
-    dn:{e:"🍗",n:"Air-Fryer Chicken Thighs + King Oyster Mushrooms + Baby Broccoli + Millet",d:"Air-fryer boneless chicken thighs (~300g total — eat ~150g now, save ~150g for Sun L · marinated in soy sauce + Shaoxing wine + ginger + garlic + a drop of honey, air fry 400°F / 18–20 min, flip halfway) + air-fryer king oyster mushrooms 杏鲍菇 (~250g, sliced thick, olive oil + S&P + cumin or black pepper, 400°F / 12–15 min, shake basket once) + garlic baby broccoli (fresh ~170g, half the new bag) + hulled millet (~50g dry, steamed)"},
-    p:"Soondubu is genuinely on-plan: high protein, calcium-rich tofu, low-cal broth · Use millet from Tue night's batch for the Sat L side (saves cooking ✅) · 🍗 Cook EXTRA chicken tonight (~300g raw → ~250g cooked) — leftover thighs go straight into Sun L noodle soup (cook once, eat twice) · 🍄 King oyster mushrooms air-fry to a meaty, almost abalone-like texture — very satisfying for fat-loss meals · Open the new baby broccoli bag tonight — finish the rest at Sun L · Vitamin D with dinner (chicken thigh fat helps absorption) · 💡 Strength + protein day — supports lean mass while you're in a fat-loss week"},
-
   {day:"Sunday · May 3",dn2:"Sun 3",dow:0,date:"2026-05-03",
-    b:{e:"🍞",n:"Pre-Pilates Breakfast (8:30 AM)",d:"Whole wheat bread × 2 slices (toasted) + eggs × 2 (soft-boiled) + kefir yogurt (150g) + blueberries (80g) + chia seeds (1 tsp)"},
-    l:{e:"🍜",n:"Post-Pilates Wheat Noodle Soup with Leftover Chicken",d:"Wheat noodles (70g dry) + leftover Sat air-fryer chicken (~150g, sliced) + shanghai bok choy (100g, blanched in the broth) + rest of baby broccoli (~80g) + scallion + cilantro + chili oil (optional) + light chicken/veg broth · Post-Pilates protein + carbs = perfect timing"},
-    dn:{e:"🦐",n:"Light Home Dinner · Garlic Shrimp + Smashed Cucumber + Bok Choy",d:"Pan-seared shrimp (200g) with garlic + scallion + a touch of soy + smashed cucumber salad 凉拌黄瓜 (1 cucumber, smashed, with garlic + rice vinegar + sesame oil + chili oil) + stir-fried shanghai bok choy (150g, garlic) + small bowl quinoa (~1/2 cup cooked, leftover from Tue batch — or skip the carb, your call)"},
+    b:{e:"🍞",n:"Pre-Pilates Light Breakfast (8:30 AM)",d:"Whole wheat toast × 1 slice + 1 soft-boiled egg + ½ banana + warm fortified soy milk (200ml, unsweetened) — easy on stomach 90 min before class"},
+    l:{e:"🍠",n:"Post-Pilates · 红豆紫薯抗氧餐",d:"Steamed murasaki sweet potato × 1 small + pre-cooked red beans (~120g, no sugar) tossed with 1 tbsp unsweetened black sesame paste · Side: Greek yogurt (150g) topped with frozen blueberries (60g) + chia (1 tsp) · Plus 1 hard-boiled egg"},
+    dn:{e:"🦐",n:"Light Home · Air-Fryer Shrimp + Baby Broccoli + Quinoa",d:"Air-fryer shrimp (170g, tossed in olive oil + garlic + paprika + S&P) + air-fryer TJ baby broccoli (150g, ½ bag, olive oil + garlic) + small bowl quinoa (~100g cooked, from Sat night batch) + lemon"},
     ex:"10:00 AM Pilates",
-    p:"Use up Sat's leftover chicken in Sun L noodle soup (cook once, eat twice ✅) · Smashed cucumber finishes the Fri L cucumber leftover · Last day of the week — REFLECT: Did the cold-pack lunches actually work for you? Which prep nights felt doable vs. annoying? How did the hot-pot + company-dining cheats land emotionally? Adjust the next plan accordingly · ✨ Wins this week to celebrate: ~9 servings of greens, 2× salmon for omega-3, calcium daily via tofu + soy milk + kefir + bok choy, 2× osteo workouts + Pilates for bone density, 2 cheats handled with a plan — that's the long-game win. One step closer 🚀"},
+    p:"🛒 PREP DAY (Sat May 2 night, before plan starts) · Cook quinoa (1.5 cups dry → covers Sun D + Wed L + Sat L) · Cook hulled millet + red beans together in one pot (~80g millet + ~80g red beans dry, no sugar — keeps 4 days, covers Sun L + Tue L + Thu L) · Soft-boil 5 eggs at once (Sun B + Sun L + Mon L + Wed L + Sat B) · Open ONE TJ baby broccoli bag tonight — only Sun D uses it, so freeze leftovers OR plan to snack on raw broccoli midweek · 🧘 PILATES 10 AM — eat the light breakfast at 8:30, easy on stomach · 💡 AIR-FRYER SHRIMP: 400°F / 7–8 min, shake basket once, just until pink and curled — overcooked shrimp gets rubbery · 💡 AIR-FRYER BABY BROCCOLI: 380°F / 8 min · Dinner is purposely light — Mon's yoga-night salmon soup is the bigger calcium meal · 💊 Vitamin D + K2 with dinner (drizzle olive oil generously — D needs fat to absorb; K2 directs calcium TO bone, not arteries — critical for your #1 goal)"},
+
+  {day:"Monday · May 4",dn2:"Mon 4",dow:1,date:"2026-05-04",
+    b:{e:"🥣",n:"Steel-Cut Oats + Pumpkin Seed Bowl",d:"Steel-cut oats (50g dry, cooked with 250ml fortified soy milk) + chia seeds (1 tbsp) + frozen blueberries (80g) + pumpkin seeds (10g) + a small swirl of unsweetened black sesame paste"},
+    l:{e:"🥗",n:"NO-HEAT Cold Tofu + Edamame Bowl",d:"Firm tofu (150g, cubed cold, drizzled with soy sauce + sesame oil + scallion) + TJ ready-to-eat edamame with sea salt (100g, cold) + cherry tomatoes (100g, halved) + cucumber ribbons (½ cucumber) + baby kale (50g, massaged with olive oil + lemon) + chia (1 tsp) · 1 hard-boiled egg on the side"},
+    dn:{e:"🍲",n:"Yoga-Day · 菌菇三文鱼增钙暖汤 (King Oyster + Pistachio)",d:"Pan-seared salmon (170g, skin-on) + king oyster mushrooms 杏鲍菇 (150g, sliced thick) + soft tofu (150g, cubed) + shelled edamame (60g) + shanghai bok choy (150g) — built into a light dashi/veg broth · Finish: small handful of pistachios (10g) on the side"},
+    ex:"After dinner · 30 min Yoga Stretches",
+    p:"💡 HOW TO COOK THE SALMON SOUP: Heat 1 tsp olive oil in a pot, sear salmon 1–2 min per side just to color (don't cook through), set aside. In same pot sauté garlic + ginger + sliced king oyster mushrooms until fragrant. Pour in 600ml light dashi/veg broth, simmer 5 min. Add tofu and edamame, simmer 3 min. Slide salmon back in, add bok choy last, cover and cook 2 min until salmon just flakes. Salt to taste. Serve pistachios on the side. · No-heat lunch: assemble Sun night, dressing on the side — cold tofu + edamame both hold great overnight · 🐟 Salmon #1 of week — omega-3 for LDL ✅ · 🦴 Tofu + bok choy + soy milk B + sesame paste = stacked calcium day — pair with Vit D + K2 at dinner for absorption · 📅 Greens use-up: bok choy bag opened tonight — must finish by Wed D · 🧘 30 min yoga after dinner aids digestion"},
+
+  {day:"Tuesday · May 5",dn2:"Tue 5",dow:2,date:"2026-05-05",
+    b:{e:"🥣",n:"Steel-Cut Oats + Pine Nut Bowl",d:"Steel-cut oats (50g dry, with 250ml fortified soy milk) + chia (1 tbsp) + frozen blueberries (80g) + pine nuts (10g) · 1 hard-boiled egg on the side for extra protein before a lift day"},
+    l:{e:"🍚",n:"LIGHT-HEAT Millet + Red Bean Bowl",d:"Hulled millet + red beans (~150g cooked, from Sun batch — reheat 1 min) + TJ edamame (80g, cold) + baby kale (50g, raw with olive oil + lemon) + cherry tomatoes (60g) + pumpkin seeds (10g) + dash soy sauce"},
+    sn:{e:"🍌",n:"Pre-Workout Snack (~5:00 PM)",d:"Banana × 1 + kefir yogurt (100g) — fast carbs + a little protein ~1h before strength"},
+    dn:{e:"🥣",n:"EARLY Pre-Lift Dinner (5:30 PM) · Weights-Day · 地中海风味高钙能量碗",d:"Wild Planet sardines in extra virgin olive oil (1 tin, ~106g — eat the soft bones, calcium goldmine) + freshly grated Parmigiano-Reggiano (~25g) + savory steel-cut oats (50g dry, cooked in salted water — NO milk/sugar, treat like risotto) + pumpkin seeds (15g, magnesium) · Side: massaged kale (80g, olive oil + lemon) + roasted tomato (1 medium, halved, olive oil, air-fryer 380°F / 8 min)"},
+    ex:"After dinner · 1h Full-Body Weights",
+    p:"💡 HOW TO BUILD THE BOWL: Cook the steel-cut oats savory — pinch of salt, just water, finish like risotto. Stir in flaked sardines (with their olive oil) and most of the Parmigiano. Pile massaged kale + roasted tomato halves on top. Sprinkle pumpkin seeds + a final shave of Parmigiano. · 📅 Cook EXTRA savory oats tonight (~150g cooked extra) → goes straight into Thu D parmesan oat bowl (cook once, eat twice) · 🐟 Sardines = #1 calcium-per-calorie food on this plan + omega-3. Eat the bones — that's the calcium · 🧀 Parmigiano-Reggiano is naturally low-lactose AND ~330mg calcium per 25g — perfect for your bone goal · 💪 EAT BY 5:30 PM so it settles before the 1h lift · 💊 Vitamin D + K2 with this fatty meal — K2 routes calcium TO bone (your #1 goal) · ⚠️ HONEST TRADEOFF: Parmesan is calorie-dense and has saturated fat. The calcium + protein win on a strength day outweighs it, but stick to ~25g, not free-pour"},
+
+  {day:"Wednesday · May 6",dn2:"Wed 6",dow:3,date:"2026-05-06",
+    b:{e:"🥣",n:"Steel-Cut Oats + Black Sesame Bowl",d:"Steel-cut oats (50g dry, with 250ml fortified soy milk) + chia (1 tbsp) + frozen blueberries (80g) + 1 tbsp unsweetened black sesame paste swirled in (calcium boost) + pumpkin seeds (10g)"},
+    l:{e:"🍱",n:"NO-HEAT Quinoa + Sardine Power Bowl",d:"Pre-cooked quinoa (~150g, from Sat batch) + ½ tin Wild Planet sardines (~50g, flaked) + cherry tomatoes (100g) + cucumber (½, diced) + baby kale (50g, massaged) + olive oil + lemon + Parmigiano shavings (~10g) · 1 hard-boiled egg on the side"},
+    dn:{e:"🍲",n:"Yoga-Day · 菌菇三文鱼增钙暖汤 (Enoki + Pine Nut Variant)",d:"Pan-seared salmon (170g, skin-on) + enoki mushrooms (150g) + soft tofu (150g, cubed) + shelled edamame (60g) + rest of bok choy bag (~120g) — same dashi/broth method as Mon · Finish: pine nuts (10g) on the side"},
+    ex:"After dinner · 30 min Yoga Stretches",
+    p:"💡 SAME SOUP METHOD AS MON, swap king oyster → enoki. Add enoki at the very end (1 min only — they cook fast and turn slimy if overcooked) · 📅 FINISH the bok choy bag tonight (opened Mon — 3-day rule) · 🐟 Salmon #2 of week — locks in your 2× weekly omega-3 target for LDL ✅ · 🦴 No-heat lunch with sardines + parmesan = small calcium-repeat on a non-strength day · 💊 Vitamin D + K2 with this fatty dinner · 🧘 Light yoga after — supports recovery"},
+
+  {day:"Thursday · May 7",dn2:"Thu 7",dow:4,date:"2026-05-07",
+    b:{e:"🥛",n:"Kefir Overnight Oats",d:"Steel-cut oats (40g, cooked plain Wed night, cooled and stirred into 200g kefir overnight-oats style) + chia (1 tbsp) + frozen blueberries (80g) + pumpkin seeds (10g)"},
+    l:{e:"🍚",n:"LIGHT-HEAT Millet + Red Bean Bowl (round 2)",d:"Last of the millet + red beans (~150g cooked, reheat 1 min) + TJ edamame (80g, cold) + rest of baby kale (~50g) + cucumber slices + pumpkin seeds (10g) + 1 hard-boiled egg + dash soy sauce"},
+    sn:{e:"⚡",n:"Pre-Workout Snack (~5:00 PM)",d:"Chia pudding (1 tbsp chia soaked in 150ml fortified soy milk overnight, with a few blueberries) + ½ banana — light, sustained energy before lift"},
+    dn:{e:"🍗",n:"EARLY Pre-Lift Dinner (5:30 PM) · Weights-Day Variant · Air-Fryer Chicken + Parmesan Oat Bowl",d:"Air-fryer boneless chicken thighs (180g, marinated in soy sauce + garlic + ginger + 1 tsp olive oil + black pepper) + savory steel-cut oats (~150g cooked, leftover from Tue, reheat with a splash of soy milk) + freshly grated Parmigiano-Reggiano (~20g) + pumpkin seeds (10g) · Side: garlic shanghai bok choy (150g) + roasted cherry tomatoes (100g, air-fryer 380°F / 6 min)"},
+    ex:"After dinner · 1h Full-Body Weights",
+    p:"💡 HOW TO COOK CHICKEN THIGHS IN AIR FRYER: pat dry, marinate 15+ min, lay flat in basket (no overlap), 400°F / 18–20 min flipping halfway, pull at 165°F internal — juicy and lean · Reheats Tue's savory oats → no cooking from scratch. Stir in fresh Parmigiano + pumpkin seeds for the bone-density combo · 🧀 Parmesan + bok choy on a heavy lift day = double calcium hit · 💪 Eat by 5:30 PM, lift by 6:30 · 💊 Vitamin D + K2 with this fatty meal · ⚠️ HONEST: chicken thighs are higher fat than breasts — pick boneless skinless and don't add extra oil; the marinade is enough"},
+
+  {day:"Friday · May 8",dn2:"Fri 8",dow:5,date:"2026-05-08",
+    b:{e:"🥛",n:"Kefir + Whole Wheat Toast Plate",d:"Kefir yogurt (200g) topped with chia (1 tsp) + frozen blueberries (80g) + pumpkin seeds (10g) · Whole wheat toast × 1 slice with a thin layer of black sesame paste · 1 soft-boiled egg"},
+    l:{e:"🥗",n:"NO-HEAT Edamame + Tofu Smashed Cucumber Bowl",d:"TJ edamame (100g, cold) + firm tofu (150g, cubed cold with soy sauce + sesame oil + scallion) + smashed cucumber 凉拌黄瓜 (1 cucumber, smashed with garlic + rice vinegar + a few drops sesame oil) + cherry tomatoes (100g) + 1 hard-boiled egg + a few pine nuts (5g)"},
+    dn:{e:"🦐",n:"Light Rest-Day · Garlic Shrimp + Bok Choy + Murasaki",d:"Pan-seared shrimp (180g) with garlic + scallion + a touch of soy + chili flakes (optional) + steamed murasaki sweet potato × 1 small + stir-fried shanghai bok choy (150g, garlic) + small side of edamame (50g)"},
+    p:"💡 HOW TO PAN-SEAR SHRIMP: pat very dry, hot pan + 1 tsp olive oil, 60–90 sec per side, finish with garlic + scallion off heat (don't burn the garlic) · Rest day — body recovery, no heavy gym · No-heat lunch holds great cold; assemble Thu night if Fri morning is tight · 💊 Vit D + K2 daily reminder (drizzle olive oil on the sweet potato — D needs fat to absorb)"},
+
+  {day:"Saturday · May 9",dn2:"Sat 9",dow:6,date:"2026-05-09",
+    b:{e:"🥣",n:"Weekend Slow Breakfast · Oats + Sesame + Egg",d:"Steel-cut oats (50g dry, with 250ml fortified soy milk) + chia (1 tbsp) + 1 tbsp black sesame paste + frozen blueberries (80g) + pistachios (10g) · 1 soft-boiled egg on the side"},
+    l:{e:"🍱",n:"LIGHT-HEAT Quinoa + Crispy Tofu + Roasted Veg Bowl",d:"Pre-cooked quinoa (~120g, last of the batch, reheat 1 min) + air-fryer firm tofu (150g, cubed, tossed in 1 tsp soy + 1 tsp cornstarch, 400°F / 12 min) + air-fryer cherry tomato (80g, 380°F / 6 min) + blanched bok choy (100g) + chia (1 tsp) + sesame oil + soy"},
+    dn:{e:"🍲",n:"Light Tofu + Egg + Greens Soup",d:"Light dashi/veg broth (500ml) simmered with soft tofu (200g) + rest of bok choy bag (~100g) + rest of enoki (~80g) + 1 egg dropped in egg-drop style + sesame oil + scallion + dried shrimp (1 tsp, optional umami + extra calcium) · Side: small whole wheat toast × 1 slice with Parmigiano shaved on top"},
+    p:"🌿 Rest day · END-OF-WEEK REFLECTION: Which lunches actually held up cold? Was savory oats sustainable on lift days? Did chia pudding pre-workout feel better than banana+kefir? Adjust next week · ✨ THIS WEEK YOU HIT — 2× salmon (omega-3 for LDL ✅) · 1× sardines + 2× Parmigiano + daily soy milk + sesame paste + bok choy + tofu = stacked calcium for bone density (your #1 goal ✅) · 5 workouts (Pilates + 2 yoga + 2 weights ✅) · daily chia + greens · daily Vit D + K2 (the bone-building duo) — that's the long-game win 💪🦴"},
 ];
 const BSHOP={
   "🐟 Seafood":[
-    "Salmon fillets × 2 ~170g each, skin-on (Thu D + Fri D — ~340g total, air-fryer)",
-    "Shrimp — check freezer stock first; need ~520g total (Tue D 170g + Fri L 150g + Sun D 200g)",
+    "Salmon fillets × 2 ~170g each, skin-on (Mon D + Wed D — yoga-day soups, ~340g total)",
+    "Shrimp — frozen ~350g total (Sun D 170g + Fri D 180g) · check freezer first",
+    "Wild Planet sardines in extra virgin olive oil × 2 tins (Tue D 1 full tin + Wed L ½ tin) · keep an extra tin in pantry",
+    "Dried shrimp 海米 — small bag (Sat D umami + extra calcium — pantry if you have it)",
   ],
   "🍗 Poultry":[
-    "Boneless skinless chicken thighs ~300g / ~0.7 lb (Sat D air-fryer ~150g now + ~150g leftover for Sun L noodle soup)",
-  ],
-  "🥩 Beef":[
-    "Lean beef sirloin ~100g, sliced thin (Sat L soondubu)",
+    "Boneless skinless chicken thighs ~180g (Thu D air-fryer pre-lift dinner)",
   ],
   "🥚 Eggs":[
-    "Eggs × ~5 (Wed L 1 + Sat B 1 + Sat L 1 + Sun B 2) — likely covered by existing stock",
+    "Eggs × ~10 (Sun B 1 + Sun L 1 + Mon L 1 + Tue B 1 + Wed L 1 + Thu L 1 + Fri B 1 + Fri L 1 + Sat B 1 + Sat D 1) — soft-boil 5 at once on prep day",
   ],
   "🧊 Tofu":[
-    "Firm tofu × 1 small block ~150g (Tue L cold cubes)",
-    "Soft tofu × 1 tube ~300g (Sat L soondubu)",
+    "Firm tofu × 3 small blocks ~450g (Mon L 150g cold + Fri L 150g cold + Sat L 150g air-fryer)",
+    "Soft tofu × 2 tubes ~500g (Mon D salmon soup 150g + Wed D salmon soup 150g + Sat D egg-drop soup 200g)",
   ],
   "🍄 Mushrooms":[
-    "Enoki mushrooms × 1 pack (Sat L soondubu, 100g)",
-    "King oyster mushrooms 杏鲍菇 × 2 large (~250g, Sat D air-fryer)",
+    "King oyster mushrooms 杏鲍菇 × 1 pack (~150g, Mon D salmon soup)",
+    "Enoki mushrooms × 1 pack ~230g (Wed D 150g + Sat D ~80g leftover)",
   ],
   "🥬 Vegetables":[
-    "Shanghai bok choy × 2 bunches (~600g total — Thu prep 80g + Fri D 150g + Sat L 100g + Sun L 100g + Sun D 150g)",
-    "Baby kale × 1 small bag (Tue L 50g + Wed L 50g)",
-    "Cherry tomatoes × 1 pint (Tue L 100g)",
-    "Cucumber × 2 (Fri L cold vermicelli + Sun D smashed cucumber — Sun finishes the Fri leftover)",
-    "TJ baby broccoli × 2 bags (Bag 1: Tue D ~170g + Thu D ~170g — finish in 2 days · Bag 2: Sat D ~170g + Sun L ~80g)",
-    "TJ ready-to-eat edamame with sea salt × 1 bag (Tue L 100g + Wed L 80g)",
+    "Shanghai bok choy × 3 bunches (~820g total — Mon D 150g + Wed D ~120g + Thu D 150g + Fri D 150g + Sat L 100g + Sat D 100g) · Bag 1 opens Mon, finish by Wed D · Bag 2 opens Thu, finish by Sat D",
+    "Baby kale × 1 small bag ~200g (Mon L 50g + Tue L 50g + Wed L 50g + Thu L 50g — finish across 4 days)",
+    "Cherry tomatoes × 1–2 pints (~480g — Mon L 100g + Tue D 1 medium + Wed L 100g + Thu D 100g + Fri L 100g + Sat L 80g)",
+    "Cucumber × 2 (Mon L ½ + Wed L ½ + Fri L 1 smashed + Thu L slices)",
+    "TJ baby broccoli × 1 bag (only Sun D ~150g uses it — freeze the rest for next week, OR snack raw with hummus midweek)",
+    "TJ ready-to-eat edamame with sea salt × 2 bags ~450g (Mon L 100g + Tue L 80g + Thu L 80g + Fri L 100g + Fri D 50g + Sat side)",
+    "Frozen shelled edamame × 1 small bag (Mon D 60g + Wed D 60g — for hot soup)",
   ],
   "🍠 Sweet Potato":[
-    "Murasaki sweet potatoes × 2–3 small (Thu D + Fri D) — top up if needed",
+    "Murasaki sweet potatoes × 2 small (Sun L + Fri D)",
   ],
   "🍑 Fruit":[
-    "Blueberries × 2–3 pints (daily breakfast across 6 days + Sat B — ~480g total)",
-    "Bananas × 2 (Tue pre-workout snack + Thu pre-workout snack)",
+    "Frozen blueberries × 1 large bag (~600g — daily breakfast 80g × 7 + Sun L 60g)",
+    "Bananas × 2 (Sun B ½ + Tue snack 1 + Thu snack ½ — ripe but not mushy)",
   ],
   "🥛 Dairy & Soy":[
-    "Calcium-fortified unsweetened soy milk × 1 large carton (Wed–Fri B 250ml × 3 + Thu chia pudding 150ml ≈ 0.9L)",
-    "Kefir yogurt — top up if low (Tue snack 100g + Sat B 200g + Sun B 150g ≈ 450g) · Tue B uses up your remaining yogurt — DON'T double-buy",
+    "Calcium-fortified unsweetened soy milk × 1 large carton ~2L (B daily ≈ 250ml × 6 + Sun B 200ml + Thu chia 150ml ≈ 1.85L) · the daily calcium backbone of this plan",
+    "Kefir yogurt × 1 large tub ~700g (Sun L 150g + Tue snack 100g + Thu B 200g + Fri B 200g)",
+    "Greek yogurt × 1 small tub ~150g (Sun L post-Pilates bowl)",
+    "Parmigiano-Reggiano × 1 small wedge ~80g (Tue D 25g + Wed L 10g + Thu D 20g + Sat D 5g) · grate fresh, lactose-friendly, ~330mg calcium per 25g",
   ],
   "🌾 Grains & Bread (mostly pantry — check stock)":[
-    "Steel-cut oats (Wed–Fri B, 50g × 3 = 150g — Tue B is yogurt+granola instead) — PANTRY ✅",
-    "Quinoa (Tue L + Tue D + maybe Sun D — cook ~1.5 cups dry Mon night) — PANTRY ✅",
-    "Hulled millet (Wed L + Sat L side + Sat D ≈ 200g — cook extra Tue night with red beans) — PANTRY ✅",
-    "Red beans dried (Wed L ~50g dry, cooked with millet) — PANTRY ✅",
-    "Rice vermicelli (Fri L, 50g dry) — PANTRY ✅",
-    "Whole wheat bread (Sat B 1 + Sun B 2 = 3 slices) — FREEZER ✅",
-    "Wheat noodles (Sun L noodle soup, 70g dry) — PANTRY ✅",
+    "Steel-cut oats — PANTRY ✅ (B Mon/Tue/Wed/Sat 50g + Thu kefir oats 40g + Tue/Thu D savory oats 50g + 150g leftover ≈ 380g)",
+    "Quinoa — PANTRY ✅ (cook 1.5 cups dry Sat night → Sun D + Wed L + Sat L)",
+    "Hulled millet — PANTRY ✅ (cook ~80g dry with red beans Sat night → Sun L + Tue L + Thu L)",
+    "Red beans dried — PANTRY ✅ (~80g dry, cooked with millet, no sugar)",
+    "Whole wheat bread — FREEZER ✅ (Sun B 1 + Fri B 1 + Sat D 1 = 3 slices)",
   ],
   "🥜 Nuts & Seeds (mostly pantry)":[
-    "Pistachios — PANTRY ✅ (Tue B + Fri B + Sat B = ~30g)",
-    "Pine nuts — PANTRY ✅ (Wed B + Fri D = ~20g)",
-    "Pumpkin seeds — PANTRY ✅ (Thu B + Fri L = ~20g)",
-    "Chia seeds — PANTRY ✅ (daily B + Wed→Thu chia pudding)",
-    "Home-made granola — EXISTING ✅ (Tue B ~40g + Wed B + Fri B ~20g each — uses ~80g total; weigh portions, granola is calorie-dense)",
+    "Pistachios — PANTRY ✅ (Mon D 10g + Sat B 10g)",
+    "Pine nuts — PANTRY ✅ (Tue B 10g + Wed D 10g + Fri L 5g)",
+    "Pumpkin seeds — PANTRY ✅ (~85g across breakfasts + Tue D 15g + Thu D 10g — biggest seed of the week)",
+    "Chia seeds — PANTRY ✅ (daily B + Thu pre-workout pudding + Sun L)",
+    "Black sesame paste, unsweetened — CHECK PANTRY (Sun L 1 tbsp + Mon B + Wed B + Sat B + Fri B drizzle ≈ 5 tbsp) · key calcium add",
   ],
   "🫙 Pantry Check":[
-    "Gochugaru (Korean chili flakes — Sat soondubu)",
-    "Anchovy/dashi or veg broth cube (Sat L soondubu base)",
-    "Ginger, scallions, cilantro, garlic (fresh aromatics — most dinners)",
-    "Lemon × 1 (Thu D + Fri D salmon)",
-    "Soy sauce, Shaoxing wine, sesame oil, rice vinegar, chili oil, honey (drop for chicken marinade) — PANTRY",
-    "Olive oil, avocado oil — PANTRY ✅",
+    "Dashi powder OR vegetable broth cubes (Mon D + Wed D salmon soups + Sat D egg-drop soup)",
+    "Cornstarch (Sat L crispy tofu coating — tiny amount)",
+    "Ginger, scallions, garlic (fresh aromatics — most dinners)",
+    "Lemon × 1–2 (Sun D shrimp + Tue D bowl + lunches)",
+    "Soy sauce, sesame oil, rice vinegar, gochugaru/chili flakes (optional) — PANTRY",
+    "Olive oil, avocado oil — PANTRY ✅ (drizzle generously on Vit-D days)",
   ],
   "💊 Supplements":[
-    "Vitamin D — take daily, ideally with a fat-containing meal (oats + nuts, salmon dinner, or chicken thigh)",
+    "Vitamin D — take daily, ideally with a fat-containing meal (oats + nuts, salmon dinner, sardines, or chicken thigh)",
+    "Vitamin K2 (MK-7 form preferred, 100–200 mcg) — take WITH Vitamin D, ideally with the same fatty meal · K2 directs calcium TO bone, away from arteries — critical for your #1 bone-density goal AND your LDL story",
   ],
 };
 
@@ -430,7 +440,7 @@ function cap(s){return s.charAt(0).toUpperCase()+s.slice(1).trim()}
 const SEM={salmon:'🐟','sea bass':'🐠',cod:'🐟',shrimp:'🦐',egg:'🥚',yogurt:'🥛',butter:'🧈','soy milk':'🥛',pistachio:'🥜',sesame:'⚫',burrata:'🧀',mozzarella:'🧀',farro:'🌾',oat:'🥣',pasta:'🍝',granola:'🥣',sunflower:'🌻',fermented:'🫙',kale:'🥬',spinach:'🥬',tomato:'🍅',pepper:'🫑',cucumber:'🥒',zucchini:'🥒',mushroom:'🍄',enoki:'🍄',tofu:'🧊',scallion:'🧅',garlic:'🧄',lemon:'🍋',basil:'🌿','pea shoots':'🌿',yam:'🍠','iron stick':'🍠',fruit:'🍎',tea:'🍵',chocolate:'🍫',olive:'🫒','sesame oil':'🫙',vinegar:'🫙','soy sauce':'🫙','bok choy':'🥬',broccoli:'🥦','sweet potato':'🍠','purple sweet':'🍠',blueberr:'🫐',banana:'🍌','pine nut':'🌰','red bean':'🫘',bread:'🍞','whole wheat':'🍞'}
 function sFor(s){const sl=s.toLowerCase();for(const[k,v]of Object.entries(SEM)){if(sl.includes(k))return v}return '•'}
 // Joey's plan runs Sat May 2 → Fri May 8 (7-day Sat-start week).
-// Becky's previous plan was Apr 19 → Apr 26 (now passed, no new plan yet).
+// Becky's plan runs Sun May 3 → Sat May 9 (7-day Sun-start week, bone density + fat loss + muscle).
 const START=new Date('2026-05-02');
 const wk=(()=>{const d=new Date()-START;return d<0?1:Math.floor(d/(8*864e5))+1})();
 const greet=(()=>{const h=new Date().getHours();return h<6?'Burning the midnight oil':h<12?'Good morning':h<18?'Good afternoon':'Good evening'})();
@@ -520,7 +530,7 @@ function checkSync(){const h=location.hash;if(!h.startsWith('#s='))return;try{co
   var syncDays=who==='becky'?BDAYS:JDAYS;
   syncDays.forEach((_,i)=>['b','l','dn'].forEach((k,j)=>{if(!_[k])return;const key=i+'_'+k;if((mask>>(i*3+j))&1){if(!ex[key])ex[key]={time:'synced'}}else{delete ex[key]}}));
   localStorage.setItem(K(who,'ci'),JSON.stringify(ex));localStorage.setItem(who+'_sp_w'+wk,spct);
-  toast('Got '+U[who].nm+"'s update ✨");if(user!==who)tab=3}}}catch{}history.replaceState(null,'',location.pathname)}
+  toast('Got '+U[who].nm+"'s update ✨");if(user!==who)tab=4}}}catch{}history.replaceState(null,'',location.pathname)}
 function shareProgress(){const m=getBM(myCI,user),sp=getSP(mySC,user),d=encodeURIComponent([user,m,sp,wk].join('|')),url=location.origin+location.pathname+'#s='+d;if(navigator.share)navigator.share({title:U[user].nm+"'s meal plan progress",url}).catch(()=>{});else{navigator.clipboard?.writeText(url).then(()=>toast('Link copied ✓')).catch(()=>{})}}
 
 let pDi=0,pMk='';
@@ -589,6 +599,21 @@ function r2(){const el=document.getElementById('t2');
   el.innerHTML=h}
 
 function r3(){const el=document.getElementById('t3');
+  var shop=uSHOP();
+  var allItems=Object.values(shop).flat(),total=allItems.length,doneN=allItems.filter(it=>mySC[it]).length,pct=total?Math.round(doneN/total*100):0;
+  let h=`<div class="sh-hero up"><div><div class="sh-t">Shopping</div><div class="sh-s">${doneN}/${total} item${total===1?'':'s'} got · ${pct}%</div></div><div style="font-size:32px">🛒</div></div>`;
+  h+=`<div class="sh-bar"><div class="sh-bf" style="width:${pct}%"></div></div>`;
+  Object.keys(shop).forEach((cat,i)=>{const c=C[i%C.length];const items=shop[cat];const cd=items.filter(it=>mySC[it]).length;
+    h+=`<div class="sh-g up d${Math.min(i+2,5)}"><div class="sh-gh" style="background:${c.lt}"><div class="sh-gn" style="color:${c.tx}">${cat}</div><div class="sh-gc" style="color:${c.tx}">${cd}/${items.length}</div></div>`;
+    items.forEach(it=>{const got=mySC[it];const safe=it.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      h+=`<button class="sh-r${got?' dn':''}" data-item="${safe}" onclick="togSC(this)"><span class="sh-c${got?' on':''}">${got?'✓':''}</span><span class="sh-ic">${sFor(it)}</span><div class="sh-tx"><span class="sh-item">${it}</span></div></button>`;
+    });
+    h+='</div>';
+  });
+  el.innerHTML=h}
+function togSC(btn){var item=btn.getAttribute('data-item');var tmp=document.createElement('textarea');tmp.innerHTML=item;item=tmp.value;if(mySC[item])delete mySC[item];else mySC[item]=true;svSC();r3();toast(mySC[item]?'Got it ✓':'Unchecked')}
+
+function r4(){const el=document.getElementById('t4');
   const f=fr(),fu=U[f],mu=U[user];
   var myDays=uDAYS(),fDays=f==='becky'?BDAYS:JDAYS;
   var myTotalMeals=0,myDoneMeals=0;
@@ -620,19 +645,19 @@ function r3(){const el=document.getElementById('t3');
   el.innerHTML=h}
 
 function rNav(){
-  const tabs=[{ic:'☀️',lb:'Today'},{ic:'📅',lb:'Week'},{ic:'🏋️',lb:'Exercise'},{ic:'👯',lb:U[fr()].nm}];
+  const tabs=[{ic:'☀️',lb:'Today'},{ic:'📅',lb:'Week'},{ic:'🏋️',lb:'Exercise'},{ic:'🛒',lb:'Shopping'},{ic:'👯',lb:U[fr()].nm}];
   document.getElementById('nav').innerHTML=tabs.map((t,i)=>`<button class="nb" onclick="sw(${i})"><span class="ni${tab===i?' on':''}">${t.ic}</span><span class="nl${tab===i?' on':''}">${t.lb}</span>${tab===i?'<div class="ndt"></div>':''}</button>`).join('')}
-function sw(t){document.getElementById('t'+tab).classList.remove('on');tab=t;document.getElementById('t'+tab).classList.add('on');if(t===3){cloudLoadFriend().then(()=>r3())}render()}
-function render(){var planTag=user==='becky'?'Fat Loss · Bone · Muscle':'Mediterranean';document.getElementById('wk-lb').textContent='Week '+wk;document.getElementById('hdr-tag-plan').textContent=planTag;document.getElementById('hdr-user').innerHTML=`<span class="hdr-user-av">${U[user].av}</span><span class="hdr-user-nm">${U[user].nm}</span>`;r0();r1();r2();r3();rNav()}
+function sw(t){document.getElementById('t'+tab).classList.remove('on');tab=t;document.getElementById('t'+tab).classList.add('on');if(t===4){cloudLoadFriend().then(()=>r4())}render()}
+function render(){var planTag=user==='becky'?'Bone · Fat Loss · Muscle':'Mediterranean';document.getElementById('wk-lb').textContent='Week '+wk;document.getElementById('hdr-tag-plan').textContent=planTag;document.getElementById('hdr-user').innerHTML=`<span class="hdr-user-av">${U[user].av}</span><span class="hdr-user-nm">${U[user].nm}</span>`;r0();r1();r2();r3();r4();rNav()}
 var _freshPlan=false;
 function cleanOldWeeks(){
   try{
-    var ver='v16_joey_may2_may8';
+    var ver='v17_becky_may3_may9_joey_may2_may8';
     var oldVer=localStorage.getItem('mp_ver');
     if(oldVer!==ver){
       _freshPlan=true;
-      // Joey: new week (May 2 → May 8). Wipe Joey check-ins for fresh plan.
-      // Becky: still on Apr 28 → May 3 plan, but week-keyed storage gets reset below.
+      // Joey: Sat May 2 → Fri May 8 (Mediterranean). Wipe check-ins for fresh plan.
+      // Becky: Sun May 3 → Sat May 9 (bone density + fat loss + muscle). Wipe check-ins for fresh plan.
       var keys=Object.keys(localStorage);
       keys.forEach(function(k){
         if(k.indexOf('_ci_w')!==-1||k.indexOf('_sc_w')!==-1||k.indexOf('_ex_w')!==-1||k.indexOf('_sp_w')!==-1)localStorage.removeItem(k);
