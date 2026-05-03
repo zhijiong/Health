@@ -198,7 +198,7 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;o
     <button class="hdr-user" onclick="logout()" id="hdr-user"></button>
   </div></div>
   <div class="hdr-div"></div>
-  <div id="t0" class="ct on"></div><div id="t1" class="ct"></div><div id="t2" class="ct"></div><div id="t3" class="ct"></div>
+  <div id="t0" class="ct on"></div><div id="t1" class="ct"></div><div id="t2" class="ct"></div><div id="t3" class="ct"></div><div id="t4" class="ct"></div>
   <nav class="nav" id="nav"></nav>
 </div>
 <div class="toast" id="toast"></div>
@@ -532,7 +532,7 @@ function checkSync(){const h=location.hash;if(!h.startsWith('#s='))return;try{co
   var syncDays=who==='becky'?BDAYS:JDAYS;
   syncDays.forEach((_,i)=>['b','l','dn'].forEach((k,j)=>{if(!_[k])return;const key=i+'_'+k;if((mask>>(i*3+j))&1){if(!ex[key])ex[key]={time:'synced'}}else{delete ex[key]}}));
   localStorage.setItem(K(who,'ci'),JSON.stringify(ex));localStorage.setItem(who+'_sp_w'+wk,spct);
-  toast('Got '+U[who].nm+"'s update ✨");if(user!==who)tab=4}}}catch{}history.replaceState(null,'',location.pathname)}
+  toast('Got '+U[who].nm+"'s update ✨");if(user!==who)tab=friendTabIdx()}}}catch{}history.replaceState(null,'',location.pathname)}
 function shareProgress(){const m=getBM(myCI,user),sp=getSP(mySC,user),d=encodeURIComponent([user,m,sp,wk].join('|')),url=location.origin+location.pathname+'#s='+d;if(navigator.share)navigator.share({title:U[user].nm+"'s meal plan progress",url}).catch(()=>{});else{navigator.clipboard?.writeText(url).then(()=>toast('Link copied ✓')).catch(()=>{})}}
 
 let pDi=0,pMk='';
@@ -600,7 +600,28 @@ function r2(){const el=document.getElementById('t2');
   });
   el.innerHTML=h}
 
-function r3(){const el=document.getElementById('t3');
+// Per-user tab layout. Becky has a Shopping tab (t3); Joey does not.
+//   Becky: 0=Today 1=Week 2=Exercise 3=Shopping 4=Friend
+//   Joey:  0=Today 1=Week 2=Exercise 3=Friend (t4 unused)
+function hasShop(){return user==='becky'}
+function friendTabIdx(){return hasShop()?4:3}
+
+function rShop(elId){const el=document.getElementById(elId);
+  var shop=uSHOP();
+  var allItems=Object.values(shop).flat(),total=allItems.length,doneN=allItems.filter(it=>mySC[it]).length,pct=total?Math.round(doneN/total*100):0;
+  let h=`<div class="sh-hero up"><div><div class="sh-t">Shopping</div><div class="sh-s">${doneN}/${total} item${total===1?'':'s'} got · ${pct}%</div></div><div style="font-size:32px">🛒</div></div>`;
+  h+=`<div class="sh-bar"><div class="sh-bf" style="width:${pct}%"></div></div>`;
+  Object.keys(shop).forEach((cat,i)=>{const c=C[i%C.length];const items=shop[cat];const cd=items.filter(it=>mySC[it]).length;
+    h+=`<div class="sh-g up d${Math.min(i+2,5)}"><div class="sh-gh" style="background:${c.lt}"><div class="sh-gn" style="color:${c.tx}">${cat}</div><div class="sh-gc" style="color:${c.tx}">${cd}/${items.length}</div></div>`;
+    items.forEach(it=>{const got=mySC[it];const safe=it.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      h+=`<button class="sh-r${got?' dn':''}" data-item="${safe}" onclick="togSC(this)"><span class="sh-c${got?' on':''}">${got?'✓':''}</span><span class="sh-ic">${sFor(it)}</span><div class="sh-tx"><span class="sh-item">${it}</span></div></button>`;
+    });
+    h+='</div>';
+  });
+  el.innerHTML=h}
+function togSC(btn){var item=btn.getAttribute('data-item');if(mySC[item])delete mySC[item];else mySC[item]=true;svSC();r3();toast(mySC[item]?'Got it ✓':'Unchecked')}
+
+function rFriend(elId){const el=document.getElementById(elId);
   const f=fr(),fu=U[f],mu=U[user];
   var myDays=uDAYS(),fDays=f==='becky'?BDAYS:JDAYS;
   var myTotalMeals=0,myDoneMeals=0;
@@ -632,10 +653,15 @@ function r3(){const el=document.getElementById('t3');
   el.innerHTML=h}
 
 function rNav(){
-  const tabs=[{ic:'☀️',lb:'Today'},{ic:'📅',lb:'Week'},{ic:'🏋️',lb:'Exercise'},{ic:'👯',lb:U[fr()].nm}];
+  const friend={ic:'👯',lb:U[fr()].nm};
+  const tabs=hasShop()
+    ? [{ic:'☀️',lb:'Today'},{ic:'📅',lb:'Week'},{ic:'🏋️',lb:'Exercise'},{ic:'🛒',lb:'Shopping'},friend]
+    : [{ic:'☀️',lb:'Today'},{ic:'📅',lb:'Week'},{ic:'🏋️',lb:'Exercise'},friend];
   document.getElementById('nav').innerHTML=tabs.map((t,i)=>`<button class="nb" onclick="sw(${i})"><span class="ni${tab===i?' on':''}">${t.ic}</span><span class="nl${tab===i?' on':''}">${t.lb}</span>${tab===i?'<div class="ndt"></div>':''}</button>`).join('')}
-function sw(t){document.getElementById('t'+tab).classList.remove('on');tab=t;document.getElementById('t'+tab).classList.add('on');if(t===3){cloudLoadFriend().then(()=>r3())}render()}
-function render(){var planTag=user==='becky'?'Bone · Fat Loss · Muscle':'Mediterranean';document.getElementById('wk-lb').textContent='Week '+wk;document.getElementById('hdr-tag-plan').textContent=planTag;document.getElementById('hdr-user').innerHTML=`<span class="hdr-user-av">${U[user].av}</span><span class="hdr-user-nm">${U[user].nm}</span>`;r0();r1();r2();r3();rNav()}
+function r3(){if(hasShop())rShop('t3');else rFriend('t3')}
+function r4(){if(hasShop())rFriend('t4');else{var el=document.getElementById('t4');if(el)el.innerHTML=''}}
+function sw(t){document.getElementById('t'+tab).classList.remove('on');tab=t;document.getElementById('t'+tab).classList.add('on');if(t===friendTabIdx()){cloudLoadFriend().then(()=>{if(hasShop())r4();else r3()})}render()}
+function render(){var planTag=user==='becky'?'Bone · Fat Loss · Muscle':'Mediterranean';document.getElementById('wk-lb').textContent='Week '+wk;document.getElementById('hdr-tag-plan').textContent=planTag;document.getElementById('hdr-user').innerHTML=`<span class="hdr-user-av">${U[user].av}</span><span class="hdr-user-nm">${U[user].nm}</span>`;r0();r1();r2();r3();r4();rNav()}
 var _freshPlan=false;
 function cleanOldWeeks(){
   try{
@@ -664,7 +690,7 @@ function cleanOldWeeks(){
     });
   }catch(e){}
 }
-function startApp(){document.getElementById('picker').classList.add('hide');document.getElementById('app').style.display='block';cleanOldWeeks();ld();checkSync();render();cloudLoadUser(user).then(function(loaded){if(loaded)render();if(!_freshPlan){cloudLoadFriend().then(()=>r3())}})}
+function startApp(){document.getElementById('picker').classList.add('hide');document.getElementById('app').style.display='block';cleanOldWeeks();ld();checkSync();render();cloudLoadUser(user).then(function(loaded){if(loaded)render();if(!_freshPlan){cloudLoadFriend().then(()=>{if(hasShop())r4();else r3()})}})}
 checkSync();const sv=localStorage.getItem('mp_user');if(sv&&U[sv]){user=sv;startApp()}
 const inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.style.display='none';inp.id='fup';
 inp.onchange=e=>{const f=e.target.files[0];if(!f)return;
