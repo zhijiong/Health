@@ -82,10 +82,13 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;o
 .mc-body{padding:12px 20px 20px}
 .mc-desc{font-size:13.5px;color:var(--sub);line-height:1.85;margin-bottom:16px}
 .mc-list{list-style:none;margin-bottom:16px;display:flex;flex-direction:column;gap:2px}
-.mc-list li{font-size:13.5px;color:var(--sub);line-height:1.55;padding:6px 0 6px 0;display:flex;align-items:baseline;gap:9px;border-bottom:1px solid #f7f3ec}
+.mc-list li{font-size:13.5px;color:var(--sub);line-height:1.55;padding:8px 0;display:flex;align-items:baseline;gap:9px;border-bottom:1px solid #f7f3ec;flex-wrap:wrap}
 .mc-list li:last-child{border-bottom:none}
 .mc-list li .mc-li-icon{font-size:13px;flex-shrink:0;width:18px;text-align:center}
-.mc-list li .mc-li-text{flex:1}
+.mc-list li .mc-li-text{flex:1;font-weight:600;color:var(--text)}
+.mc-li-sub{flex-basis:100%;margin-left:27px;margin-top:5px;font-size:12px;color:var(--muted);font-family:var(--serif);font-style:italic;line-height:1.55;letter-spacing:.1px}
+.mc-loc{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;background:#f4efe2;border:1px solid #ebe4d2;border-radius:14px;font-size:11px;font-weight:700;color:var(--sub);margin-bottom:14px;font-family:var(--serif);letter-spacing:.3px}
+.mc-loc-ic{font-size:12px}
 .mc-btn{width:100%;padding:14px;border:1.5px dashed var(--border);border-radius:14px;font-size:13px;font-weight:600;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:8px;transition:all .15s}
 .mc-btn:active{transform:scale(.97);background:var(--bg)}
 .mc-img-w{border-radius:14px;overflow:hidden;border:1px solid var(--blt)}
@@ -255,12 +258,12 @@ const JDAYS=[
     dn:{e:"📝",n:"TBD",d:"To be planned"}},
   {day:"Tuesday · May 12",dn2:"Tue 12",dow:2,date:"2026-05-12",
     ex:"18:45 PM · OTF Strength 50 (Lower Body)",
-    b:{e:"🍳",n:"Brunch · Farm Cup Century City · Morning Hash + The Explorer Iced Latte · ~950 kcal",d:"Farm Cup (Century City) · Morning hash (potatoes, kale, red bell peppers, chipotle aioli, fried eggs, chili oil, breakfast sausage) · The Explorer iced latte: salted caramel latte topped with Peruvian smoked salt"},
-    l:{e:"📝",n:"TBD",d:"To be planned"},
-    dn:{e:"📝",n:"TBD",d:"To be planned"}},
+    b:{e:"🍳",n:"Brunch · Morning Hash + The Explorer Iced Latte · ~950 kcal",loc:"Farm Cup · Century City",d:"Morning hash (potatoes, kale, red bell peppers, chipotle aioli, fried eggs, chili oil, breakfast sausage) · The Explorer iced latte: salted caramel latte topped with Peruvian smoked salt"},
+    sn:{e:"📝",n:"TBD",d:"To be planned",slbl:"Pre-Workout Treat",sic:"⚡",chkin:true},
+    sn2:{e:"📝",n:"TBD",d:"To be planned",slbl:"Post-Workout Treat",sic:"💪",chkin:true}},
   {day:"Wednesday · May 13",dn2:"Wed 13",dow:3,date:"2026-05-13",
     b:{e:"🥛",n:"Siggi's Peach & Mango Yogurt · ~160 kcal",d:"Siggi's peach and mango yogurt"},
-    l:{e:"🥗",n:"Bruin Plate Buffet · Salad + Shrimp Pasta + Mixed Grains + BBQ Chicken + Fruits + Sweet Bite + Latte · ~950 kcal",d:"Self-chosen salad bowl from the salad bar · Shrimp pasta salad with avocado + flatbread sticks · Mixed grains bowl (a bit of each: frijoles de la olla, brown calrose rice, farro) · Chipotle BBQ grilled chicken thigh · Fruits (strawberries, watermelon) · Sweet bite (olive oil mocha quickbread) · Cup of latte"},
+    l:{e:"🥗",n:"Buffet · Salad + Shrimp Pasta + Mixed Grains + BBQ Chicken + Fruits + Sweet Bite + Latte · ~950 kcal",loc:"Bruin Plate · UCLA",d:"Self-chosen salad bowl from the salad bar · Shrimp pasta salad with avocado + flatbread sticks · Mixed grains bowl (a bit of each: frijoles de la olla, brown calrose rice, farro) · Chipotle BBQ grilled chicken thigh · Fruits (strawberries, watermelon) · Sweet bite (olive oil mocha quickbread) · Cup of latte"},
     dn:{e:"📝",n:"TBD",d:"To be planned"}},
   {day:"Thursday · May 14",dn2:"Thu 14",dow:4,date:"2026-05-14",
     ex:"18:45 PM · OTF Strength 50 (Upper Body)",
@@ -421,10 +424,14 @@ function uMK(d){
   if(d.dn)keys.push('dn');
   return keys;
 }
-function uMealCount(d){
-  // Count only main meals (b,l,dn) for progress tracking
-  var n=0;if(d.b)n++;if(d.l)n++;if(d.dn)n++;return n;
+function isMainMeal(d,mk){
+  // b/l/dn are main meals; snack slots become main when meal.chkin is set
+  if(mk==='b'||mk==='l'||mk==='dn')return !!(d&&d[mk]);
+  if(mk==='sn'||mk==='sn2'||mk==='am')return !!(d&&d[mk]&&d[mk].chkin);
+  return false;
 }
+function mainKeys(d){return uMK(d).filter(function(mk){return isMainMeal(d,mk)})}
+function uMealCount(d){return mainKeys(d).length}
 // Expanded meal labels & icons — per-meal slbl/sic overrides take precedence
 const ML2={b:'Breakfast',l:'Lunch',dn:'Dinner',sn:'Pre-Workout Snack',sn2:'Afternoon Snack',am:'Morning'};
 const MI2={b:'☀️',l:'🍱',dn:'🌙',sn:'⚡',sn2:'🍵',am:'🌅'};
@@ -444,7 +451,7 @@ function uTDI(){
 const MK=['b','l','dn'],ML={b:'Breakfast',l:'Lunch',dn:'Dinner'},MI={b:'☀️',l:'🍱',dn:'🌙'};
 
 // Ingredient emoji mapping
-const EM={yogurt:'🥛',granola:'🥣',chocolate:'🍫',pistachio:'🥜',salmon:'🐟','sea bass':'🐠',cod:'🐟','iron stick':'🍠',yam:'🍠','pea shoots':'🌿',shrimp:'🦐',farro:'🌾',egg:'🥚',tofu:'🧊',mushroom:'🍄',enoki:'🍄',spinach:'🥬',kale:'🥬',pasta:'🍝',zucchini:'🥒',basil:'🌿',garlic:'🧄',lemon:'🍋',olive:'🫒',cucumber:'🥒',pepper:'🫑',butter:'🧈',oat:'🥣',sesame:'⚫',scallion:'🧅',vinaigrette:'🫙','soy milk':'🥛',fermented:'🫙',burrata:'🧀',mozzarella:'🧀',sunflower:'🌻',cherry:'🍅',tomato:'🍅',arugula:'🥬','bok choy':'🥬',broccoli:'🥦','sweet potato':'🍠','purple sweet':'🍠',blueberr:'🫐',banana:'🍌','pine nut':'🌰','red bean':'🫘',bread:'🍞','whole wheat':'🍞','option a':'🅰️','option b':'🅱️',avocado:'🥑',miso:'🫙',quinoa:'🌾',balsamic:'🫙',seaweed:'🌿',coffee:'☕'}
+const EM={yogurt:'🥛',granola:'🥣',chocolate:'🍫',pistachio:'🥜',salmon:'🐟','sea bass':'🐠',cod:'🐟','iron stick':'🍠',yam:'🍠','pea shoots':'🌿',shrimp:'🦐',farro:'🌾',egg:'🥚',tofu:'🧊',mushroom:'🍄',enoki:'🍄',spinach:'🥬',kale:'🥬',pasta:'🍝',zucchini:'🥒',basil:'🌿',garlic:'🧄',lemon:'🍋',olive:'🫒',cucumber:'🥒',pepper:'🫑',butter:'🧈',oat:'🥣',sesame:'⚫',scallion:'🧅',vinaigrette:'🫙','soy milk':'🥛',fermented:'🫙',burrata:'🧀',mozzarella:'🧀',sunflower:'🌻',cherry:'🍅',tomato:'🍅',arugula:'🥬','bok choy':'🥬',broccoli:'🥦','sweet potato':'🍠','purple sweet':'🍠',blueberr:'🫐',banana:'🍌','pine nut':'🌰','red bean':'🫘',bread:'🍞','whole wheat':'🍞','option a':'🅰️','option b':'🅱️',avocado:'🥑',miso:'🫙',quinoa:'🌾',balsamic:'🫙',seaweed:'🌿',coffee:'☕',latte:'☕',hash:'🥘',salad:'🥗',chicken:'🍗',grain:'🌾',bean:'🫘',fruit:'🍎',strawberr:'🍓',watermelon:'🍉','sweet bite':'🍰',quickbread:'🍰',potato:'🥔',sausage:'🌭',aioli:'🫙','chili oil':'🌶️'}
 function eFor(s){const sl=s.toLowerCase();for(const[k,v]of Object.entries(EM)){if(sl.includes(k))return v}return '·'}
 function cap(s){return s.charAt(0).toUpperCase()+s.slice(1).trim()}
 
@@ -551,7 +558,7 @@ function mcH(di,mk,meal,c,cls,edit){
   const k=di+'_'+mk,has=edit?myCI[k]:fCI[k];
   let photo='';
   // snacks/activities (am, sn, sn2) are info-only — no check-in
-  var isSnack=mk==='sn'||mk==='sn2'||mk==='am';
+  var isSnack=(mk==='sn'||mk==='sn2'||mk==='am')&&!(meal&&meal.chkin);
   if(!isSnack){
     if(edit){
       if(has&&has.photo)photo=`<div class="mc-img-w"><img class="mc-img" src="${has.photo}"><div class="mc-meta"><span class="mc-time">${has.time}</span><button class="mc-re" onclick="trigUp(${di},'${mk}')">Retake</button></div></div>`;
@@ -566,14 +573,24 @@ function mcH(di,mk,meal,c,cls,edit){
   const items=meal.d.split(' + ').map(s=>s.trim());
   // split on ' · ' as well for options
   var allItems=[];items.forEach(s=>{s.split(' · ').forEach(p=>{if(p.trim())allItems.push(p.trim())})});
-  const descH='<ul class="mc-list">'+allItems.map(s=>'<li><span class="mc-li-icon">'+eFor(s)+'</span><span class="mc-li-text">'+cap(s)+'</span></li>').join('')+'</ul>';
+  function parseItem(s){
+    // "Main (Details)" — parens at end
+    var pm=s.match(/^(.+?)\s*\((.+)\)\s*$/);
+    if(pm)return {main:pm[1].trim(),sub:pm[2].trim()};
+    // "Main: Details" — short label prefix
+    var ci=s.indexOf(': ');
+    if(ci>0&&ci<40)return {main:s.slice(0,ci).trim(),sub:s.slice(ci+2).trim()};
+    return {main:s,sub:null};
+  }
+  var locH=meal.loc?`<div class="mc-loc"><span class="mc-loc-ic">📍</span><span>${meal.loc}</span></div>`:'';
+  const descH=locH+'<ul class="mc-list">'+allItems.map(s=>{var p=parseItem(s);var subH=p.sub?'<div class="mc-li-sub">'+p.sub+'</div>':'';return '<li><span class="mc-li-icon">'+eFor(p.main)+'</span><span class="mc-li-text">'+cap(p.main)+'</span>'+subH+'</li>'}).join('')+'</ul>';
   var mlbl=(meal.slbl||ML2[mk]||ML[mk]||mk),mic=(meal.sic||MI2[mk]||MI[mk]||'');
   return`<div class="mc up ${cls}"><div class="mc-top"><div class="mc-icon" style="background:${c.lt}">${meal.e}</div><div class="mc-info"><div class="mc-tag" style="color:${c.tx}"><div class="mc-tag-dot" style="background:${c.bg}"></div>${mic} ${mlbl}</div><div class="mc-name">${meal.n}</div></div>${(!isSnack&&has)?`<div class="mc-ck" style="background:${c.gd}">✓</div>`:''}</div><div class="mc-body">${descH}${photo}</div></div>`}
 
 function r0(){const el=document.getElementById('t0');
   var days=uDAYS(),tdi=uTDI();
   if(tdi<0){el.innerHTML=`<div class="wknd up"><div class="wknd-ic">🌿</div><div class="wknd-t">It's a Rest Day</div><div class="wknd-s">No meals planned for today.<br>Don't forget to prep ingredients! 😊</div></div>`;return}
-  const d=days[tdi],c=C[tdi%C.length],mks=uMK(d),mainMks=mks.filter(m=>m==='b'||m==='l'||m==='dn'),mc2=mainMks.length;
+  const d=days[tdi],c=C[tdi%C.length],mks=uMK(d),mainMks=mainKeys(d),mc2=mainMks.length;
   const done=mainMks.filter(m=>myCI[tdi+'_'+m]).length;
   const left=mc2-done,sub=done===mc2?'✓ All meals checked in':left+' meal'+(left>1?'s':'')+' left to check in';
   let h=`<div class="t-hero up"><div><div class="t-greet">${greet}, ${U[user].nm} ✦</div><div class="t-day">${d.day}</div><div class="t-sub">${sub}</div>${d.total?`<div style="font-size:12px;font-weight:700;color:${c.tx};margin-top:8px;letter-spacing:.3px">${d.total} kcal · today</div>`:''}</div><div class="ring">${ring(done/mc2,72,4.5,c.bg)}<div class="ring-n" style="color:${c.tx};font-size:16px">${done}/${mc2}</div></div></div>`;
@@ -582,10 +599,10 @@ function r0(){const el=document.getElementById('t0');
   el.innerHTML=h}
 
 function r1(){const el=document.getElementById('t1');var days=uDAYS();let h='<div class="wk-bar up">';
-  days.forEach((d,i)=>{const c=C[i%C.length],mainMks=['b','l','dn'].filter(m=>d[m]),mc2=mainMks.length,done=mainMks.filter(m=>myCI[i+'_'+m]).length,op=od[i];
+  days.forEach((d,i)=>{const c=C[i%C.length],mainMks=mainKeys(d),mc2=mainMks.length,done=mainMks.filter(m=>myCI[i+'_'+m]).length,op=od[i];
     h+=`<button class="wk-p${op?' on':''}" onclick="togD(${i})" style="${op?'background:'+c.lt+';border-color:'+c.bg:''}"><div class="wk-pd" style="color:${op?c.tx:'var(--text)'}">${d.dn2}</div><div class="wk-dots">${Array.from({length:mc2},(_,j)=>`<div class="wk-dt" style="background:${done>j?c.bg:'#d8d2c6'}"></div>`).join('')}</div></button>`});
   h+='</div>';let any=false;
-  days.forEach((d,i)=>{if(!od[i])return;any=true;const c=C[i%C.length],mks=uMK(d),mainMks=mks.filter(m=>m==='b'||m==='l'||m==='dn'),mc2=mainMks.length,done=mainMks.filter(m=>myCI[i+'_'+m]).length;
+  days.forEach((d,i)=>{if(!od[i])return;any=true;const c=C[i%C.length],mks=uMK(d),mainMks=mainKeys(d),mc2=mainMks.length,done=mainMks.filter(m=>myCI[i+'_'+m]).length;
     h+=`<div class="wk-sec"><div class="wk-sh"><div class="wk-sn" style="background:${c.gd}">${i+1}</div><div><div style="font-family:var(--serif);font-size:22px;font-weight:700">${d.day}</div><div style="font-size:11px;font-weight:600;color:${c.tx};margin-top:3px">${done}/${mc2} checked in${d.total?' · '+d.total+' kcal':''}</div></div></div>`;
     mks.forEach((mk,j)=>h+=mcH(i,mk,d[mk],c,'d'+(j+1),true));
     if(d.p)h+=`<div class="prep sm up d4"><div class="prep-ic">📝</div><div><div class="prep-lb">Prep & Notes</div><div class="prep-tx">${d.p}</div></div></div>`;h+='</div>'});
@@ -645,30 +662,30 @@ function rFriend(elId){const el=document.getElementById(elId);
   const f=fr(),fu=U[f],mu=U[user];
   var myDays=uDAYS(),fDays=f==='becky'?BDAYS:JDAYS;
   var myTotalMeals=0,myDoneMeals=0;
-  myDays.forEach((d,i)=>{['b','l','dn'].forEach(mk=>{if(d[mk]){myTotalMeals++;if(myCI[i+'_'+mk])myDoneMeals++}})});
+  myDays.forEach((d,i)=>{mainKeys(d).forEach(mk=>{myTotalMeals++;if(myCI[i+'_'+mk])myDoneMeals++})});
   let h=`<div class="fr-card up"><div class="fr-head"><div class="fr-av" style="background:${mu.bg}">${mu.av}</div><div><div class="fr-name">${mu.nm} <span style="font-size:13px;color:var(--muted);font-weight:400;font-family:var(--serif);font-style:italic">(me)</span></div><div class="fr-sub">${myDoneMeals}/${myTotalMeals} meals checked in</div></div></div>
     <div class="fr-label">This Week</div>
-    <div class="fr-grid" style="grid-template-columns:repeat(${myDays.length},1fr)">${myDays.map((d,i)=>{const c=C[i%C.length];return`<div class="fr-cell"><div class="fr-cell-d">${d.dn2}</div>${['b','l','dn'].filter(mk=>d[mk]).map(mk=>{const has=myCI[i+'_'+mk];return`<div class="fr-dot" style="background:${has?c.bg:'var(--blt)'}"></div><div class="fr-dot-l">${(ML2[mk]||ML[mk])[0]}</div>`}).join('')}</div>`}).join('')}</div>
+    <div class="fr-grid" style="grid-template-columns:repeat(${myDays.length},1fr)">${myDays.map((d,i)=>{const c=C[i%C.length];return`<div class="fr-cell"><div class="fr-cell-d">${d.dn2}</div>${mainKeys(d).map(mk=>{const has=myCI[i+'_'+mk];return`<div class="fr-dot" style="background:${has?c.bg:'var(--blt)'}"></div><div class="fr-dot-l">${(ML2[mk]||ML[mk])[0]}</div>`}).join('')}</div>`}).join('')}</div>
     <button class="fr-share" onclick="shareProgress()">📤 Share progress with ${fu.nm}</button></div>`;
   h+=`<div class="fr-div">${fu.nm}'s Progress</div>`;
   var fTotalMeals=0,fDoneMeals=0;
-  fDays.forEach((d,i)=>{['b','l','dn'].forEach(mk=>{if(d[mk]){fTotalMeals++;if(fCI[i+'_'+mk])fDoneMeals++}})});
+  fDays.forEach((d,i)=>{mainKeys(d).forEach(mk=>{fTotalMeals++;if(fCI[i+'_'+mk])fDoneMeals++})});
   if(fDoneMeals>0){
     h+=`<div class="fr-card up d2"><div class="fr-head"><div class="fr-av" style="background:${fu.bg}">${fu.av}</div><div><div class="fr-name">${fu.nm}</div><div class="fr-sub">${fDoneMeals}/${fTotalMeals} meals checked in</div></div></div>
       <div class="fr-label">This Week</div>
-      <div class="fr-grid" style="grid-template-columns:repeat(${fDays.length},1fr)">${fDays.map((d,i)=>{const c=C[i%C.length];return`<div class="fr-cell"><div class="fr-cell-d">${d.dn2}</div>${['b','l','dn'].filter(mk=>d[mk]).map(mk=>{const has=fCI[i+'_'+mk];return`<div class="fr-dot" style="background:${has?c.bg:'var(--blt)'}"></div><div class="fr-dot-l">${(ML2[mk]||ML[mk])[0]}</div>`}).join('')}</div>`}).join('')}</div></div>`;
+      <div class="fr-grid" style="grid-template-columns:repeat(${fDays.length},1fr)">${fDays.map((d,i)=>{const c=C[i%C.length];return`<div class="fr-cell"><div class="fr-cell-d">${d.dn2}</div>${mainKeys(d).map(mk=>{const has=fCI[i+'_'+mk];return`<div class="fr-dot" style="background:${has?c.bg:'var(--blt)'}"></div><div class="fr-dot-l">${(ML2[mk]||ML[mk])[0]}</div>`}).join('')}</div>`}).join('')}</div></div>`;
     h+=`<div class="gl-label up d3">📋 ${fu.nm}'s Meals</div>`;
-    fDays.forEach((d,i)=>{const c=C[i%C.length];const mainMks=['b','l','dn'].filter(m=>d[m]);const fd=mainMks.filter(m=>fCI[i+'_'+m]).length;if(!fd)return;
+    fDays.forEach((d,i)=>{const c=C[i%C.length];const mainMks=mainKeys(d);const fd=mainMks.filter(m=>fCI[i+'_'+m]).length;if(!fd)return;
       h+=`<div style="font-family:var(--serif);font-size:15px;font-weight:600;color:${c.tx};margin:14px 0 8px;display:flex;align-items:center;gap:8px"><div style="width:8px;height:8px;border-radius:50%;background:${c.bg}"></div>${d.day}</div>`;
       mainMks.forEach(mk=>{const has=fCI[i+'_'+mk],meal=d[mk];if(!has)return;
         h+=`<div class="fr-ro"><div class="fr-ro-h"><div class="fr-ro-ic" style="background:${c.lt}">${meal.e}</div><div><div class="fr-ro-tag" style="color:${c.tx}">${(MI2[mk]||MI[mk]||'')} ${(ML2[mk]||ML[mk])}</div><div class="fr-ro-nm">${meal.n}</div></div><div class="fr-ro-ck">✓</div></div>${has.photo?'<div style="margin-top:10px"><img src="'+has.photo+'" style="width:100%;max-height:180px;object-fit:cover;border-radius:12px;border:1px solid var(--blt)"></div>':''}</div>`})});
   }else{
     h+=`<div class="fr-empty up d2"><div class="fr-empty-ic">👯</div><div class="fr-empty-tx">No updates from ${fu.nm} yet<br><br>Ask ${fu.nm} to open the app and tap<br>"Share progress" — then open the link they send you<br><br><span style="font-size:11px;color:var(--faint)">On the same device? ${fu.nm} can just<br>switch profiles by tapping the name badge</span></div></div>`}
   // Friend photos
-  const fAll=[];fDays.forEach((d,i)=>['b','l','dn'].filter(m=>d[m]).forEach(m=>{const k=i+'_'+m;if(fCI[k]&&fCI[k].photo)fAll.push({day:d.dn2,meal:(ML2[m]||ML[m]),di:i,...fCI[k]})}));
+  const fAll=[];fDays.forEach((d,i)=>mainKeys(d).forEach(m=>{const k=i+'_'+m;if(fCI[k]&&fCI[k].photo)fAll.push({day:d.dn2,meal:(d[m]&&d[m].slbl)||ML2[m]||ML[m],di:i,...fCI[k]})}));
   if(fAll.length){h+=`<div class="gl-label up d3">📸 ${fu.nm}'s Check-ins</div><div class="gl-grid">`;fAll.forEach((c,i)=>{const col=C[c.di%C.length];h+=`<div class="gl-c" style="animation-delay:${i*40+200}ms"><img src="${c.photo}"><div class="gl-ci" style="background:${col.lt}"><div class="gl-cn" style="color:${col.tx}">${c.day} · ${c.meal}</div><div class="gl-ct2">${c.time}</div></div></div>`});h+='</div>'}
   // My photos
-  const all=[];myDays.forEach((d,i)=>['b','l','dn'].filter(m=>d[m]).forEach(m=>{const k=i+'_'+m;if(myCI[k]&&myCI[k].photo)all.push({day:d.dn2,meal:(ML2[m]||ML[m]),di:i,...myCI[k]})}));
+  const all=[];myDays.forEach((d,i)=>mainKeys(d).forEach(m=>{const k=i+'_'+m;if(myCI[k]&&myCI[k].photo)all.push({day:d.dn2,meal:(d[m]&&d[m].slbl)||ML2[m]||ML[m],di:i,...myCI[k]})}));
   if(all.length){h+=`<div class="gl-label up d4">📸 My Check-ins</div><div class="gl-grid">`;all.forEach((c,i)=>{const col=C[c.di%C.length];h+=`<div class="gl-c" style="animation-delay:${i*40+250}ms"><img src="${c.photo}"><div class="gl-ci" style="background:${col.lt}"><div class="gl-cn" style="color:${col.tx}">${c.day} · ${c.meal}</div><div class="gl-ct2">${c.time}</div></div></div>`});h+='</div>'}
   el.innerHTML=h}
 
