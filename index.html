@@ -136,6 +136,10 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;o
 .sh-r.dn .sh-tx .sh-note{color:var(--faint);text-decoration:line-through}
 .sh-rst{width:100%;padding:15px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);font-size:13px;font-weight:600;color:var(--sub);margin:6px 0 10px}
 .sh-rst:active{background:var(--bg);transform:scale(.98)}
+.ex-meta{display:flex;flex-wrap:wrap;gap:18px;padding:10px 14px;background:#fafaf4;border-top:1px solid #f0ead8;font-family:var(--serif)}
+.ex-meta-i{display:flex;flex-direction:column;gap:2px}
+.ex-meta-l{color:var(--muted);font-size:9.5px;text-transform:uppercase;letter-spacing:.6px;font-weight:700}
+.ex-meta-v{color:var(--text);font-size:13px;font-weight:700;font-variant-numeric:tabular-nums}
 .ex-tb{width:100%;border-collapse:collapse;font-size:12px;background:#fafaf4;border-top:1px solid #f0ead8}
 .ex-tb th{padding:7px 14px;text-align:left;font-weight:700;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.6px;border-bottom:1px solid #e9e3d2;background:#f3efe2}
 .ex-tb td{padding:6px 14px;border-bottom:1px solid #f1ecdf;color:var(--sub);font-family:var(--serif)}
@@ -228,6 +232,11 @@ const C=[
 const JDAYS=[
   {day:"Monday · May 11",dn2:"Mon 11",dow:1,date:"2026-05-11",
     ex:"18:30 PM · Tread 50 Jogging",
+    exMeta:[
+      {l:"Distance",v:"~3.6 mi"},
+      {l:"Avg HR",  v:"~145–155 bpm"},
+      {l:"Zone",    v:"75–82% MaxHR"},
+    ],
     exDetail:[
       {t:"0–5",  s:3.3,ph:"Warm up",  k:"warm"},
       {t:"5–10", s:4.2,ph:"Jogging",  k:"jog"},
@@ -595,6 +604,11 @@ function r2(){const el=document.getElementById('t2');
       exList(d).forEach((ex,j)=>{const done=myEX[exKey(i,j)];
         h+=`<button class="sh-r${done?' dn':''}" onclick="togEx(${i},${j})"><span class="sh-c${done?' on':''}">${done?'✓':''}</span><span class="sh-ic">🏋️</span><div class="sh-tx"><span class="sh-item">${ex}</span>${done?'<span class="sh-note">Completed '+done.time+'</span>':''}</div></button>`;
       });
+      if(d.exMeta&&d.exMeta.length){
+        h+='<div class="ex-meta">';
+        d.exMeta.forEach(m=>{h+=`<div class="ex-meta-i"><span class="ex-meta-l">${m.l}</span><span class="ex-meta-v">${m.v}</span></div>`});
+        h+='</div>';
+      }
       if(d.exDetail&&d.exDetail.length){
         h+=`<table class="ex-tb"><thead><tr><th>Min</th><th>mph</th><th>Phase</th></tr></thead><tbody>`;
         d.exDetail.forEach(iv=>{var cls=iv.k==='push'?' class="ph-push"':iv.k==='rec'?' class="ph-rec"':'';h+=`<tr${cls}><td>${iv.t}</td><td>${iv.s}</td><td>${iv.ph}</td></tr>`});
