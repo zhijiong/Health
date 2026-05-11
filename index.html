@@ -234,6 +234,7 @@ const C=[
 // ── Joey's plan (Mon May 11 → Sun May 17, Mediterranean) ──
 const JDAYS=[
   {day:"Monday · May 11",dn2:"Mon 11",dow:1,date:"2026-05-11",
+    total:"~1480",
     ex:"18:30 PM · Tread 50 Jogging",
     exMeta:[
       {l:"Distance",v:"~3.6 mi"},
@@ -253,9 +254,10 @@ const JDAYS=[
       {t:"47–48",s:5.6,ph:"Push",     k:"push"},
       {t:"48–50",s:3.2,ph:"Cool down",k:"cool"},
     ],
-    b:{e:"📝",n:"TBD",d:"To be planned"},
-    l:{e:"📝",n:"TBD",d:"To be planned"},
-    dn:{e:"📝",n:"TBD",d:"To be planned"}},
+    b:{e:"🥯",n:"Plain Bagel + Cold Brew Oat Latte · ~500 kcal",loc:"Peet's",d:"Plain bagel with cream cheese · Medium cold brew oat latte: half sweet"},
+    l:{e:"🐟",n:"TJ's Cod with Ratatouille Rice · ~370 kcal",d:"Trader Joe's cod with ratatouille and rice (1 package, 370 kcal)"},
+    sn:{e:"🥛",n:"Siggi's Peach & Mango Yogurt · ~160 kcal",d:"Siggi's peach and mango yogurt",slbl:"Pre-Jogging Treat",sic:"⚡",chkin:true},
+    dn:{e:"🍞",n:"Sprouted Bread + Poached Egg + Bread Cheese + Kale Tomato · ~450 kcal",d:"2 slices sprouted bread · 1 poached egg · TJ's bread cheese (1/4 bag) · Kale tomato side"}},
   {day:"Tuesday · May 12",dn2:"Tue 12",dow:2,date:"2026-05-12",
     ex:"18:45 PM · OTF Strength 50 (Lower Body)",
     b:{e:"🍳",n:"Brunch · Morning Hash + The Explorer Iced Latte · ~950 kcal",loc:"Farm Cup · Century City",d:"Morning hash (potatoes, kale, red bell peppers, chipotle aioli, fried eggs, chili oil, breakfast sausage) · The Explorer iced latte: salted caramel latte topped with Peruvian smoked salt"},
@@ -414,12 +416,14 @@ const BSHOP={
 function uDAYS(){return user==='becky'?BDAYS:JDAYS}
 function uSHOP(){return user==='becky'?BSHOP:JSHOP}
 function uMK(d){
-  // Return meal keys in chronological order (am, b, sn, l, sn2, dn)
+  // Return meal keys in chronological order (am, b, l, sn, sn2, dn).
+  // sn = pre-workout/pre-jog snack (typically late afternoon, after lunch);
+  // sn2 = afternoon/post-workout snack.
   var keys=[];
   if(d.am)keys.push('am');
   if(d.b)keys.push('b');
-  if(d.sn)keys.push('sn');
   if(d.l)keys.push('l');
+  if(d.sn)keys.push('sn');
   if(d.sn2)keys.push('sn2');
   if(d.dn)keys.push('dn');
   return keys;
