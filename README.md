@@ -1,6 +1,6 @@
 # Meal Plan
 
-Personal meal plan tracker with photo check-ins and shared progress.
+Personal meal plan tracker with photo check-ins and shared progress with Becky.
 
 ## Cloud Sync
 
