@@ -1,7 +1,5 @@
 # Meal Plan
 
-Personal meal plan tracker with photo check-ins and shared progress with Becky.
-
 ## Cloud Sync
 
 The app stores check-ins through `api/sync.js`, which needs a serverless host such as Vercel.
